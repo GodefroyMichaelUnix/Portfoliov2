@@ -8,8 +8,22 @@ declare global {
 }
 
 // Function to create or retrieve the connection pool.
-export const createPool = () => {
+export const createPool = (): Pool => {
   if (!global._postgresPool) {
+    if (!process.env.SQL_HOST) {
+      console.warn('[AI Studio] PostgreSQL not configured — using mock pool');
+      const mockPool = {
+        query: async () => ({ rows: [] }),
+        connect: async () => ({
+          query: async () => ({ rows: [] }),
+          release: () => {},
+        }),
+        on: () => mockPool,
+        end: async () => {},
+      } as unknown as Pool;
+      return mockPool;
+    }
+
     global._postgresPool = new Pool({
       host: process.env.SQL_HOST,
       user: process.env.SQL_USER,
