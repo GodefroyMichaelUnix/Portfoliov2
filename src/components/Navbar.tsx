@@ -28,6 +28,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
   const header = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -35,13 +36,22 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const sound = useSound();
 
   useEffect(() => {
+    let lastY = window.scrollY;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      const y = window.scrollY;
+      setIsScrolled(y > 15);
+      // Hide the bar when scrolling down into the page, reveal it on the way back up
+      if (!mobileMenuOpen) {
+        if (y > 420 && y > lastY + 6) setNavHidden(true);
+        else if (y < lastY - 6 || y < 420) setNavHidden(false);
+      }
+      lastY = y;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [mobileMenuOpen]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -77,12 +87,14 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 
 
   return (
-    <header 
+    <motion.header 
       ref={header}
       onBlur={event => { if (mobileMenuOpen && !event.currentTarget.contains(event.relatedTarget as Node)) setMobileMenuOpen(false); }}
       id="main-navbar"
       data-testid="floating-topbar"
       className={`topbar-shell topbar-reference ${isScrolled ? 'is-scrolled' : ''}`}
+      animate={{ y: navHidden && !mobileMenuOpen ? '-130%' : '0%' }}
+      transition={{ type: 'spring', stiffness: 300, damping: 32 }}
     >
       <div className="flex items-center justify-between gap-3 px-3 sm:px-5 py-3">
         {/* Brand / Logo : Serré à gauche */}
@@ -248,6 +260,6 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 };

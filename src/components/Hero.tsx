@@ -134,20 +134,28 @@ export const Hero: React.FC<HeroProps> = ({ profile }) => {
 
       {/* Metrics Bar */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 0.8, ease: MASK_EASE }}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 1 } } }}
+        initial="hidden"
+        animate="show"
         className="hero-metrics"
       >
         {profile.stats.map((stat, idx) => (
-          <div key={idx} data-testid={`hero-stat-${idx}`} className="space-y-2">
+          <motion.div
+            key={idx}
+            data-testid={`hero-stat-${idx}`}
+            className="space-y-2"
+            variants={{
+              hidden: { opacity: 0, y: 28 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: MASK_EASE } },
+            }}
+          >
             <div className="font-display text-4xl sm:text-5xl font-black text-zinc-900 dark:text-white tracking-tighter">
               <CountUpNumber value={stat.value} />
             </div>
             <div className="font-mono text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.25em]">
               {stat.label}
             </div>
-          </div>
+          </motion.div>
         ))}
       </motion.div>
 

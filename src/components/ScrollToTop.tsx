@@ -5,7 +5,10 @@ export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    // Wait for the page-transition curtain to cover the viewport before
+    // jumping, so the scroll reset is never exposed mid-wipe.
+    const t = setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }), 420);
+    return () => clearTimeout(t);
   }, [pathname]);
 
   return null;

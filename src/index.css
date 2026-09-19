@@ -286,9 +286,9 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .studio-cta h2 { font: 400 32px 'Archivo',sans-serif; }
 .studio-cta a { background: #ea580c; color: #fff; border-radius: 4px; box-shadow: none; }
 .studio-cta::before { content: '+'; position: absolute; top: 12px; left: 16px; font: 18px 'JetBrains Mono',monospace; color: #ffc9ac; }
-.credential-card { position: relative; display: flex; flex-direction: column; min-height: 390px; padding: 30px 36px; border: 1px solid var(--studio-line); background: #fff; transition: border-color .4s, box-shadow .4s; }
+.credential-card { position: relative; display: flex; flex-direction: column; min-height: 390px; padding: 30px 36px; border: 1px solid var(--studio-line); background: #fff; transition: border-color .4s, box-shadow .4s, transform .5s cubic-bezier(.16,1,.3,1); }
 .dark .credential-card { background: #121215; }
-.credential-card:hover { border-color: var(--studio-orange); box-shadow: 0 20px 40px -35px rgb(234 88 12 / 30%); }
+.credential-card:hover { border-color: var(--studio-orange); box-shadow: 0 20px 40px -35px rgb(234 88 12 / 30%); transform: translateY(-6px); }
 .credential-barcode { height: 22px; width: 65px; background: repeating-linear-gradient(90deg,var(--studio-muted) 0px,var(--studio-muted) 1px,transparent 1px,transparent 4px,var(--studio-muted) 4px,var(--studio-muted) 6px,transparent 6px,transparent 8px); opacity: .4; }
 .home-credentials .credential-barcode { width: 35px; }
 .credential-top { display: flex; justify-content: space-between; color: var(--studio-muted); gap: 14px; }
@@ -528,4 +528,53 @@ button:disabled { cursor: not-allowed; opacity: .45; }
   .about-page .page-intro, .certifications-page .page-intro { margin-bottom: 36px; }
 }
 @media (prefers-reduced-motion: reduce) { .portrait-orbit { animation: none; } }
+
+/* ═══ PREMIUM MOTION LAYER — cinematic transitions & micro-interactions ═══ */
+
+/* Scroll progress rail */
+.scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 120; transform-origin: 0 50%; background: linear-gradient(90deg, #ea580c, #fb923c); pointer-events: none; }
+
+/* Cinematic page-transition curtain */
+.page-curtain { position: fixed; inset: 0; z-index: 150; background: linear-gradient(160deg, #f97316 0%, #ea580c 55%, #c2410c 100%); transform-origin: top center; pointer-events: none; display: grid; place-items: center; overflow: hidden; }
+.page-curtain::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(0 0 0 / 16%), transparent 45%); }
+.page-curtain-mark { font: 900 clamp(90px, 20vw, 300px)/1 'Archivo', sans-serif; letter-spacing: -.08em; color: rgb(255 255 255 / 15%); user-select: none; }
+
+/* Custom cursor ring */
+.cursor-ring { border: 1.5px solid rgb(234 88 12 / 65%); border-radius: 9999px; display: flex; align-items: center; justify-content: center; will-change: transform, width, height; }
+
+/* Hero accent — slow light sheen travelling through the italic name */
+.hero-name-accent { color: var(--studio-orange); background-image: linear-gradient(105deg, var(--studio-orange) 0%, var(--studio-orange) 40%, #fb8539 50%, var(--studio-orange) 60%, var(--studio-orange) 100%); background-size: 220% 100%; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: hero-sheen 7s ease-in-out infinite; }
+@keyframes hero-sheen { 0%, 100% { background-position: 112% 0; } 50% { background-position: -12% 0; } }
+
+/* Signal dot breathing pulse */
+.signal-dot { animation: signal-pulse 2.6s ease-in-out infinite; }
+@keyframes signal-pulse { 0%, 100% { box-shadow: 0 0 0 4px rgb(234 88 12 / 9%); } 50% { box-shadow: 0 0 0 8px rgb(234 88 12 / 17%); } }
+
+/* Journey timeline node pulse */
+.journey-point { animation: journey-pulse 3s ease-in-out infinite; }
+@keyframes journey-pulse { 0%, 100% { box-shadow: 0 0 0 7px var(--studio-bg), 0 0 0 8px rgb(234 88 12 / 0%); } 50% { box-shadow: 0 0 0 7px var(--studio-bg), 0 0 0 14px rgb(234 88 12 / 20%); } }
+
+/* Selected work — arrow glide on hover */
+.selected-work-arrow svg { transition: transform .35s cubic-bezier(.16,1,.3,1); }
+.selected-work-card:hover .selected-work-arrow svg { transform: translate(3px, -3px); }
+
+/* Service index rows — trailing arrow glide */
+.service-index-row > svg:last-child { transition: transform .3s cubic-bezier(.16,1,.3,1), color .3s; }
+.service-index-row:hover > svg:last-child { transform: translateX(6px); color: var(--studio-orange); }
+
+/* Workflow nodes — warm glow on hover */
+.workflow-node:hover .node-box { box-shadow: 0 10px 30px -12px rgb(234 88 12 / 50%); }
+
+/* Footer next link drift */
+.footer-next a { transition: transform .45s cubic-bezier(.16,1,.3,1); }
+.footer-next a:hover { transform: translateX(8px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-name-accent { animation: none; background-image: none; -webkit-text-fill-color: currentColor; }
+  .signal-dot, .journey-point { animation: none; }
+  .credential-card:hover { transform: none; }
+  .footer-next a:hover { transform: none; }
+  .service-index-row:hover > svg:last-child { transform: none; }
+  .selected-work-card:hover .selected-work-arrow svg { transform: none; }
+}
 
