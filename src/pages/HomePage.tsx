@@ -61,13 +61,6 @@ const staggerItem = {
   }
 };
 
-const ChapterLabel: React.FC<{ num: string; title: string; onColor?: boolean }> = ({ num, title, onColor = false }) => (
-  <div className={`flex items-center gap-4 font-mono text-[11px] font-semibold uppercase tracking-[0.35em] ${onColor ? 'text-white/70' : 'text-zinc-400 dark:text-zinc-500'}`}>
-    <span className={onColor ? 'text-white' : 'text-orange-600 dark:text-orange-500'}>{num}</span>
-    <span className={`h-px w-12 ${onColor ? 'bg-white/40' : 'bg-zinc-300 dark:bg-zinc-700'}`} />
-    <span>{title}</span>
-  </div>
-);
 
 const ALL_EXPERTISE_AND_TOOLS = [
   {
@@ -241,9 +234,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             className="space-y-12"
           >
             <div className="space-y-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-              <motion.div variants={staggerItem}>
-                <ChapterLabel num="01" title="Réalisations" />
-              </motion.div>
               <div className="flex items-end justify-between">
                 <AnimatedTitle
                   text="Sélection de projets"
@@ -504,7 +494,6 @@ export const HomePage: React.FC<HomePageProps> = ({
                 viewport={{ once: true, margin: '-100px' }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               >
-                <ChapterLabel num="02" title="Savoir-faire" onColor />
                 <AnimatedTitle
                   text="Savoir-faire"
                   className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter text-white"
@@ -554,9 +543,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             className="space-y-12"
           >
             <div className="space-y-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-              <motion.div variants={staggerItem}>
-                <ChapterLabel num="03" title="Validation" />
-              </motion.div>
               <div className="flex items-end justify-between">
                 <AnimatedTitle
                   text="Certifications"
@@ -592,9 +578,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             className="space-y-12"
           >
             <div className="space-y-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-              <motion.div variants={staggerItem}>
-                <ChapterLabel num="04" title="Investissement" />
-              </motion.div>
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <AnimatedTitle
                   text="Mes tarifs"
@@ -668,9 +651,6 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {/* 5. FAQ */}
         <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1400px] mx-auto space-y-12">
-          <div className="space-y-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <ChapterLabel num="05" title="Questions fréquentes" />
-          </div>
           <FAQSection />
         </section>
 

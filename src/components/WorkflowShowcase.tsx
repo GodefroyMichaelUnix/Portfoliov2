@@ -18,8 +18,7 @@ export const WorkflowShowcase: React.FC = () => {
     <section className="workflow-lab" data-testid="workflow-lab">
       <div className="workflow-lab-layout">
         <div>
-          <span className="chapter-meta"><span className="signal-dot" />LABORATOIRE / LOGIQUE EN MOUVEMENT</span>
-          <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-tighter mt-7">Des connexions.<br /><span className="font-serif-accent italic text-orange-600 dark:text-orange-400">Pas de complications.</span></h2>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-tighter">Des connexions.<br /><span className="font-serif-accent italic text-orange-600 dark:text-orange-400">Pas de complications.</span></h2>
           <div className="workflow-lab-tabs"             data-testid="workflow-tablist"
             onKeyDown={event => { const keys = ['ArrowRight', 'ArrowLeft', 'Home', 'End']; if (!keys.includes(event.key)) return; event.preventDefault(); const next = event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (active + (event.key === 'ArrowRight' ? 1 : 2)) % 3; setActive(next); document.getElementById(`workflow-tab-${next}`)?.focus(); }}
             role="tablist" aria-label="Explorer les automatisations">

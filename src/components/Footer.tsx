@@ -14,7 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
 
   return (
     <footer id="main-footer" className="footer-studio">
-      <div className="footer-next"><div><span className="chapter-meta"><span className="signal-dot" />{profile.availability.status} / {profile.availability.subtext}</span><p className="text-sm text-zinc-500 mt-4">Les meilleures connexions commencent par une conversation.</p></div><Link to="/contact" data-testid="footer-start-conversation">Créons la suite. <ArrowUpRight size={34} strokeWidth={1} /></Link></div>
+      <div className="footer-next"><div><p className="text-sm text-zinc-500">Les meilleures connexions commencent par une conversation.</p></div><Link to="/contact" data-testid="footer-start-conversation">Créons la suite. <ArrowUpRight size={34} strokeWidth={1} /></Link></div>
       <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Center links */}
         <div className="flex flex-wrap justify-center items-center gap-6 text-xs font-bold text-zinc-500 dark:text-zinc-400">

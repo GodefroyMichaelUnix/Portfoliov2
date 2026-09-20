@@ -28,6 +28,8 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const header = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -35,17 +37,45 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const sound = useSound();
 
   useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 15);
+
+      // Keep navbar visible if mobile menu drawer is open
+      if (mobileMenuOpen) {
+        setIsVisible(true);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      // Always show at the top of the page
+      if (currentScrollY <= 50) {
+        setIsVisible(true);
+      } else {
+        const delta = currentScrollY - lastScrollY.current;
+        // 8px threshold to prevent minor jitter
+        if (delta > 8) {
+          // Scrolling down: hide towards top
+          setIsVisible(false);
+        } else if (delta < -8) {
+          // Scrolling up: reveal navbar
+          setIsVisible(true);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [mobileMenuOpen]);
 
-  // Close mobile menu on route change
+  // Close mobile menu on route change and ensure topbar is visible
   useEffect(() => {
     setMobileMenuOpen(false);
+    setIsVisible(true);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -80,9 +110,10 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
     <header 
       ref={header}
       onBlur={event => { if (mobileMenuOpen && !event.currentTarget.contains(event.relatedTarget as Node)) setMobileMenuOpen(false); }}
+      onFocus={() => setIsVisible(true)}
       id="main-navbar"
       data-testid="floating-topbar"
-      className={`topbar-shell topbar-reference ${isScrolled ? 'is-scrolled' : ''}`}
+      className={`topbar-shell topbar-reference ${isScrolled ? 'is-scrolled' : ''} ${!isVisible ? 'is-hidden' : ''}`}
     >
       <div className="flex items-center justify-between gap-3 px-3 sm:px-5 py-3">
         {/* Brand / Logo : Serré à gauche */}
@@ -161,7 +192,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
           <motion.button
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
-            onClick={toggleTheme}
+            onClick={(e) => toggleTheme(e)}
             id="theme-toggle-btn"
             data-testid="theme-toggle"
             aria-label={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}

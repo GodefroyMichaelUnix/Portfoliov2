@@ -18,7 +18,7 @@ const MaskedLine: React.FC<{ children: React.ReactNode; delay?: number; classNam
   delay = 0,
   className = '',
 }) => (
-  <span className={`block overflow-hidden pb-[0.08em] -mb-[0.08em] ${className}`}>
+  <span className={`block overflow-hidden pb-[0.28em] -mb-[0.28em] pt-[0.06em] -mt-[0.06em] pr-[0.15em] ${className}`}>
     <motion.span
       initial={{ y: '112%' }}
       animate={{ y: '0%' }}
@@ -72,7 +72,13 @@ export const Hero: React.FC<HeroProps> = ({ profile }) => {
             {/* Kinetic masked line reveal */}
             <h1 className="hero-name" data-testid="hero-title" aria-label={profile.name}>
               <MaskedLine delay={0.15}>{profile.name.split(' ')[0]}</MaskedLine>
-              <MaskedLine delay={0.3} className="hero-name-accent">{profile.name.split(' ').slice(1).join(' ')}<span className="hero-name-period">.</span></MaskedLine>
+              <MaskedLine delay={0.3} className="hero-name-accent">
+                <span className="hero-name-wrap">
+                  <span className="hero-name-base">{profile.name.split(' ').slice(1).join(' ')}</span>
+                  <span className="hero-name-gleam" aria-hidden="true">{profile.name.split(' ').slice(1).join(' ')}</span>
+                  <span className="hero-name-period">.</span>
+                </span>
+              </MaskedLine>
             </h1>
             <p className="hero-profession" data-testid="hero-profession">{profile.title}<span>Automatisation & intégrations</span></p>
 
