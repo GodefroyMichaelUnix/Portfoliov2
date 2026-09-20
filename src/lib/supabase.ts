@@ -1,9 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-// Client-side Supabase initialization
-// These environment variables will need to be added to the project (.env)
-// and prefixed with VITE_ to be exposed to the browser.
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://edvztfzlwziibwhrjswg.supabase.co';
+const supabaseKey = 
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 
+  import.meta.env.VITE_SUPABASE_ANON_KEY || 
+  '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = (supabaseUrl && supabaseKey) 
+  ? createClient(supabaseUrl, supabaseKey) 
+  : null;

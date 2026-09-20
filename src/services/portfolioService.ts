@@ -68,6 +68,7 @@ class SupabasePortfolioAdapter implements PortfolioDatabaseAdapter {
   private local = new LocalPortfolioAdapter();
 
   async getProfile(): Promise<ProfileInfo> {
+    if (!supabase) return this.local.getProfile();
     try {
       const { data, error } = await supabase
         .from('profile')
@@ -100,6 +101,7 @@ class SupabasePortfolioAdapter implements PortfolioDatabaseAdapter {
   }
 
   async getProjects(): Promise<ProjectItem[]> {
+    if (!supabase) return this.local.getProjects();
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -134,6 +136,7 @@ class SupabasePortfolioAdapter implements PortfolioDatabaseAdapter {
   }
 
   async getSkills(): Promise<SkillCategory[]> {
+    if (!supabase) return this.local.getSkills();
     try {
       const { data, error } = await supabase
         .from('skill_categories')
@@ -157,6 +160,7 @@ class SupabasePortfolioAdapter implements PortfolioDatabaseAdapter {
   }
 
   async getCertifications(): Promise<Certification[]> {
+    if (!supabase) return this.local.getCertifications();
     try {
       const { data, error } = await supabase
         .from('certifications')

@@ -10,7 +10,7 @@ import {
 
 export const profileData: ProfileInfo = {
   name: 'Michael Godefroy',
-  title: 'AI Automation Engineer',
+  title: 'AI & Automation Engineer',
   roleSubtitle: 'Automatisation & Intégrations',
   valueProposition: 'Du processus manuel au workflow automatisé.',
   bioSummary: [

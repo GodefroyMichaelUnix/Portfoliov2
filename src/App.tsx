@@ -1,13 +1,13 @@
 /**
  * Portfolio professionnel de Michael Godefroy
- * AI Automation Engineer | IT Automation
+ * AI & Automation Engineer | IT Automation
  *
  * Stack: React 19 + TypeScript + Tailwind CSS + React Router + Motion
  */
 
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AnimatePresence, MotionConfig } from 'motion/react';
+import { MotionConfig } from 'motion/react';
 import { SoundProvider } from './context/SoundContext';
 import { portfolioService } from './services/portfolioService';
 import {
@@ -16,6 +16,12 @@ import {
   SkillCategory,
   Certification
 } from './types/portfolio';
+import {
+  profileData,
+  projectsData,
+  skillsData,
+  certificationsData
+} from './data/portfolioData';
 import { ThemeProvider } from './context/ThemeContext';
 
 import { Navbar } from './components/Navbar';
@@ -25,7 +31,6 @@ import { AutomationBackground } from './components/AutomationBackground';
 
 import { SmoothScroll } from './components/SmoothScroll';
 import { CustomCursor } from './components/CustomCursor';
-import { BootLoader } from './components/BootLoader';
 
 import { HomePage } from './pages/HomePage';
 import { ProjectsPage } from './pages/ProjectsPage';
@@ -36,12 +41,10 @@ import { ContactPage } from './pages/ContactPage';
 import { MakingOfPage } from './pages/MakingOfPage';
 
 export default function App() {
-  const [profile, setProfile] = useState<ProfileInfo | null>(null);
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
-  const [skills, setSkills] = useState<SkillCategory[]>([]);
-  const [certifications, setCertifications] = useState<Certification[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [booting, setBooting] = useState(true);
+  const [profile, setProfile] = useState<ProfileInfo>(profileData);
+  const [projects, setProjects] = useState<ProjectItem[]>(projectsData);
+  const [skills, setSkills] = useState<SkillCategory[]>(skillsData);
+  const [certifications, setCertifications] = useState<Certification[]>(certificationsData);
 
   useEffect(() => {
     async function loadPortfolioData() {
@@ -58,43 +61,22 @@ export default function App() {
           portfolioService.getCertifications()
         ]);
 
-        setProfile(profData);
-        setProjects(projData);
-        setSkills(skillData);
-        setCertifications(certData);
+        if (profData) setProfile(profData);
+        if (projData && projData.length > 0) setProjects(projData);
+        if (skillData && skillData.length > 0) setSkills(skillData);
+        if (certData && certData.length > 0) setCertifications(certData);
       } catch (err) {
         console.error('Erreur lors du chargement des données portfolio :', err);
-      } finally {
-        setLoading(false);
       }
     }
 
     loadPortfolioData();
   }, []);
 
-  if (loading || !profile) {
-    return (
-      <>
-        <AnimatePresence>
-          {booting && <BootLoader onComplete={() => setBooting(false)} />}
-        </AnimatePresence>
-        <div className="min-h-screen bg-[#fafaf8] dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 flex items-center justify-center font-mono text-xs">
-          <div className="flex items-center gap-3 p-5 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping"></span>
-            <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">Initialisation du portfolio de Michael Godefroy...</span>
-          </div>
-        </div>
-      </>
-    );
-  }
-
   return (
     <ThemeProvider>
       <SoundProvider>
       <MotionConfig reducedMotion="user">
-      <AnimatePresence>
-        {booting && <BootLoader onComplete={() => setBooting(false)} />}
-      </AnimatePresence>
       <SmoothScroll>
         <BrowserRouter>
           <ScrollToTop />
@@ -108,8 +90,8 @@ export default function App() {
           <Navbar profile={profile} />
 
           {/* Main Content Area: Multi-Page Routing */}
-          <main id="main-content" data-booting={booting} className="relative z-10 pt-28 pb-16 flex-1">
-            {!booting && <Routes>
+          <main id="main-content" className="relative z-10 pt-28 pb-16 flex-1">
+            <Routes>
               <Route
                 path="/"
                 element={
@@ -147,7 +129,7 @@ export default function App() {
               />
               {/* Fallback route */}
               <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>}
+            </Routes>
           </main>
 
           {/* Footer */}

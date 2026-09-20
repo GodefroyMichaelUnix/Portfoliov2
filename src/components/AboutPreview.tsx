@@ -6,7 +6,6 @@ import { ArrowUpRight, Code2, Workflow, Sparkles } from 'lucide-react';
 export const AboutPreview: React.FC = () => (
   <section className="home-about-preview" data-testid="home-about-preview">
     <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="home-about-story">
-      <span className="chapter-meta"><span className="signal-dot" />L’humain avant la technologie</span>
       <h2>Comprendre le problème.<br /><span className="font-serif-accent italic">Construire la bonne réponse.</span></h2>
       <p>Je construis mon parcours vers l’ingénierie de l’automatisation, un projet à la fois. Ce qui m’anime : connecter les outils, simplifier le quotidien et rendre la technologie vraiment utile.</p>
       <Link data-testid="home-about-link" to="/a-propos" className="text-link">Un peu plus sur moi <ArrowUpRight size={17} /></Link>

@@ -142,7 +142,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           {/* 4. Paragraphe de transition */}
           <motion.div variants={staggerItem} className="max-w-4xl mx-auto text-center space-y-6">
             <p className="text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
-              Aujourd'hui, je veux franchir une nouvelle étape et devenir AI Automation Engineer. Je me suis formé principalement en autodidacte, en travaillant sérieusement sur Python, l'automatisation, les APIs, les workflows, les outils no-code/low-code et l'intelligence artificielle. Je suis également des formations et passe des certifications afin de structurer mes connaissances et de pouvoir progressivement proposer mes compétences en freelance.
+              Aujourd'hui, je veux franchir une nouvelle étape et devenir AI & Automation Engineer. Je me suis formé principalement en autodidacte, en travaillant sérieusement sur Python, l'automatisation, les APIs, les workflows, les outils no-code/low-code et l'intelligence artificielle. Je suis également des formations et passe des certifications afin de structurer mes connaissances et de pouvoir progressivement proposer mes compétences en freelance.
             </p>
           </motion.div>
 
