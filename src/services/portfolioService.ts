@@ -16,6 +16,30 @@ import {
   MakingOfStackItem
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
+import type { Json } from '../lib/database.types';
+
+type JsonObject = { [key: string]: Json | undefined };
+
+function isJsonObject(value: Json): value is JsonObject {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function getString(obj: JsonObject | null | undefined, key: string, fallback = ''): string {
+  if (!obj) return fallback;
+  const val = obj[key];
+  return typeof val === 'string' ? val : fallback;
+}
+
+function getOptionalString(obj: JsonObject | null | undefined, key: string): string | undefined {
+  if (!obj) return undefined;
+  const val = obj[key];
+  return typeof val === 'string' ? val : undefined;
+}
+
+function getStringArray(val: Json | undefined | null): string[] {
+  if (!Array.isArray(val)) return [];
+  return val.filter((item): item is string => typeof item === 'string');
+}
 
 export interface PortfolioDatabaseAdapter {
   getProfile(): Promise<ProfileInfo>;
@@ -51,23 +75,74 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       throw new Error('Aucun profil trouvé dans la table public.profile.');
     }
 
+    const rawAvail = isJsonObject(data.availability) ? data.availability : null;
+
+    const availability = {
+      status: getString(rawAvail, 'status'),
+      subtext: getString(rawAvail, 'subtext'),
+      responseTime: getString(rawAvail, 'responseTime')
+    };
+
+    const rawContact = isJsonObject(data.contact) ? data.contact : null;
+
+    const contact = {
+      email: getString(rawContact, 'email'),
+      linkedin: getString(rawContact, 'linkedin'),
+      upwork: getString(rawContact, 'upwork'),
+      github: getString(rawContact, 'github'),
+      fiverr: getOptionalString(rawContact, 'fiverr'),
+      malt: getOptionalString(rawContact, 'malt'),
+      instagram: getOptionalString(rawContact, 'instagram')
+    };
+
+    const stats = Array.isArray(data.stats)
+      ? data.stats
+          .filter(isJsonObject)
+          .map((s) => ({
+            value: getString(s, 'value'),
+            label: getString(s, 'label'),
+            sublabel: getString(s, 'sublabel')
+          }))
+      : [];
+
+    const aboutJourney = Array.isArray(data.about_journey)
+      ? data.about_journey
+          .filter(isJsonObject)
+          .map((j) => ({
+            year: getString(j, 'year'),
+            text: getString(j, 'text')
+          }))
+      : [];
+
+    const methodology = Array.isArray(data.methodology)
+      ? data.methodology
+          .filter(isJsonObject)
+          .map((m) => ({
+            step: getString(m, 'step'),
+            title: getString(m, 'title'),
+            tasks: getStringArray(m.tasks)
+          }))
+      : [];
+
+    const bioSummary = getStringArray(data.bio_summary);
+
     return {
       name: data.name,
       title: data.title,
       roleSubtitle: data.role_subtitle || '',
       valueProposition: data.value_proposition || '',
-      bioSummary: Array.isArray(data.bio_summary) ? data.bio_summary : [],
-      availability: data.availability || { status: '', subtext: '', responseTime: '' },
+      bioSummary,
+      availability,
       location: data.location || '',
-      contact: data.contact || { email: '', linkedin: '', upwork: '', github: '' },
-      stats: Array.isArray(data.stats) ? data.stats : [],
-      about_journey: Array.isArray(data.about_journey) ? data.about_journey : [],
-      aboutJourney: Array.isArray(data.about_journey) ? data.about_journey : [],
+      contact,
+      stats,
+      about_journey: aboutJourney,
+      aboutJourney,
       about_manifesto: data.about_manifesto || '',
       aboutManifesto: data.about_manifesto || '',
       about_closing: data.about_closing || '',
       aboutClosing: data.about_closing || '',
-      methodology: Array.isArray(data.methodology) ? data.methodology : []
+      methodology
     };
   }
 
@@ -87,24 +162,50 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     if (!data) return [];
 
-    return data.map((row) => ({
-      id: row.id,
-      title: row.title,
-      category: row.category,
-      categoryLabel: row.category_label || '',
-      subtitle: row.subtitle || '',
-      problem: row.problem || '',
-      context: row.context || '',
-      solution: row.solution || '',
-      techStack: Array.isArray(row.tech_stack) ? row.tech_stack : [],
-      measurableResult: row.measurable_result || '',
-      metrics: Array.isArray(row.metrics) ? row.metrics : [],
-      architectureSummary: Array.isArray(row.architecture_summary) ? row.architecture_summary : [],
-      featured: Boolean(row.featured),
-      demoUrl: row.demo_url || undefined,
-      githubUrl: row.github_url || undefined,
-      mockupType: row.mockup_type || undefined
-    }));
+    const validCategories = ['workflows', 'ai-agents', 'data-infra'] as const;
+    const validMockups = ['automation-pipeline', 'agent-orchestrator', 'database-sync'] as const;
+
+    return data.map((row) => {
+      const category = validCategories.includes(row.category as (typeof validCategories)[number])
+        ? (row.category as (typeof validCategories)[number])
+        : 'workflows';
+
+      const mockupType = row.mockup_type && validMockups.includes(row.mockup_type as (typeof validMockups)[number])
+        ? (row.mockup_type as (typeof validMockups)[number])
+        : undefined;
+
+      const techStack = getStringArray(row.tech_stack);
+
+      const metrics = Array.isArray(row.metrics)
+        ? row.metrics
+            .filter(isJsonObject)
+            .map((m) => ({
+              label: getString(m, 'label'),
+              value: getString(m, 'value')
+            }))
+        : [];
+
+      const architectureSummary = getStringArray(row.architecture_summary);
+
+      return {
+        id: row.id,
+        title: row.title,
+        category,
+        categoryLabel: row.category_label || '',
+        subtitle: row.subtitle || '',
+        problem: row.problem || '',
+        context: row.context || '',
+        solution: row.solution || '',
+        techStack,
+        measurableResult: row.measurable_result || '',
+        metrics,
+        architectureSummary,
+        featured: Boolean(row.featured),
+        demoUrl: row.demo_url || undefined,
+        githubUrl: row.github_url || undefined,
+        mockupType
+      };
+    });
   }
 
   async getSkills(): Promise<SkillCategory[]> {
@@ -123,13 +224,28 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     if (!data) return [];
 
-    return data.map((row) => ({
-      id: row.id,
-      title: row.title,
-      subtitle: row.subtitle,
-      iconName: row.icon_name || 'Network',
-      skills: Array.isArray(row.skills) ? row.skills : []
-    }));
+    return data.map((row) => {
+      const skills = Array.isArray(row.skills)
+        ? row.skills
+            .filter(isJsonObject)
+            .map((s) => ({
+              name: getString(s, 'name'),
+              levelBadge: getOptionalString(s, 'levelBadge'),
+              useCase: getString(s, 'useCase'),
+              tags: Array.isArray(s.tags)
+                ? getStringArray(s.tags)
+                : undefined
+            }))
+        : [];
+
+      return {
+        id: row.id,
+        title: row.title,
+        subtitle: row.subtitle || '',
+        iconName: row.icon_name || 'Network',
+        skills
+      };
+    });
   }
 
   async getCertifications(): Promise<Certification[]> {
@@ -148,18 +264,22 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     if (!data) return [];
 
-    return data.map((row) => ({
-      id: row.id,
-      title: row.title,
-      issuer: row.issuer,
-      issueDate: row.issue_date || '',
-      logo: row.logo,
-      image: row.image,
-      verifyUrl: row.verify_url || '',
-      skills: Array.isArray(row.skills) ? row.skills : [],
-      featured: Boolean(row.featured),
-      summary: row.summary || ''
-    }));
+    return data.map((row) => {
+      const skills = getStringArray(row.skills);
+
+      return {
+        id: row.id,
+        title: row.title,
+        issuer: row.issuer,
+        issueDate: row.issue_date || '',
+        logo: row.logo,
+        image: row.image || undefined,
+        verifyUrl: row.verify_url || '',
+        skills,
+        featured: Boolean(row.featured),
+        summary: row.summary || ''
+      };
+    });
   }
 
   async getPricingPlans(): Promise<PricingPlan[]> {
@@ -178,16 +298,20 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     if (!data) return [];
 
-    return data.map((row) => ({
-      id: row.id,
-      iconName: row.icon_name || 'Clock',
-      label: row.label,
-      prefix: row.prefix,
-      numeric: row.numeric,
-      description: row.description,
-      items: Array.isArray(row.items) ? row.items : [],
-      sortOrder: row.sort_order
-    }));
+    return data.map((row) => {
+      const items = getStringArray(row.items);
+
+      return {
+        id: row.id,
+        iconName: row.icon_name || 'Clock',
+        label: row.label,
+        prefix: row.prefix,
+        numeric: row.numeric,
+        description: row.description,
+        items,
+        sortOrder: row.sort_order ?? undefined
+      };
+    });
   }
 
   async getFaqs(): Promise<FAQItem[]> {
@@ -210,7 +334,7 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       id: row.id,
       question: row.question,
       answer: row.answer,
-      sortOrder: row.sort_order
+      sortOrder: row.sort_order ?? undefined
     }));
   }
 
@@ -230,15 +354,19 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     if (!data) return [];
 
-    return data.map((row) => ({
-      id: row.id,
-      name: row.name,
-      kind: row.kind,
-      title: row.title,
-      description: row.description,
-      nodes: Array.isArray(row.nodes) ? row.nodes : [],
-      sortOrder: row.sort_order
-    }));
+    return data.map((row) => {
+      const nodes = getStringArray(row.nodes);
+
+      return {
+        id: row.id,
+        name: row.name,
+        kind: row.kind,
+        title: row.title,
+        description: row.description,
+        nodes,
+        sortOrder: row.sort_order ?? undefined
+      };
+    });
   }
 
   async getHomeExpertiseCards(): Promise<HomeExpertiseCard[]> {
@@ -282,14 +410,18 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     if (!data) return [];
 
-    return data.map((row) => ({
-      id: row.id,
-      title: row.title,
-      description: row.description,
-      image: row.image,
-      tags: Array.isArray(row.tags) ? row.tags : [],
-      span: row.span || undefined
-    }));
+    return data.map((row) => {
+      const tags = getStringArray(row.tags);
+
+      return {
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        image: row.image,
+        tags,
+        span: row.span || undefined
+      };
+    });
   }
 
   async getMakingOfSteps(): Promise<MakingOfStep[]> {
