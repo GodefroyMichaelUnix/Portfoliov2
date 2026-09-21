@@ -53,7 +53,9 @@ export const profileData: ProfileInfo = {
       label: 'Production',
       sublabel: 'Code versionné & audité'
     }
-  ]
+  ],
+  about_manifesto: "Tout ce parcours, je l'ai construit sans diplôme universitaire.",
+  aboutManifesto: "Tout ce parcours, je l'ai construit sans diplôme universitaire."
 };
 
 export const solutionsData: ServiceSolution[] = [

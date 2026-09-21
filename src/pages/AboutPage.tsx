@@ -135,7 +135,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           {/* 3. Citation mise en avant */}
           <motion.div variants={staggerItem} className="manifesto-quote">
             <p className="text-3xl md:text-4xl font-black tracking-tighter leading-tight">
-              "Tout ce parcours, je l'ai construit sans diplôme universitaire."
+              {profile.about_manifesto || profile.aboutManifesto 
+                ? ((profile.about_manifesto || profile.aboutManifesto)!.startsWith('"') 
+                    ? (profile.about_manifesto || profile.aboutManifesto) 
+                    : `"${profile.about_manifesto || profile.aboutManifesto}"`)
+                : `"Tout ce parcours, je l'ai construit sans diplôme universitaire."`}
             </p>
           </motion.div>
 

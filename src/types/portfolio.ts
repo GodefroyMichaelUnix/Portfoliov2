@@ -99,4 +99,6 @@ export interface ProfileInfo {
     label: string;
     sublabel: string;
   }[];
+  about_manifesto?: string;
+  aboutManifesto?: string;
 }

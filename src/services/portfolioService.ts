@@ -89,7 +89,9 @@ class SupabasePortfolioAdapter implements PortfolioDatabaseAdapter {
         availability: data.availability,
         location: data.location,
         contact: data.contact,
-        stats: data.stats || []
+        stats: data.stats || [],
+        about_manifesto: data.about_manifesto || data.aboutManifesto,
+        aboutManifesto: data.about_manifesto || data.aboutManifesto
       };
     } catch {
       return this.local.getProfile();
