@@ -25,7 +25,9 @@ import {
   Certification,
   PricingPlan,
   FAQItem,
-  WorkflowScenario 
+  WorkflowScenario,
+  HomeExpertiseCard,
+  HomePillar
 } from '../types/portfolio';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { WorkflowShowcase } from '../components/WorkflowShowcase';
@@ -45,6 +47,8 @@ interface HomePageProps {
   pricingPlans?: PricingPlan[];
   faqs?: FAQItem[];
   workflows?: WorkflowScenario[];
+  expertiseCards?: HomeExpertiseCard[];
+  pillars?: HomePillar[];
 }
 
 const staggerContainer = {
@@ -73,7 +77,7 @@ const staggerItem = {
 };
 
 
-const ALL_EXPERTISE_AND_TOOLS = [
+export const DEFAULT_HOME_EXPERTISE_CARDS: HomeExpertiseCard[] = [
   {
     title: "Architecture Multi-Agents",
     category: "Ingénierie IA",
@@ -148,6 +152,44 @@ const ALL_EXPERTISE_AND_TOOLS = [
   }
 ];
 
+export const DEFAULT_HOME_PILLARS: HomePillar[] = [
+  {
+    title: "Intelligence Collective Multi-Agents",
+    description: "Je conçois des architectures d'agents IA (LangGraph) capables d'interagir avec vos outils pour exécuter des tâches complexes de manière autonome.",
+    image: "/art/agent-core.webp",
+    tags: ["LangGraph", "Python", "Agents IA"],
+    span: "md:col-span-2 lg:col-span-3",
+  },
+  {
+    title: "Synchronisation d'APIs",
+    description: "Je connecte vos différents outils métiers via leurs APIs pour assurer une circulation fluide, sécurisée et fiable de vos données.",
+    image: "/art/workflow.webp",
+    tags: ["n8n", "Make", "REST APIs"],
+    span: "md:col-span-2 lg:col-span-3",
+  },
+  {
+    title: "Python & Traitement de Données",
+    description: "Lorsqu'un outil low-code atteint ses limites, je développe des scripts Python sur mesure pour traiter vos données spécifiques.",
+    image: "/art/data-vault.webp",
+    tags: ["Python", "Scripting", "Data"],
+    span: "md:col-span-1 lg:col-span-2",
+  },
+  {
+    title: "Pipelines & Décision",
+    description: "J'intègre l'IA (RAG, classification, génération) au cœur de vos processus pour vous faire gagner un temps précieux sur la prise de décision.",
+    image: "/art/data-vault.webp",
+    tags: ["RAG", "LLM", "Pipelines"],
+    span: "md:col-span-1 lg:col-span-2",
+  },
+  {
+    title: "Résilience & Fiabilité",
+    description: "Je construis des workflows robustes en anticipant les erreurs et les pannes d'API, pour une continuité de service à toute épreuve.",
+    image: "/art/workflow.webp",
+    tags: ["Webhooks", "Alerting", "Résilience"],
+    span: "md:col-span-2 lg:col-span-2",
+  }
+];
+
 const LevelDots: React.FC<{ level: number }> = ({ level }) => (
   <div className="flex items-center gap-1.5">
     {[1, 2, 3, 4].map((dot) => (
@@ -159,7 +201,7 @@ const LevelDots: React.FC<{ level: number }> = ({ level }) => (
   </div>
 );
 
-const CyclingExpertiseCard: React.FC<{ items: typeof ALL_EXPERTISE_AND_TOOLS, index: number }> = ({ items, index }) => {
+const CyclingExpertiseCard: React.FC<{ items: HomeExpertiseCard[], index: number }> = ({ items, index }) => {
   const reduced = useReducedMotion();
   const [activeIndex, setActiveIndex] = React.useState(0);
 
@@ -211,25 +253,26 @@ export const HomePage: React.FC<HomePageProps> = ({
   certifications,
   pricingPlans = [],
   faqs = [],
-  workflows = []
+  workflows = [],
+  expertiseCards = DEFAULT_HOME_EXPERTISE_CARDS,
+  pillars = DEFAULT_HOME_PILLARS
 }) => {
   const reduced = useReducedMotion();
-  const [cardGroups, setCardGroups] = React.useState<Array<typeof ALL_EXPERTISE_AND_TOOLS>>([]);
+  const [cardGroups, setCardGroups] = React.useState<HomeExpertiseCard[][]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-
   React.useEffect(() => {
     // Shuffle the array uniquely on each mount
-    const shuffled = [...ALL_EXPERTISE_AND_TOOLS].sort(() => Math.random() - 0.5);
+    const shuffled = [...expertiseCards].sort(() => Math.random() - 0.5);
 
     // We want 6 fixed card slots, each containing 2 items to cycle between
-    const groups = [];
+    const groups: HomeExpertiseCard[][] = [];
     for (let i = 0; i < 6; i++) {
       groups.push(shuffled.slice(i * 2, i * 2 + 2));
     }
     setCardGroups(groups);
-  }, []);
+  }, [expertiseCards]);
 
   return (
     <PageTransition>
@@ -269,48 +312,12 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             <div className="selected-work-grid">
-              {[
-                {
-                  title: "Intelligence Collective Multi-Agents",
-                  description: "Je conçois des architectures d'agents IA (LangGraph) capables d'interagir avec vos outils pour exécuter des tâches complexes de manière autonome.",
-                  image: "/art/agent-core.webp",
-                  tags: ["LangGraph", "Python", "Agents IA"],
-                  span: "md:col-span-2 lg:col-span-3",
-                },
-                {
-                  title: "Synchronisation d'APIs",
-                  description: "Je connecte vos différents outils métiers via leurs APIs pour assurer une circulation fluide, sécurisée et fiable de vos données.",
-                  image: "/art/workflow.webp",
-                  tags: ["n8n", "Make", "REST APIs"],
-                  span: "md:col-span-2 lg:col-span-3",
-                },
-                {
-                  title: "Python & Traitement de Données",
-                  description: "Lorsqu'un outil low-code atteint ses limites, je développe des scripts Python sur mesure pour traiter vos données spécifiques.",
-                  image: "/art/data-vault.webp",
-                  tags: ["Python", "Scripting", "Data"],
-                  span: "md:col-span-1 lg:col-span-2",
-                },
-                {
-                  title: "Pipelines & Décision",
-                  description: "J'intègre l'IA (RAG, classification, génération) au cœur de vos processus pour vous faire gagner un temps précieux sur la prise de décision.",
-                  image: "/art/data-vault.webp",
-                  tags: ["RAG", "LLM", "Pipelines"],
-                  span: "md:col-span-1 lg:col-span-2",
-                },
-                {
-                  title: "Résilience & Fiabilité",
-                  description: "Je construis des workflows robustes en anticipant les erreurs et les pannes d'API, pour une continuité de service à toute épreuve.",
-                  image: "/art/workflow.webp",
-                  tags: ["Webhooks", "Alerting", "Résilience"],
-                  span: "md:col-span-2 lg:col-span-2",
-                }
-              ].map((item, i) => (
+              {pillars.map((item, i) => (
                 <Link
                   to="/projets"
                   data-testid={`home-project-${i}`}
                   key={i}
-                  className={`block ${item.span}`}
+                  className={`block ${item.span || ''}`}
                 >
                   <motion.div
                     variants={staggerItem}

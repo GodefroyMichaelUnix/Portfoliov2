@@ -36,44 +36,18 @@ const staggerItem = {
   }
 };
 
-const DEFAULT_JOURNEY = [
-  { year: '2023', text: "Service client — Débute dans le service client, principalement sur des appels entrants." },
-  { year: '2024', text: "Expert métier — Évolue vers un poste d'expert métier sur le même projet, après avoir acquis de l'expérience." },
-  { year: '2025', text: "Secteur automobile électrique — Travaille sur un projet lié aux voitures électriques, toujours dans le service client et les appels entrants." },
-  { year: '2026', text: "Énergie renouvelable — Change complètement de domaine pour rejoindre le secteur de l'énergie renouvelable, comme chargé de suivi en énergie renouvelable (poste actuel)." }
-];
-
-const DEFAULT_METHODOLOGY = [
-  {
-    step: '01',
-    title: 'Compréhension',
-    tasks: ['Analyse du processus', 'Identification des blocages']
-  },
-  {
-    step: '02',
-    title: 'Conception',
-    tasks: ['Logique du workflow', 'Choix des déclencheurs']
-  },
-  {
-    step: '03',
-    title: 'Intégration',
-    tasks: ['Connexion des outils', 'Gestion des erreurs']
-  },
-  {
-    step: '04',
-    title: 'Déploiement',
-    tasks: ['Tests du système', 'Amélioration continue']
-  }
-];
-
 export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
   const journeyItems = (profile.about_journey && profile.about_journey.length > 0)
     ? profile.about_journey
-    : (profile.aboutJourney && profile.aboutJourney.length > 0 ? profile.aboutJourney : DEFAULT_JOURNEY);
+    : (profile.aboutJourney && profile.aboutJourney.length > 0 ? profile.aboutJourney : []);
 
   const methodologyPhases = (profile.methodology && profile.methodology.length > 0)
     ? profile.methodology
-    : DEFAULT_METHODOLOGY;
+    : [];
+
+  const manifestoText = (profile.about_manifesto || profile.aboutManifesto || '').trim();
+  const closingText = (profile.about_closing || profile.aboutClosing || '').trim();
+
   return (
     <PageTransition>
       <div className="studio-page about-page">
@@ -91,15 +65,23 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
             </h2>
             
             <div className="space-y-6 text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
-              <p>
-                Je suis étudiant en informatique et je construis progressivement mon parcours vers l’ingénierie de l’automatisation.
-              </p>
-              <p>
-                Ce qui a commencé comme une simple curiosité est devenu un véritable parcours d’apprentissage autour des workflows, des APIs, du scripting, de l’IA et des intégrations. J’aime résoudre des problèmes techniques et transformer des idées en systèmes fonctionnels.
-              </p>
-              <p>
-                Mon objectif à long terme est de construire des systèmes d’automatisation qui connectent les personnes, les applications, les données et l’IA. Je développe mes compétences projet après projet, car je pense que la meilleure façon de comprendre une technologie est de construire avec elle.
-              </p>
+              {profile.bioSummary && profile.bioSummary.length > 0 ? (
+                profile.bioSummary.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))
+              ) : (
+                <>
+                  <p>
+                    Je suis étudiant en informatique et je construis progressivement mon parcours vers l’ingénierie de l’automatisation.
+                  </p>
+                  <p>
+                    Ce qui a commencé comme une simple curiosité est devenu un véritable parcours d’apprentissage autour des workflows, des APIs, du scripting, de l’IA et des intégrations. J’aime résoudre des problèmes techniques et transformer des idées en systèmes fonctionnels.
+                  </p>
+                  <p>
+                    Mon objectif à long terme est de construire des systèmes d’automatisation qui connectent les personnes, les applications, les données et l’IA. Je développe mes compétences projet après projet, car je pense que la meilleure façon de comprendre une technologie est de construire avec elle.
+                  </p>
+                </>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-4">
@@ -148,32 +130,32 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           </motion.div>
 
           {/* 2. Timeline de parcours */}
-          <motion.div variants={staggerItem} className="journey-timeline">
-            <div className="journey-rail" aria-hidden="true" />
-            <div className="journey-entries">
-              {journeyItems.map((item, idx) => (
-                <motion.div key={idx} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="journey-entry" data-testid={`journey-${item.year}`}>
-                  <span className="journey-point" aria-hidden="true" />
-                  
-                  <h3 className="text-4xl font-black text-orange-600 dark:text-orange-500 mb-4 tracking-tighter">{item.year}</h3>
-                  <p className="text-zinc-600 dark:text-zinc-400 text-sm font-medium leading-relaxed">
-                    {item.text}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+          {journeyItems.length > 0 && (
+            <motion.div variants={staggerItem} className="journey-timeline">
+              <div className="journey-rail" aria-hidden="true" />
+              <div className="journey-entries">
+                {journeyItems.map((item, idx) => (
+                  <motion.div key={idx} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="journey-entry" data-testid={`journey-${item.year}`}>
+                    <span className="journey-point" aria-hidden="true" />
+                    
+                    <h3 className="text-4xl font-black text-orange-600 dark:text-orange-500 mb-4 tracking-tighter">{item.year}</h3>
+                    <p className="text-zinc-600 dark:text-zinc-400 text-sm font-medium leading-relaxed">
+                      {item.text}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {/* 3. Citation mise en avant */}
-          <motion.div variants={staggerItem} className="manifesto-quote">
-            <p className="text-3xl md:text-4xl font-black tracking-tighter leading-tight">
-              {profile.about_manifesto || profile.aboutManifesto 
-                ? ((profile.about_manifesto || profile.aboutManifesto)!.startsWith('"') 
-                    ? (profile.about_manifesto || profile.aboutManifesto) 
-                    : `"${profile.about_manifesto || profile.aboutManifesto}"`)
-                : `"Tout ce parcours, je l'ai construit sans diplôme universitaire."`}
-            </p>
-          </motion.div>
+          {manifestoText && (
+            <motion.div variants={staggerItem} className="manifesto-quote">
+              <p className="text-3xl md:text-4xl font-black tracking-tighter leading-tight">
+                {manifestoText.startsWith('"') ? manifestoText : `"${manifestoText}"`}
+              </p>
+            </motion.div>
+          )}
 
           {/* 4. Paragraphe de transition */}
           <motion.div variants={staggerItem} className="max-w-4xl mx-auto text-center space-y-6">
@@ -183,57 +165,61 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           </motion.div>
 
           {/* 5. Bloc de clôture mis en avant */}
-          <motion.div variants={staggerItem} className="bg-zinc-900 text-white p-10 md:p-14 rounded-[40px] shadow-2xl relative overflow-hidden">
-            <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-orange-500/20 blur-3xl pointer-events-none" />
-            <p className="text-lg md:text-xl font-medium leading-relaxed relative z-10 text-zinc-300">
-              {profile.about_closing || profile.aboutClosing}
-            </p>
-          </motion.div>
+          {closingText && (
+            <motion.div variants={staggerItem} className="bg-zinc-900 text-white p-10 md:p-14 rounded-[40px] shadow-2xl relative overflow-hidden">
+              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-orange-500/20 blur-3xl pointer-events-none" />
+              <p className="text-lg md:text-xl font-medium leading-relaxed relative z-10 text-zinc-300">
+                {closingText}
+              </p>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Process Section */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          className="space-y-12 border-t border-zinc-200 dark:border-zinc-800 pt-20"
-        >
-          <div className="space-y-4">
-            <motion.h2 variants={staggerItem} className="text-3xl sm:text-4xl font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter">
-              Méthodologie
-            </motion.h2>
-          </div>
+        {methodologyPhases.length > 0 && (
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-100px' }}
+            className="space-y-12 border-t border-zinc-200 dark:border-zinc-800 pt-20"
+          >
+            <div className="space-y-4">
+              <motion.h2 variants={staggerItem} className="text-3xl sm:text-4xl font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter">
+                Méthodologie
+              </motion.h2>
+            </div>
 
-          <div className="method-grid">
-            {methodologyPhases.map((phase, idx) => (
-              <motion.div 
-                key={idx}
-                variants={staggerItem}
-                whileHover={{ y: -8 }}
-                className="method-phase space-y-6 flex flex-col justify-between"
-                data-testid={`method-${phase.step}`}
-              >
-                <div>
-                  <span className="font-mono text-sm font-extrabold text-orange-500 mb-4 block">
-                    {phase.step}
-                  </span>
-                  <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-                    {phase.title}
-                  </h3>
-                  <ul className="space-y-3">
-                    {phase.tasks.map((task, tIdx) => (
-                      <li key={tIdx} className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400 font-medium">
-                        <CheckCircle2 className="w-4 h-4 text-orange-500 shrink-0" />
-                        <span>{task}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+            <div className="method-grid">
+              {methodologyPhases.map((phase, idx) => (
+                <motion.div 
+                  key={idx}
+                  variants={staggerItem}
+                  whileHover={{ y: -8 }}
+                  className="method-phase space-y-6 flex flex-col justify-between"
+                  data-testid={`method-${phase.step}`}
+                >
+                  <div>
+                    <span className="font-mono text-sm font-extrabold text-orange-500 mb-4 block">
+                      {phase.step}
+                    </span>
+                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+                      {phase.title}
+                    </h3>
+                    <ul className="space-y-3">
+                      {phase.tasks.map((task, tIdx) => (
+                        <li key={tIdx} className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400 font-medium">
+                          <CheckCircle2 className="w-4 h-4 text-orange-500 shrink-0" />
+                          <span>{task}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         <div className="about-film"><VideoPresentation /></div>
         {/* CTA */}

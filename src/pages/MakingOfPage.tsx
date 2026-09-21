@@ -15,6 +15,7 @@ import { PageTransition } from '../components/PageTransition';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { PageIntro } from '../components/PageIntro';
 import { Artwork } from '../components/Artwork';
+import { MakingOfStep, MakingOfStackItem } from '../types/portfolio';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -39,51 +40,68 @@ const staggerItem = {
   }
 };
 
-const STEPS = [
+const ICON_MAP: Record<string, React.ElementType> = {
+  Compass,
+  Sparkles,
+  LayoutTemplate,
+  Bug,
+  Database,
+  Rocket
+};
+
+export const DEFAULT_MAKING_OF_STEPS: MakingOfStep[] = [
   {
-    icon: Compass,
+    iconName: "Compass",
     step: "01",
     title: "Cadrage & positionnement",
     description: "Avant toute ligne de code : définir le message. Ce portfolio devait convaincre aussi bien un recruteur CDI qu'un client freelance, sans jamais donner l'impression d'un profil en apprentissage — un brief écrit noir sur blanc, structure de conversion et ton inclus."
   },
   {
-    icon: Sparkles,
+    iconName: "Sparkles",
     step: "02",
     title: "Génération de la base avec Google AI Studio",
     description: "La structure du projet (React + Vite + TypeScript + Tailwind CSS), le design system et les premiers composants ont été générés à partir de prompts détaillés donnés à Google AI Studio — pas de code écrit à la main dès la première ligne, mais un cahier des charges précis."
   },
   {
-    icon: LayoutTemplate,
+    iconName: "LayoutTemplate",
     step: "03",
     title: "Itérations de design",
     description: "Passage d'une seule page à une architecture multi-pages avec React Router, ajout des transitions de page et des animations au scroll avec Framer Motion, affinage visuel section par section jusqu'à obtenir un rendu premium plutôt qu'un simple template."
   },
   {
-    icon: Bug,
+    iconName: "Bug",
     step: "04",
     title: "Revue technique & debugging",
     description: "Chaque nouvelle version a été passée en revue avec Claude : diagnostic de bugs d'animation invisibles à l'œil nu (par exemple une boucle de défilement de logos mal calibrée), corrections ciblées, et rédaction de nouveaux composants complets."
   },
   {
-    icon: Database,
+    iconName: "Database",
     step: "05",
     title: "Couche data avec Supabase",
     description: "Le contenu (projets, compétences, certifications) est pensé pour vivre dans une base PostgreSQL sur Supabase plutôt qu'en dur dans le code — pour pouvoir le faire évoluer sans redéployer tout le site."
   },
   {
-    icon: Rocket,
+    iconName: "Rocket",
     step: "06",
     title: "Déploiement continu",
     description: "Le code est versionné sur GitHub et déployé automatiquement sur Netlify à chaque mise à jour — la même chaîne CI/CD que celle utilisée pour les projets présentés dans ce portfolio."
   }
 ];
 
-const STACK = [
+export const DEFAULT_MAKING_OF_STACK: Array<string | MakingOfStackItem> = [
   "Google AI Studio", "Claude", "React", "TypeScript", "Tailwind CSS", 
   "Framer Motion", "Supabase", "PostgreSQL", "GitHub", "Netlify"
 ];
 
-export const MakingOfPage: React.FC = () => {
+export interface MakingOfPageProps {
+  steps?: MakingOfStep[];
+  stack?: Array<string | MakingOfStackItem>;
+}
+
+export const MakingOfPage: React.FC<MakingOfPageProps> = ({ 
+  steps = DEFAULT_MAKING_OF_STEPS, 
+  stack = DEFAULT_MAKING_OF_STACK 
+}) => {
   return (
     <PageTransition>
       <div className="studio-page making-page">
@@ -99,32 +117,35 @@ export const MakingOfPage: React.FC = () => {
           viewport={{ once: true, margin: '-100px' }}
           className="space-y-6"
         >
-          {STEPS.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.7 }}
-              className="group making-step"
-              data-testid={`making-step-${item.step}`}
-            >
-              <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-6 shrink-0">
-                <span className="font-mono text-sm font-bold text-orange-500">{item.step}</span>
-                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-orange-500">
-                  <item.icon className="w-6 h-6" />
+          {steps.map((item, i) => {
+            const Icon = (item.iconName && ICON_MAP[item.iconName]) || Sparkles;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.7 }}
+                className="group making-step"
+                data-testid={`making-step-${item.step}`}
+              >
+                <div className="flex sm:flex-col items-center sm:items-start gap-4 sm:gap-6 shrink-0">
+                  <span className="font-mono text-sm font-bold text-orange-500">{item.step}</span>
+                  <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-orange-500">
+                    <Icon className="w-6 h-6" />
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-3">
-                <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
-                  {item.title}
-                </h3>
-                <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed max-w-2xl">
-                  {item.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+                <div className="space-y-3">
+                  <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed max-w-2xl">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
         </div>
 
@@ -140,14 +161,17 @@ export const MakingOfPage: React.FC = () => {
             La stack utilisée
           </motion.h2>
           <motion.div variants={staggerItem} className="flex flex-wrap gap-3">
-            {STACK.map((tool, i) => (
-              <span
-                key={i}
-                className="px-5 py-2.5 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 rounded-full text-sm font-bold text-zinc-700 dark:text-zinc-300"
-              >
-                {tool}
-              </span>
-            ))}
+            {stack.map((item, i) => {
+              const name = typeof item === 'string' ? item : item.name;
+              return (
+                <span
+                  key={i}
+                  className="px-5 py-2.5 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 rounded-full text-sm font-bold text-zinc-700 dark:text-zinc-300"
+                >
+                  {name}
+                </span>
+              );
+            })}
           </motion.div>
         </motion.div>
 

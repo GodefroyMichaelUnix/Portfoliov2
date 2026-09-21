@@ -146,3 +146,32 @@ export interface WorkflowScenario {
   nodes: string[];
   sortOrder?: number;
 }
+
+export interface HomeExpertiseCard {
+  id?: string;
+  title: string;
+  category: string;
+  level: number;
+  bgImage: string;
+}
+
+export interface HomePillar {
+  id?: string;
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  span?: string;
+}
+
+export interface MakingOfStep {
+  step: string;
+  title: string;
+  description: string;
+  iconName?: string;
+}
+
+export interface MakingOfStackItem {
+  name: string;
+  category?: string;
+}
