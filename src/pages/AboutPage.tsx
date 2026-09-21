@@ -154,7 +154,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           <motion.div variants={staggerItem} className="bg-zinc-900 text-white p-10 md:p-14 rounded-[40px] shadow-2xl relative overflow-hidden">
             <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-orange-500/20 blur-3xl pointer-events-none" />
             <p className="text-lg md:text-xl font-medium leading-relaxed relative z-10 text-zinc-300">
-              Il me reste maintenant la partie la plus importante : les compétences. Et c'est précisément là que je concentre toute mon énergie aujourd'hui. Je sais que je pars avec un parcours différent de celui de beaucoup de personnes, mais j'ai déjà appris une chose : je peux changer de domaine, apprendre par moi-même et progresser. Mon objectif maintenant est simple : continuer à apprendre, construire de vrais projets, obtenir de l'expérience et transformer progressivement mes compétences en une véritable carrière dans l'AI Automation.
+              {profile.about_closing || profile.aboutClosing}
             </p>
           </motion.div>
         </motion.div>

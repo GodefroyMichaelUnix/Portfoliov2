@@ -54,7 +54,9 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       contact: data.contact || { email: '', linkedin: '', upwork: '', github: '' },
       stats: data.stats || [],
       about_manifesto: data.about_manifesto || data.aboutManifesto || '',
-      aboutManifesto: data.about_manifesto || data.aboutManifesto || ''
+      aboutManifesto: data.about_manifesto || data.aboutManifesto || '',
+      about_closing: data.about_closing || data.aboutClosing || '',
+      aboutClosing: data.about_closing || data.aboutClosing || ''
     };
   }
 

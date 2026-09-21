@@ -101,6 +101,8 @@ export interface ProfileInfo {
   }[];
   about_manifesto?: string;
   aboutManifesto?: string;
+  about_closing?: string;
+  aboutClosing?: string;
 }
 
 export interface PricingPlan {
