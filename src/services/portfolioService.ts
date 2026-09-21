@@ -46,17 +46,20 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
     return {
       name: data.name,
       title: data.title,
-      roleSubtitle: data.role_subtitle || data.roleSubtitle || '',
-      valueProposition: data.value_proposition || data.valueProposition || '',
-      bioSummary: data.bio_summary || data.bioSummary || [],
+      roleSubtitle: data.role_subtitle || '',
+      valueProposition: data.value_proposition || '',
+      bioSummary: Array.isArray(data.bio_summary) ? data.bio_summary : [],
       availability: data.availability || { status: '', subtext: '', responseTime: '' },
       location: data.location || '',
       contact: data.contact || { email: '', linkedin: '', upwork: '', github: '' },
-      stats: data.stats || [],
-      about_manifesto: data.about_manifesto || data.aboutManifesto || '',
-      aboutManifesto: data.about_manifesto || data.aboutManifesto || '',
-      about_closing: data.about_closing || data.aboutClosing || '',
-      aboutClosing: data.about_closing || data.aboutClosing || ''
+      stats: Array.isArray(data.stats) ? data.stats : [],
+      about_journey: Array.isArray(data.about_journey) ? data.about_journey : [],
+      aboutJourney: Array.isArray(data.about_journey) ? data.about_journey : [],
+      about_manifesto: data.about_manifesto || '',
+      aboutManifesto: data.about_manifesto || '',
+      about_closing: data.about_closing || '',
+      aboutClosing: data.about_closing || '',
+      methodology: Array.isArray(data.methodology) ? data.methodology : []
     };
   }
 
@@ -80,19 +83,19 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       id: row.id,
       title: row.title,
       category: row.category,
-      categoryLabel: row.category_label || row.categoryLabel || '',
+      categoryLabel: row.category_label || '',
       subtitle: row.subtitle || '',
       problem: row.problem || '',
       context: row.context || '',
       solution: row.solution || '',
-      techStack: Array.isArray(row.tech_stack) ? row.tech_stack : (row.techStack || []),
-      measurableResult: row.measurable_result || row.measurableResult || '',
-      metrics: row.metrics || [],
-      architectureSummary: Array.isArray(row.architecture_summary) ? row.architecture_summary : (row.architectureSummary || []),
+      techStack: Array.isArray(row.tech_stack) ? row.tech_stack : [],
+      measurableResult: row.measurable_result || '',
+      metrics: Array.isArray(row.metrics) ? row.metrics : [],
+      architectureSummary: Array.isArray(row.architecture_summary) ? row.architecture_summary : [],
       featured: Boolean(row.featured),
-      demoUrl: row.demo_url || row.demoUrl,
-      githubUrl: row.github_url || row.githubUrl,
-      mockupType: row.mockup_type || row.mockupType
+      demoUrl: row.demo_url || undefined,
+      githubUrl: row.github_url || undefined,
+      mockupType: row.mockup_type || undefined
     }));
   }
 
@@ -116,7 +119,7 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       id: row.id,
       title: row.title,
       subtitle: row.subtitle,
-      iconName: row.icon_name || row.iconName || 'Network',
+      iconName: row.icon_name || 'Network',
       skills: Array.isArray(row.skills) ? row.skills : []
     }));
   }
@@ -141,10 +144,10 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       id: row.id,
       title: row.title,
       issuer: row.issuer,
-      issueDate: row.issue_date || row.issueDate || '',
+      issueDate: row.issue_date || '',
       logo: row.logo,
       image: row.image,
-      verifyUrl: row.verify_url || row.verifyUrl || '',
+      verifyUrl: row.verify_url || '',
       skills: Array.isArray(row.skills) ? row.skills : [],
       featured: Boolean(row.featured),
       summary: row.summary || ''

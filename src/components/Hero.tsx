@@ -80,7 +80,7 @@ export const Hero: React.FC<HeroProps> = ({ profile }) => {
                 </span>
               </MaskedLine>
             </h1>
-            <p className="hero-profession" data-testid="hero-profession">{profile.title}<span>Automatisation & intégrations</span></p>
+            <p className="hero-profession" data-testid="hero-profession">{profile.title}<span>{profile.roleSubtitle || 'Automatisation & intégrations'}</span></p>
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}

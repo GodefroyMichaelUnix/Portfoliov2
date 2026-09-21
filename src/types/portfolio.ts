@@ -73,6 +73,17 @@ export interface ServiceSolution {
   iconName: string;
 }
 
+export interface ProfileJourneyItem {
+  year: string;
+  text: string;
+}
+
+export interface ProfileMethodologyStep {
+  step: string;
+  title: string;
+  tasks: string[];
+}
+
 export interface ProfileInfo {
   name: string;
   title: string;
@@ -99,10 +110,13 @@ export interface ProfileInfo {
     label: string;
     sublabel: string;
   }[];
+  about_journey?: ProfileJourneyItem[];
+  aboutJourney?: ProfileJourneyItem[];
   about_manifesto?: string;
   aboutManifesto?: string;
   about_closing?: string;
   aboutClosing?: string;
+  methodology?: ProfileMethodologyStep[];
 }
 
 export interface PricingPlan {

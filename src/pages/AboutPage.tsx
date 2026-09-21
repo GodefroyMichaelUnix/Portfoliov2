@@ -36,7 +36,44 @@ const staggerItem = {
   }
 };
 
+const DEFAULT_JOURNEY = [
+  { year: '2023', text: "Service client — Débute dans le service client, principalement sur des appels entrants." },
+  { year: '2024', text: "Expert métier — Évolue vers un poste d'expert métier sur le même projet, après avoir acquis de l'expérience." },
+  { year: '2025', text: "Secteur automobile électrique — Travaille sur un projet lié aux voitures électriques, toujours dans le service client et les appels entrants." },
+  { year: '2026', text: "Énergie renouvelable — Change complètement de domaine pour rejoindre le secteur de l'énergie renouvelable, comme chargé de suivi en énergie renouvelable (poste actuel)." }
+];
+
+const DEFAULT_METHODOLOGY = [
+  {
+    step: '01',
+    title: 'Compréhension',
+    tasks: ['Analyse du processus', 'Identification des blocages']
+  },
+  {
+    step: '02',
+    title: 'Conception',
+    tasks: ['Logique du workflow', 'Choix des déclencheurs']
+  },
+  {
+    step: '03',
+    title: 'Intégration',
+    tasks: ['Connexion des outils', 'Gestion des erreurs']
+  },
+  {
+    step: '04',
+    title: 'Déploiement',
+    tasks: ['Tests du système', 'Amélioration continue']
+  }
+];
+
 export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
+  const journeyItems = (profile.about_journey && profile.about_journey.length > 0)
+    ? profile.about_journey
+    : (profile.aboutJourney && profile.aboutJourney.length > 0 ? profile.aboutJourney : DEFAULT_JOURNEY);
+
+  const methodologyPhases = (profile.methodology && profile.methodology.length > 0)
+    ? profile.methodology
+    : DEFAULT_METHODOLOGY;
   return (
     <PageTransition>
       <div className="studio-page about-page">
@@ -114,12 +151,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           <motion.div variants={staggerItem} className="journey-timeline">
             <div className="journey-rail" aria-hidden="true" />
             <div className="journey-entries">
-              {[
-                { year: '2023', text: "Service client — Débute dans le service client, principalement sur des appels entrants." },
-                { year: '2024', text: "Expert métier — Évolue vers un poste d'expert métier sur le même projet, après avoir acquis de l'expérience." },
-                { year: '2025', text: "Secteur automobile électrique — Travaille sur un projet lié aux voitures électriques, toujours dans le service client et les appels entrants." },
-                { year: '2026', text: "Énergie renouvelable — Change complètement de domaine pour rejoindre le secteur de l'énergie renouvelable, comme chargé de suivi en énergie renouvelable (poste actuel)." }
-              ].map((item, idx) => (
+              {journeyItems.map((item, idx) => (
                 <motion.div key={idx} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="journey-entry" data-testid={`journey-${item.year}`}>
                   <span className="journey-point" aria-hidden="true" />
                   
@@ -174,28 +206,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           </div>
 
           <div className="method-grid">
-            {[
-              {
-                step: '01',
-                title: 'Compréhension',
-                tasks: ['Analyse du processus', 'Identification des blocages']
-              },
-              {
-                step: '02',
-                title: 'Conception',
-                tasks: ['Logique du workflow', 'Choix des déclencheurs']
-              },
-              {
-                step: '03',
-                title: 'Intégration',
-                tasks: ['Connexion des outils', 'Gestion des erreurs']
-              },
-              {
-                step: '04',
-                title: 'Déploiement',
-                tasks: ['Tests du système', 'Amélioration continue']
-              }
-            ].map((phase, idx) => (
+            {methodologyPhases.map((phase, idx) => (
               <motion.div 
                 key={idx}
                 variants={staggerItem}

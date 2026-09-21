@@ -1,8 +1,18 @@
 -- ==============================================================================
 -- SCHEMA COMPLET SUPABASE - PORTFOLIO MICHAEL GODEFROY
 -- ==============================================================================
--- Ce script crée l'ensemble des 7 tables dynamiques permettant de piloter
--- 100% des données du site directement depuis l'interface Supabase (Table Editor).
+-- Ce script crée l'ensemble des 8 tables permettant de piloter
+-- l'ensemble des données du portfolio et de réceptionner les messages de contact.
+--
+-- Tables incluses :
+-- 1. public.profile
+-- 2. public.projects
+-- 3. public.skill_categories
+-- 4. public.certifications
+-- 5. public.pricing_plans
+-- 6. public.faqs
+-- 7. public.workflows
+-- 8. public.contact_messages
 --
 -- Instructions :
 -- 1. Allez sur https://supabase.com/dashboard et ouvrez votre projet
@@ -110,6 +120,16 @@ CREATE TABLE IF NOT EXISTS public.workflows (
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- 8. MESSAGES DE CONTACT (FORMULAIRE & EDGE FUNCTION)
+CREATE TABLE IF NOT EXISTS public.contact_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  project_type TEXT NOT NULL CHECK (project_type IN ('cdi', 'freelance', 'audit', 'autre')),
+  message TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- ==============================================================================
 -- ACTIVATION DE LA SÉCURITÉ ROW LEVEL SECURITY (RLS)
 -- ==============================================================================
@@ -120,8 +140,10 @@ ALTER TABLE public.certifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.pricing_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workflows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
 
--- Politiques de lecture publique (accessible avec la clé anonyme VITE_SUPABASE_ANON_KEY)
+-- Politiques de lecture publique pour le contenu du portfolio
+-- (accessible avec la clé anonyme VITE_SUPABASE_ANON_KEY)
 DROP POLICY IF EXISTS "Public select profile" ON public.profile;
 CREATE POLICY "Public select profile" ON public.profile FOR SELECT USING (true);
 
@@ -142,6 +164,13 @@ CREATE POLICY "Public select faqs" ON public.faqs FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Public select workflows" ON public.workflows;
 CREATE POLICY "Public select workflows" ON public.workflows FOR SELECT USING (true);
+
+-- Politiques pour les messages de contact (contact_messages)
+-- Insertion autorisée pour réceptionner les messages (Edge Function / API)
+DROP POLICY IF EXISTS "Allow insert for contact_messages" ON public.contact_messages;
+CREATE POLICY "Allow insert for contact_messages" ON public.contact_messages FOR INSERT WITH CHECK (true);
+-- Remarque de sécurité : Aucun droit SELECT public n'est accordé. Seule la clé de service ou
+-- l'administrateur connecté au dashboard Supabase peut consulter les messages reçus.
 
 -- ==============================================================================
 -- INSERTION DES DONNÉES INITIALES (REMPLI AUTOMATIQUEMENT)
