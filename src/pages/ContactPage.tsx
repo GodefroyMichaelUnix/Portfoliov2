@@ -6,19 +6,24 @@ import {
   Linkedin, 
   Github, 
   Check, 
-  Copy,
-  CheckCircle2,
-  Instagram
+  Copy, 
+  CheckCircle2, 
+  Instagram,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { PageTransition } from '../components/PageTransition';
 import { ProfileInfo } from '../types/portfolio';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { PageIntro } from '../components/PageIntro';
+import { supabase } from '../lib/supabase';
 import michaelPortrait from '../assets/images/michael_seated_trimmed.png';
 
 interface ContactPageProps {
   profile: ProfileInfo;
 }
+
+type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -45,12 +50,14 @@ const staggerItem = {
 
 export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<FormStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     projectType: 'freelance',
-    message: ''
+    message: '',
+    honeypot: ''
   });
 
   const handleCopyEmail = (e: React.MouseEvent) => {
@@ -60,9 +67,69 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleResetForm = () => {
+    setFormStatus('idle');
+    setErrorMessage(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (formStatus === 'submitting') return;
+
+    setErrorMessage(null);
+    setFormStatus('submitting');
+
+    if (!supabase) {
+      setFormStatus('error');
+      setErrorMessage(
+        "Le service de messagerie n'est pas disponible pour le moment. Veuillez me contacter directement par email."
+      );
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-message', {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          projectType: formData.projectType,
+          message: formData.message.trim(),
+          honeypot: formData.honeypot
+        }
+      });
+
+      if (error) {
+        let msg = "Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer.";
+        try {
+          if ('context' in error && error.context && typeof error.context.json === 'function') {
+            const errorBody = await error.context.json();
+            if (errorBody?.error) msg = errorBody.error;
+          } else if (error.message) {
+            msg = error.message;
+          }
+        } catch {
+          if (error.message) msg = error.message;
+        }
+        setFormStatus('error');
+        setErrorMessage(msg);
+        return;
+      }
+
+      // Succès réel
+      setFormStatus('success');
+      setFormData({
+        name: '',
+        email: '',
+        projectType: 'freelance',
+        message: '',
+        honeypot: ''
+      });
+    } catch (err: unknown) {
+      console.error('Erreur lors de la soumission du formulaire :', err);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      setFormStatus('error');
+      setErrorMessage(errMsg || "Une erreur inattendue est survenue. Veuillez réessayer.");
+    }
   };
 
   return (
@@ -103,18 +170,17 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                   </a>
                   <button
                     data-testid="contact-copy-email"
-                    aria-label={copiedEmail ? 'Email copié' : 'Copier l’email'}
                     onClick={handleCopyEmail}
-                    className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer"
-                    title="Copier l'email"
+                    className="p-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors shrink-0 cursor-pointer"
+                    title="Copier l'adresse"
                   >
-                    {copiedEmail ? <Check className="w-4 h-4 text-orange-500" /> : <Copy className="w-4 h-4" />}
+                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Socials */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {/* Social Channels */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
                 <a
                   href={profile.contact.linkedin}
                   data-testid="contact-linkedin"
@@ -145,8 +211,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                     rel="noopener noreferrer"
                     className="p-4 bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-[24px] border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 flex flex-col items-center justify-center gap-2 transition-all duration-300 group"
                   >
-                    <img src="https://cdn.simpleicons.org/upwork/3f3f46" alt="Upwork" className="w-5 h-5 dark:hidden group-hover:scale-110 transition-transform" />
-                    <img src="https://cdn.simpleicons.org/upwork/d4d4d8" alt="Upwork" className="w-5 h-5 hidden dark:block group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">Up</span>
                     <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">Upwork</span>
                   </a>
                 )}
@@ -159,8 +224,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                     rel="noopener noreferrer"
                     className="p-4 bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-[24px] border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 flex flex-col items-center justify-center gap-2 transition-all duration-300 group"
                   >
-                    <img src="https://cdn.simpleicons.org/fiverr/3f3f46" alt="Fiverr" className="w-5 h-5 dark:hidden group-hover:scale-110 transition-transform" />
-                    <img src="https://cdn.simpleicons.org/fiverr/d4d4d8" alt="Fiverr" className="w-5 h-5 hidden dark:block group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">fi</span>
                     <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">Fiverr</span>
                   </a>
                 )}
@@ -173,8 +237,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                     rel="noopener noreferrer"
                     className="p-4 bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-[24px] border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 flex flex-col items-center justify-center gap-2 transition-all duration-300 group"
                   >
-                    <img src="https://cdn.simpleicons.org/malt/3f3f46" alt="Malt" className="w-5 h-5 dark:hidden group-hover:scale-110 transition-transform" />
-                    <img src="https://cdn.simpleicons.org/malt/d4d4d8" alt="Malt" className="w-5 h-5 hidden dark:block group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-black text-red-500 group-hover:scale-110 transition-transform">m</span>
                     <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">Malt</span>
                   </a>
                 )}
@@ -203,10 +266,16 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
             className="min-w-0"
           >
             <div className="contact-form-card" data-testid="contact-form-panel">
-              <div className="contact-form-heading"><span className="chapter-meta">VOTRE PROCHAIN CHAPITRE</span><span aria-hidden="true">↗</span></div>
-              <p className="demo-note" data-testid="contact-demo-notice">Aperçu du formulaire — aucun message n’est transmis. Pour me joindre, utilisez l’email direct.</p>
+              <div className="contact-form-heading">
+                <span className="chapter-meta">VOTRE PROCHAIN CHAPITRE</span>
+                <span aria-hidden="true">↗</span>
+              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 mb-6">
+                Transmettez-moi les détails de votre projet. Je vous répondrai personnellement sous 24h.
+              </p>
+
               <AnimatePresence mode="wait">
-                {submitted ? (
+                {formStatus === 'success' ? (
                   <motion.div 
                     key="success"
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -218,18 +287,20 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                       <CheckCircle2 className="w-10 h-10" />
                     </div>
                     <div className="space-y-2">
-                      <h3 data-testid="contact-success" className="text-2xl font-black text-orange-600 dark:text-orange-500 tracking-tight">Demande préparée</h3>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto font-light">
-                        Ceci est un aperçu : aucun message n’a été envoyé. Contactez-moi directement par email pour poursuivre l’échange.
+                      <h3 data-testid="contact-success" className="text-2xl font-black text-orange-600 dark:text-orange-500 tracking-tight">
+                        Message envoyé
+                      </h3>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-md mx-auto font-light leading-relaxed">
+                        Merci pour votre message. Votre demande a bien été transmise et je reviendrai vers vous sous 24h ouvrées.
                       </p>
-                      <a data-testid="contact-draft-email" href={`mailto:${profile.contact.email}?subject=${encodeURIComponent(`${formData.projectType} — ${formData.name}`)}&body=${encodeURIComponent(`${formData.message}\n\n${formData.name}\n${formData.email}`)}`} className="text-link mx-auto mt-5">Ouvrir dans ma messagerie <Mail size={16} /></a>
                     </div>
                     <button
                       data-testid="contact-new-message"
-                      onClick={() => setSubmitted(false)}
+                      type="button"
+                      onClick={handleResetForm}
                       className="px-8 py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                     >
-                      Nouveau message
+                      Envoyer un nouveau message
                     </button>
                   </motion.div>
                 ) : (
@@ -241,6 +312,33 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                     onSubmit={handleSubmit} 
                     className="space-y-6"
                   >
+                    {/* Honeypot field (invisible pour les robots anti-spam) */}
+                    <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+                      <label htmlFor="contact-hp">Ne pas remplir ce champ si vous êtes humain</label>
+                      <input
+                        id="contact-hp"
+                        type="text"
+                        name="honeypot"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={formData.honeypot}
+                        onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                      />
+                    </div>
+
+                    {formStatus === 'error' && errorMessage && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        role="alert"
+                        data-testid="contact-error-notice"
+                        className="p-4 rounded-[16px] bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-xs font-medium flex items-start gap-3"
+                      >
+                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
+                        <span className="leading-relaxed">{errorMessage}</span>
+                      </motion.div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label htmlFor="contact-name" className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest pl-2">Nom</label>
@@ -250,9 +348,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                           autoComplete="name"
                           type="text"
                           required
+                          maxLength={120}
+                          disabled={formStatus === 'submitting'}
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          className="w-full px-5 py-4 rounded-[20px] bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-all shadow-sm"
+                          className="w-full px-5 py-4 rounded-[20px] bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-all shadow-sm disabled:opacity-60"
                         />
                       </div>
                       <div className="space-y-2">
@@ -263,9 +363,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                           autoComplete="email"
                           type="email"
                           required
+                          maxLength={320}
+                          disabled={formStatus === 'submitting'}
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="w-full px-5 py-4 rounded-[20px] bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-all shadow-sm"
+                          className="w-full px-5 py-4 rounded-[20px] bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-all shadow-sm disabled:opacity-60"
                         />
                       </div>
                     </div>
@@ -284,8 +386,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                             aria-pressed={formData.projectType === type.id}
                             key={type.id}
                             type="button"
+                            disabled={formStatus === 'submitting'}
                             onClick={() => setFormData({ ...formData, projectType: type.id })}
-                            className={`p-3 rounded-[16px] border text-xs font-bold tracking-widest transition-all cursor-pointer ${
+                            className={`p-3 rounded-[16px] border text-xs font-bold tracking-widest transition-all cursor-pointer disabled:cursor-not-allowed ${
                               formData.projectType === type.id
                                 ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 border-zinc-900 dark:border-white shadow-md'
                                 : 'bg-white dark:bg-zinc-900/50 text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:border-zinc-400'
@@ -304,23 +407,39 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                         data-testid="contact-message"
                         required
                         rows={5}
+                        maxLength={5000}
+                        disabled={formStatus === 'submitting'}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full px-5 py-4 rounded-[24px] bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-all shadow-sm resize-none"
+                        className="w-full px-5 py-4 rounded-[24px] bg-white dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 dark:focus:border-orange-400 transition-all shadow-sm resize-none disabled:opacity-60"
                       />
                     </div>
 
                     <div className="pt-4">
                       <MagneticWrapper strength={0.2} className="w-full">
                         <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          whileHover={formStatus === 'submitting' ? {} : { scale: 1.02 }}
+                          whileTap={formStatus === 'submitting' ? {} : { scale: 0.98 }}
                           data-testid="contact-submit"
                           type="submit"
-                          className="w-full py-5 bg-orange-600 hover:bg-orange-700 text-white rounded-[24px] text-xs font-black uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-3 cursor-pointer"
+                          disabled={formStatus === 'submitting'}
+                          className={`w-full py-5 text-white rounded-[24px] text-xs font-black uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-3 ${
+                            formStatus === 'submitting'
+                              ? 'bg-orange-400 dark:bg-orange-500/60 cursor-not-allowed'
+                              : 'bg-orange-600 hover:bg-orange-700 cursor-pointer'
+                          }`}
                         >
-                          <Send className="w-4 h-4" />
-                          <span>Préparer mon message</span>
+                          {formStatus === 'submitting' ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>Envoi en cours...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Send className="w-4 h-4" />
+                              <span>Envoyer mon message</span>
+                            </>
+                          )}
                         </motion.button>
                       </MagneticWrapper>
                     </div>

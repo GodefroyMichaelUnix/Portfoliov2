@@ -1,0 +1,4 @@
+# Configuration Supabase CLI pour les Edge Functions
+
+[functions.send-contact-message]
+verify_jwt = false
