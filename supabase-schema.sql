@@ -1,8 +1,8 @@
 -- ==============================================================================
 -- SCHEMA COMPLET SUPABASE - PORTFOLIO MICHAEL GODEFROY
 -- ==============================================================================
--- Ce script crée l'ensemble des 8 tables permettant de piloter
--- l'ensemble des données du portfolio et de réceptionner les messages de contact.
+-- Ce script documente les 12 tables actuellement utilisées par le portfolio
+-- et permettant de piloter l'ensemble des données et de réceptionner les messages de contact.
 --
 -- Tables incluses :
 -- 1. public.profile
@@ -13,6 +13,10 @@
 -- 6. public.faqs
 -- 7. public.workflows
 -- 8. public.contact_messages
+-- 9. public.home_expertise_cards
+-- 10. public.home_pillars
+-- 11. public.making_of_steps
+-- 12. public.making_of_stack
 --
 -- Instructions :
 -- 1. Allez sur https://supabase.com/dashboard et ouvrez votre projet
@@ -130,6 +134,44 @@ CREATE TABLE IF NOT EXISTS public.contact_messages (
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- 9. CARTES D'EXPERTISE HOME (CYCLING CARDS)
+CREATE TABLE IF NOT EXISTS public.home_expertise_cards (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  level INT NOT NULL CHECK (level >= 1 AND level <= 4),
+  bg_image TEXT,
+  sort_order INT DEFAULT 0
+);
+
+-- 10. PILIERS SELECTED WORK (HOME)
+CREATE TABLE IF NOT EXISTS public.home_pillars (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  image TEXT NOT NULL,
+  tags JSONB DEFAULT '[]'::jsonb,
+  span TEXT,
+  sort_order INT DEFAULT 0
+);
+
+-- 11. ÉTAPES DE FABRICATION (COULISSES / MAKING OF)
+CREATE TABLE IF NOT EXISTS public.making_of_steps (
+  id TEXT PRIMARY KEY,
+  icon_name TEXT,
+  step TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  sort_order INT DEFAULT 0
+);
+
+-- 12. STACK TECHNIQUE (COULISSES / MAKING OF)
+CREATE TABLE IF NOT EXISTS public.making_of_stack (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  sort_order INT DEFAULT 0
+);
+
 -- ==============================================================================
 -- ACTIVATION DE LA SÉCURITÉ ROW LEVEL SECURITY (RLS)
 -- ==============================================================================
@@ -141,6 +183,10 @@ ALTER TABLE public.pricing_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workflows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.home_expertise_cards ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.home_pillars ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.making_of_steps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.making_of_stack ENABLE ROW LEVEL SECURITY;
 
 -- Politiques de lecture publique pour le contenu du portfolio
 -- (accessible avec la clé anonyme VITE_SUPABASE_ANON_KEY)
@@ -165,9 +211,48 @@ CREATE POLICY "Public select faqs" ON public.faqs FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Public select workflows" ON public.workflows;
 CREATE POLICY "Public select workflows" ON public.workflows FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public select home_expertise_cards" ON public.home_expertise_cards;
+CREATE POLICY "Public select home_expertise_cards"
+  ON public.home_expertise_cards
+  FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Public select home_pillars" ON public.home_pillars;
+CREATE POLICY "Public select home_pillars"
+  ON public.home_pillars
+  FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Public select making_of_steps" ON public.making_of_steps;
+CREATE POLICY "Public select making_of_steps"
+  ON public.making_of_steps
+  FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Public select making_of_stack" ON public.making_of_stack;
+CREATE POLICY "Public select making_of_stack"
+  ON public.making_of_stack
+  FOR SELECT
+  USING (true);
+
 -- Politiques pour les messages de contact (contact_messages)
 -- Insertion autorisée pour réceptionner les messages (Edge Function / API)
 DROP POLICY IF EXISTS "Allow insert for contact_messages" ON public.contact_messages;
 CREATE POLICY "Allow insert for contact_messages" ON public.contact_messages FOR INSERT WITH CHECK (true);
 -- Remarque de sécurité : Aucun droit SELECT public n'est accordé. Seule la clé de service ou
 -- l'administrateur connecté au dashboard Supabase peut consulter les messages reçus.
+
+-- ==============================================================================
+-- INDEX DE PERFORMANCE (SORT ORDER)
+-- ==============================================================================
+CREATE INDEX IF NOT EXISTS home_expertise_cards_sort_order_idx
+  ON public.home_expertise_cards(sort_order);
+
+CREATE INDEX IF NOT EXISTS home_pillars_sort_order_idx
+  ON public.home_pillars(sort_order);
+
+CREATE INDEX IF NOT EXISTS making_of_steps_sort_order_idx
+  ON public.making_of_steps(sort_order);
+
+CREATE INDEX IF NOT EXISTS making_of_stack_sort_order_idx
+  ON public.making_of_stack(sort_order);
