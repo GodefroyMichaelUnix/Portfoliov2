@@ -18,7 +18,15 @@ import {
 } from 'lucide-react';
 import { Hero } from '../components/Hero';
 import { PageTransition } from '../components/PageTransition';
-import { ProfileInfo, ProjectItem, SkillCategory, Certification } from '../types/portfolio';
+import { 
+  ProfileInfo, 
+  ProjectItem, 
+  SkillCategory, 
+  Certification,
+  PricingPlan,
+  FAQItem,
+  WorkflowScenario 
+} from '../types/portfolio';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { WorkflowShowcase } from '../components/WorkflowShowcase';
 import { TechMarquee } from '../components/TechMarquee';
@@ -34,6 +42,9 @@ interface HomePageProps {
   projects: ProjectItem[];
   skills: SkillCategory[];
   certifications: Certification[];
+  pricingPlans?: PricingPlan[];
+  faqs?: FAQItem[];
+  workflows?: WorkflowScenario[];
 }
 
 const staggerContainer = {
@@ -196,7 +207,11 @@ const CyclingExpertiseCard: React.FC<{ items: typeof ALL_EXPERTISE_AND_TOOLS, in
 export const HomePage: React.FC<HomePageProps> = ({
   profile,
   projects,
-  certifications
+  skills,
+  certifications,
+  pricingPlans = [],
+  faqs = [],
+  workflows = []
 }) => {
   const reduced = useReducedMotion();
   const [cardGroups, setCardGroups] = React.useState<Array<typeof ALL_EXPERTISE_AND_TOOLS>>([]);
@@ -476,7 +491,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </section>
 
         {/* 1.75. WORKFLOW INTERACTIONS GRID */}
-        <WorkflowShowcase />
+        <WorkflowShowcase workflows={workflows} />
 
         {/* MARQUEE ÉDITORIALE */}
         <EditorialMarquee />
@@ -590,57 +605,43 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                {
-                  icon: Clock,
-                  label: "Mission ponctuelle",
-                  prefix: "Dès",
-                  numeric: "15$/h",
-                  description: "Je vous accompagne pour un audit technique, un ajustement rapide ou du support ponctuel sur vos outils.",
-                  items: ["Diagnostic & recommandations", "Corrections ciblées", "Réponse sous 24h"]
-                },
-                {
-                  icon: Workflow,
-                  label: "Projet d'automatisation",
-                  prefix: "À partir de",
-                  numeric: "500$",
-                  description: "Je prends en charge la création de votre workflow de A à Z, de l'étude de vos besoins jusqu'au déploiement.",
-                  items: ["Conception & développement", "Tests & mise en production", "Monitoring inclus"]
-                }
-              ].map((plan, i) => (
-                <motion.div
-                  key={i}
-                  variants={staggerItem}
-                  whileHover={{ y: -5 }}
-                  data-testid={`pricing-plan-${i}`}
-                  className="group editorial-price"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-orange-500 mb-6">
-                    <plan.icon className="w-6 h-6" />
-                  </div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
-                    {plan.label}
-                  </span>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">{plan.prefix}</span>
-                    <CountUpNumber
-                      value={plan.numeric}
-                      className="font-display text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tighter"
-                    />
-                  </div>
-                  <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-6">
-                    {plan.description}
-                  </p>
-                  <ul className="space-y-3 mt-auto">
-                    {plan.items.map((item, j) => (
-                      <li key={j} className="flex items-center gap-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                        <Check className="w-4 h-4 text-orange-500 shrink-0" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              ))}
+              {pricingPlans.map((plan, i) => {
+                const IconComponent = plan.iconName === 'Clock' ? Clock : Workflow;
+                return (
+                  <motion.div
+                    key={plan.id || i}
+                    variants={staggerItem}
+                    whileHover={{ y: -5 }}
+                    data-testid={`pricing-plan-${i}`}
+                    className="group editorial-price"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-orange-500 mb-6">
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
+                      {plan.label}
+                    </span>
+                    <div className="flex items-baseline gap-2 mb-4">
+                      <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">{plan.prefix}</span>
+                      <CountUpNumber
+                        value={plan.numeric}
+                        className="font-display text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tighter"
+                      />
+                    </div>
+                    <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-6">
+                      {plan.description}
+                    </p>
+                    <ul className="space-y-3 mt-auto">
+                      {plan.items.map((item, j) => (
+                        <li key={j} className="flex items-center gap-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                          <Check className="w-4 h-4 text-orange-500 shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                );
+              })}
             </div>
 
             <motion.p variants={staggerItem} className="text-center text-xs text-zinc-500 dark:text-zinc-400 font-medium">
@@ -651,7 +652,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {/* 5. FAQ */}
         <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1400px] mx-auto space-y-12">
-          <FAQSection />
+          <FAQSection faqs={faqs} />
         </section>
 
       </div>

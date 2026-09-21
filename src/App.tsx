@@ -14,14 +14,11 @@ import {
   ProfileInfo,
   ProjectItem,
   SkillCategory,
-  Certification
+  Certification,
+  PricingPlan,
+  FAQItem,
+  WorkflowScenario
 } from './types/portfolio';
-import {
-  profileData,
-  projectsData,
-  skillsData,
-  certificationsData
-} from './data/portfolioData';
 import { ThemeProvider } from './context/ThemeContext';
 
 import { Navbar } from './components/Navbar';
@@ -40,11 +37,35 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { MakingOfPage } from './pages/MakingOfPage';
 
+const initialProfile: ProfileInfo = {
+  name: '',
+  title: '',
+  roleSubtitle: '',
+  valueProposition: '',
+  bioSummary: [],
+  availability: {
+    status: '',
+    subtext: '',
+    responseTime: ''
+  },
+  location: '',
+  contact: {
+    email: '',
+    linkedin: '',
+    upwork: '',
+    github: ''
+  },
+  stats: []
+};
+
 export default function App() {
-  const [profile, setProfile] = useState<ProfileInfo>(profileData);
-  const [projects, setProjects] = useState<ProjectItem[]>(projectsData);
-  const [skills, setSkills] = useState<SkillCategory[]>(skillsData);
-  const [certifications, setCertifications] = useState<Certification[]>(certificationsData);
+  const [profile, setProfile] = useState<ProfileInfo>(initialProfile);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [skills, setSkills] = useState<SkillCategory[]>([]);
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [workflows, setWorkflows] = useState<WorkflowScenario[]>([]);
 
   useEffect(() => {
     async function loadPortfolioData() {
@@ -53,20 +74,29 @@ export default function App() {
           profData,
           projData,
           skillData,
-          certData
+          certData,
+          pricingData,
+          faqData,
+          wfData
         ] = await Promise.all([
           portfolioService.getProfile(),
           portfolioService.getProjects(),
           portfolioService.getSkills(),
-          portfolioService.getCertifications()
+          portfolioService.getCertifications(),
+          portfolioService.getPricingPlans(),
+          portfolioService.getFaqs(),
+          portfolioService.getWorkflows()
         ]);
 
         if (profData) setProfile(profData);
-        if (projData && projData.length > 0) setProjects(projData);
-        if (skillData && skillData.length > 0) setSkills(skillData);
-        if (certData && certData.length > 0) setCertifications(certData);
+        if (projData) setProjects(projData);
+        if (skillData) setSkills(skillData);
+        if (certData) setCertifications(certData);
+        if (pricingData) setPricingPlans(pricingData);
+        if (faqData) setFaqs(faqData);
+        if (wfData) setWorkflows(wfData);
       } catch (err) {
-        console.error('Erreur lors du chargement des données portfolio :', err);
+        console.error('Erreur lors du chargement des données portfolio depuis Supabase :', err);
       }
     }
 
@@ -100,6 +130,9 @@ export default function App() {
                     projects={projects}
                     skills={skills}
                     certifications={certifications}
+                    pricingPlans={pricingPlans}
+                    faqs={faqs}
+                    workflows={workflows}
                   />
                 }
               />

@@ -1,29 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus } from 'lucide-react';
+import { FAQItem } from '../types/portfolio';
 
-const FAQ_ITEMS = [
-  {
-    question: "Es-tu disponible en CDI ou uniquement en freelance ?",
-    answer: "Les deux. Je suis ouvert à un poste salarié comme à des missions freelance ponctuelles ou récurrentes — le format s'adapte au besoin, pas l'inverse."
-  },
-  {
-    question: "Dans quel fuseau horaire travailles-tu ?",
-    answer: "Madagascar (UTC+3), ce qui offre un bon chevauchement avec l'Europe et l'Afrique en direct, et reste facilement compatible avec les États-Unis en asynchrone."
-  },
-  {
-    question: "Quels sont tes délais de réponse et de livraison ?",
-    answer: "Réponse sous 24h à toute prise de contact. Les délais de livraison dépendent de la portée du projet et sont toujours cadrés dès l'échange initial, avant le démarrage."
-  },
-  {
-    question: "Tu utilises des outils no-code/low-code ou uniquement du code ?",
-    answer: "Les deux, selon ce qui sert le mieux le résultat : n8n ou Make pour aller vite sur des flux standards, Python et du code sur-mesure dès que la logique métier devient complexe ou critique."
-  },
-  {
-    question: "Mon besoin n'est pas encore 100% défini, c'est un problème ?",
-    answer: "Non, c'est même la norme. Chaque mission démarre par une phase de découverte pour cadrer précisément le besoin avant toute ligne de code."
-  }
-];
+interface FAQSectionProps {
+  faqs?: FAQItem[];
+}
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -40,7 +22,6 @@ const staggerItem = {
   show: {
     opacity: 1,
     y: 0,
-
     transition: {
       type: "spring",
       stiffness: 250,
@@ -49,7 +30,7 @@ const staggerItem = {
   }
 };
 
-export const FAQSection: React.FC = () => {
+export const FAQSection: React.FC<FAQSectionProps> = ({ faqs = [] }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -68,11 +49,11 @@ export const FAQSection: React.FC = () => {
         </div>
 
         <div className="max-w-3xl mx-auto w-full space-y-4">
-          {FAQ_ITEMS.map((item, index) => {
+          {faqs.map((item, index) => {
             const isOpen = openIndex === index;
             return (
               <motion.div
-                key={index}
+                key={item.id || index}
                 variants={staggerItem}
                 className="faq-item border-b border-zinc-200 dark:border-zinc-800 overflow-hidden"
               >

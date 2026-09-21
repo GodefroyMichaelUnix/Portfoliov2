@@ -1,202 +1,232 @@
 /**
  * Service d'accès aux données du portfolio
- * Connecté à Supabase avec repli automatique (graceful fallback) sur les données locales.
+ * Connecté directement à Supabase (source de vérité unique).
  */
 import { 
-  profileData, 
-  solutionsData, 
-  projectsData, 
-  skillsData, 
-  certificationsData, 
-  workflowStepsData, 
-  differentiatorsData 
-} from '../data/portfolioData';
-import { 
   ProfileInfo, 
-  ServiceSolution, 
   ProjectItem, 
   SkillCategory, 
-  Certification, 
-  WorkflowStep, 
-  Differentiator 
+  Certification,
+  PricingPlan,
+  FAQItem,
+  WorkflowScenario
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
 
 export interface PortfolioDatabaseAdapter {
   getProfile(): Promise<ProfileInfo>;
-  getSolutions(): Promise<ServiceSolution[]>;
   getProjects(): Promise<ProjectItem[]>;
   getSkills(): Promise<SkillCategory[]>;
   getCertifications(): Promise<Certification[]>;
-  getWorkflowSteps(): Promise<WorkflowStep[]>;
-  getDifferentiators(): Promise<Differentiator[]>;
+  getPricingPlans(): Promise<PricingPlan[]>;
+  getFaqs(): Promise<FAQItem[]>;
+  getWorkflows(): Promise<WorkflowScenario[]>;
 }
 
-// Implémentation locale (données par défaut du code)
-class LocalPortfolioAdapter implements PortfolioDatabaseAdapter {
+class SupabasePortfolioService implements PortfolioDatabaseAdapter {
   async getProfile(): Promise<ProfileInfo> {
-    return profileData;
-  }
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré. Vérifiez VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY.');
+    }
 
-  async getSolutions(): Promise<ServiceSolution[]> {
-    return solutionsData;
+    const { data, error } = await supabase
+      .from('profile')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Erreur Supabase (profile): ${error.message}`);
+    }
+
+    if (!data) {
+      throw new Error('Aucun profil trouvé dans la table public.profile.');
+    }
+
+    return {
+      name: data.name,
+      title: data.title,
+      roleSubtitle: data.role_subtitle || data.roleSubtitle || '',
+      valueProposition: data.value_proposition || data.valueProposition || '',
+      bioSummary: data.bio_summary || data.bioSummary || [],
+      availability: data.availability || { status: '', subtext: '', responseTime: '' },
+      location: data.location || '',
+      contact: data.contact || { email: '', linkedin: '', upwork: '', github: '' },
+      stats: data.stats || [],
+      about_manifesto: data.about_manifesto || data.aboutManifesto || '',
+      aboutManifesto: data.about_manifesto || data.aboutManifesto || ''
+    };
   }
 
   async getProjects(): Promise<ProjectItem[]> {
-    return projectsData;
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (projects): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      category: row.category,
+      categoryLabel: row.category_label || row.categoryLabel || '',
+      subtitle: row.subtitle || '',
+      problem: row.problem || '',
+      context: row.context || '',
+      solution: row.solution || '',
+      techStack: Array.isArray(row.tech_stack) ? row.tech_stack : (row.techStack || []),
+      measurableResult: row.measurable_result || row.measurableResult || '',
+      metrics: row.metrics || [],
+      architectureSummary: Array.isArray(row.architecture_summary) ? row.architecture_summary : (row.architectureSummary || []),
+      featured: Boolean(row.featured),
+      demoUrl: row.demo_url || row.demoUrl,
+      githubUrl: row.github_url || row.githubUrl,
+      mockupType: row.mockup_type || row.mockupType
+    }));
   }
 
   async getSkills(): Promise<SkillCategory[]> {
-    return skillsData;
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('skill_categories')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (skill_categories): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      subtitle: row.subtitle,
+      iconName: row.icon_name || row.iconName || 'Network',
+      skills: Array.isArray(row.skills) ? row.skills : []
+    }));
   }
 
   async getCertifications(): Promise<Certification[]> {
-    return certificationsData;
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('certifications')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (certifications): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      issuer: row.issuer,
+      issueDate: row.issue_date || row.issueDate || '',
+      logo: row.logo,
+      image: row.image,
+      verifyUrl: row.verify_url || row.verifyUrl || '',
+      skills: Array.isArray(row.skills) ? row.skills : [],
+      featured: Boolean(row.featured),
+      summary: row.summary || ''
+    }));
   }
 
-  async getWorkflowSteps(): Promise<WorkflowStep[]> {
-    return workflowStepsData;
+  async getPricingPlans(): Promise<PricingPlan[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('pricing_plans')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (pricing_plans): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      iconName: row.icon_name || 'Clock',
+      label: row.label,
+      prefix: row.prefix,
+      numeric: row.numeric,
+      description: row.description,
+      items: Array.isArray(row.items) ? row.items : [],
+      sortOrder: row.sort_order
+    }));
   }
 
-  async getDifferentiators(): Promise<Differentiator[]> {
-    return differentiatorsData;
+  async getFaqs(): Promise<FAQItem[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('faqs')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (faqs): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      question: row.question,
+      answer: row.answer,
+      sortOrder: row.sort_order
+    }));
+  }
+
+  async getWorkflows(): Promise<WorkflowScenario[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('workflows')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (workflows): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      name: row.name,
+      kind: row.kind,
+      title: row.title,
+      description: row.description,
+      nodes: Array.isArray(row.nodes) ? row.nodes : [],
+      sortOrder: row.sort_order
+    }));
   }
 }
 
-// Adaptateur Supabase hybride : interroge Supabase et bascule sur le cache local si les tables ne sont pas encore créées
-class SupabasePortfolioAdapter implements PortfolioDatabaseAdapter {
-  private local = new LocalPortfolioAdapter();
-
-  async getProfile(): Promise<ProfileInfo> {
-    if (!supabase) return this.local.getProfile();
-    try {
-      const { data, error } = await supabase
-        .from('profile')
-        .select('*')
-        .limit(1)
-        .maybeSingle();
-
-      if (error || !data) {
-        return this.local.getProfile();
-      }
-
-      return {
-        name: data.name,
-        title: data.title,
-        roleSubtitle: data.role_subtitle || data.roleSubtitle,
-        valueProposition: data.value_proposition || data.valueProposition,
-        bioSummary: data.bio_summary || data.bioSummary || [],
-        availability: data.availability,
-        location: data.location,
-        contact: data.contact,
-        stats: data.stats || [],
-        about_manifesto: data.about_manifesto || data.aboutManifesto,
-        aboutManifesto: data.about_manifesto || data.aboutManifesto
-      };
-    } catch {
-      return this.local.getProfile();
-    }
-  }
-
-  async getSolutions(): Promise<ServiceSolution[]> {
-    return this.local.getSolutions();
-  }
-
-  async getProjects(): Promise<ProjectItem[]> {
-    if (!supabase) return this.local.getProjects();
-    try {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error || !data || data.length === 0) {
-        return this.local.getProjects();
-      }
-
-      return data.map((row) => ({
-        id: row.id,
-        title: row.title,
-        category: row.category,
-        categoryLabel: row.category_label || row.categoryLabel || '',
-        subtitle: row.subtitle || '',
-        problem: row.problem || '',
-        context: row.context || '',
-        solution: row.solution || '',
-        techStack: Array.isArray(row.tech_stack) ? row.tech_stack : (row.techStack || []),
-        measurableResult: row.measurable_result || row.measurableResult || '',
-        metrics: row.metrics || [],
-        architectureSummary: Array.isArray(row.architecture_summary) ? row.architecture_summary : (row.architectureSummary || []),
-        featured: Boolean(row.featured),
-        demoUrl: row.demo_url || row.demoUrl,
-        githubUrl: row.github_url || row.githubUrl,
-        mockupType: row.mockup_type || row.mockupType
-      }));
-    } catch {
-      return this.local.getProjects();
-    }
-  }
-
-  async getSkills(): Promise<SkillCategory[]> {
-    if (!supabase) return this.local.getSkills();
-    try {
-      const { data, error } = await supabase
-        .from('skill_categories')
-        .select('*')
-        .order('sort_order', { ascending: true });
-
-      if (error || !data || data.length === 0) {
-        return this.local.getSkills();
-      }
-
-      return data.map((row) => ({
-        id: row.id,
-        title: row.title,
-        subtitle: row.subtitle,
-        iconName: row.icon_name || row.iconName || 'Network',
-        skills: Array.isArray(row.skills) ? row.skills : []
-      }));
-    } catch {
-      return this.local.getSkills();
-    }
-  }
-
-  async getCertifications(): Promise<Certification[]> {
-    if (!supabase) return this.local.getCertifications();
-    try {
-      const { data, error } = await supabase
-        .from('certifications')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error || !data || data.length === 0) {
-        return this.local.getCertifications();
-      }
-
-      return data.map((row) => ({
-        id: row.id,
-        title: row.title,
-        issuer: row.issuer,
-        issueDate: row.issue_date || row.issueDate || '',
-        logo: row.logo,
-        image: row.image,
-        verifyUrl: row.verify_url || row.verifyUrl || '',
-        skills: Array.isArray(row.skills) ? row.skills : [],
-        featured: Boolean(row.featured),
-        summary: row.summary || ''
-      }));
-    } catch {
-      return this.local.getCertifications();
-    }
-  }
-
-  async getWorkflowSteps(): Promise<WorkflowStep[]> {
-    return this.local.getWorkflowSteps();
-  }
-
-  async getDifferentiators(): Promise<Differentiator[]> {
-    return this.local.getDifferentiators();
-  }
-}
-
-export const portfolioService: PortfolioDatabaseAdapter = new SupabasePortfolioAdapter();
+export const portfolioService: PortfolioDatabaseAdapter = new SupabasePortfolioService();

@@ -102,3 +102,31 @@ export interface ProfileInfo {
   about_manifesto?: string;
   aboutManifesto?: string;
 }
+
+export interface PricingPlan {
+  id: string;
+  iconName: string;
+  label: string;
+  prefix: string;
+  numeric: string;
+  description: string;
+  items: string[];
+  sortOrder?: number;
+}
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  sortOrder?: number;
+}
+
+export interface WorkflowScenario {
+  id: string;
+  name: string;
+  kind: string;
+  title: string;
+  description: string;
+  nodes: string[];
+  sortOrder?: number;
+}
