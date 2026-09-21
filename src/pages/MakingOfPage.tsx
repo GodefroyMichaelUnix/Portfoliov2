@@ -49,58 +49,14 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Rocket
 };
 
-export const DEFAULT_MAKING_OF_STEPS: MakingOfStep[] = [
-  {
-    iconName: "Compass",
-    step: "01",
-    title: "Cadrage & positionnement",
-    description: "Avant toute ligne de code : définir le message. Ce portfolio devait convaincre aussi bien un recruteur CDI qu'un client freelance, sans jamais donner l'impression d'un profil en apprentissage — un brief écrit noir sur blanc, structure de conversion et ton inclus."
-  },
-  {
-    iconName: "Sparkles",
-    step: "02",
-    title: "Génération de la base avec Google AI Studio",
-    description: "La structure du projet (React + Vite + TypeScript + Tailwind CSS), le design system et les premiers composants ont été générés à partir de prompts détaillés donnés à Google AI Studio — pas de code écrit à la main dès la première ligne, mais un cahier des charges précis."
-  },
-  {
-    iconName: "LayoutTemplate",
-    step: "03",
-    title: "Itérations de design",
-    description: "Passage d'une seule page à une architecture multi-pages avec React Router, ajout des transitions de page et des animations au scroll avec Framer Motion, affinage visuel section par section jusqu'à obtenir un rendu premium plutôt qu'un simple template."
-  },
-  {
-    iconName: "Bug",
-    step: "04",
-    title: "Revue technique & debugging",
-    description: "Chaque nouvelle version a été passée en revue avec Claude : diagnostic de bugs d'animation invisibles à l'œil nu (par exemple une boucle de défilement de logos mal calibrée), corrections ciblées, et rédaction de nouveaux composants complets."
-  },
-  {
-    iconName: "Database",
-    step: "05",
-    title: "Couche data avec Supabase",
-    description: "Le contenu (projets, compétences, certifications) est pensé pour vivre dans une base PostgreSQL sur Supabase plutôt qu'en dur dans le code — pour pouvoir le faire évoluer sans redéployer tout le site."
-  },
-  {
-    iconName: "Rocket",
-    step: "06",
-    title: "Déploiement continu",
-    description: "Le code est versionné sur GitHub et déployé automatiquement sur Netlify à chaque mise à jour — la même chaîne CI/CD que celle utilisée pour les projets présentés dans ce portfolio."
-  }
-];
-
-export const DEFAULT_MAKING_OF_STACK: Array<string | MakingOfStackItem> = [
-  "Google AI Studio", "Claude", "React", "TypeScript", "Tailwind CSS", 
-  "Framer Motion", "Supabase", "PostgreSQL", "GitHub", "Netlify"
-];
-
 export interface MakingOfPageProps {
   steps?: MakingOfStep[];
   stack?: Array<string | MakingOfStackItem>;
 }
 
 export const MakingOfPage: React.FC<MakingOfPageProps> = ({ 
-  steps = DEFAULT_MAKING_OF_STEPS, 
-  stack = DEFAULT_MAKING_OF_STACK 
+  steps = [], 
+  stack = [] 
 }) => {
   return (
     <PageTransition>

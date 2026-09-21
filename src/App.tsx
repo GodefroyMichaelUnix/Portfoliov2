@@ -17,7 +17,11 @@ import {
   Certification,
   PricingPlan,
   FAQItem,
-  WorkflowScenario
+  WorkflowScenario,
+  HomeExpertiseCard,
+  HomePillar,
+  MakingOfStep,
+  MakingOfStackItem
 } from './types/portfolio';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -66,6 +70,10 @@ export default function App() {
   const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [workflows, setWorkflows] = useState<WorkflowScenario[]>([]);
+  const [homeExpertiseCards, setHomeExpertiseCards] = useState<HomeExpertiseCard[]>([]);
+  const [homePillars, setHomePillars] = useState<HomePillar[]>([]);
+  const [makingOfSteps, setMakingOfSteps] = useState<MakingOfStep[]>([]);
+  const [makingOfStack, setMakingOfStack] = useState<Array<string | MakingOfStackItem>>([]);
 
   useEffect(() => {
     async function loadPortfolioData() {
@@ -77,7 +85,11 @@ export default function App() {
           certData,
           pricingData,
           faqData,
-          wfData
+          wfData,
+          expData,
+          pillarsData,
+          stepsData,
+          stackData
         ] = await Promise.all([
           portfolioService.getProfile(),
           portfolioService.getProjects(),
@@ -85,7 +97,11 @@ export default function App() {
           portfolioService.getCertifications(),
           portfolioService.getPricingPlans(),
           portfolioService.getFaqs(),
-          portfolioService.getWorkflows()
+          portfolioService.getWorkflows(),
+          portfolioService.getHomeExpertiseCards(),
+          portfolioService.getHomePillars(),
+          portfolioService.getMakingOfSteps(),
+          portfolioService.getMakingOfStack()
         ]);
 
         if (profData) setProfile(profData);
@@ -95,6 +111,10 @@ export default function App() {
         if (pricingData) setPricingPlans(pricingData);
         if (faqData) setFaqs(faqData);
         if (wfData) setWorkflows(wfData);
+        if (expData) setHomeExpertiseCards(expData);
+        if (pillarsData) setHomePillars(pillarsData);
+        if (stepsData) setMakingOfSteps(stepsData);
+        if (stackData) setMakingOfStack(stackData);
       } catch (err) {
         console.error('Erreur lors du chargement des données portfolio depuis Supabase :', err);
       }
@@ -133,6 +153,8 @@ export default function App() {
                     pricingPlans={pricingPlans}
                     faqs={faqs}
                     workflows={workflows}
+                    expertiseCards={homeExpertiseCards}
+                    pillars={homePillars}
                   />
                 }
               />
@@ -158,7 +180,12 @@ export default function App() {
               />
               <Route
                 path="/coulisses"
-                element={<MakingOfPage />}
+                element={
+                  <MakingOfPage
+                    steps={makingOfSteps}
+                    stack={makingOfStack}
+                  />
+                }
               />
               {/* Fallback route */}
               <Route path="*" element={<Navigate to="/" replace />} />

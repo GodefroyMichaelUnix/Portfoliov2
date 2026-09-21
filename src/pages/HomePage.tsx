@@ -47,8 +47,8 @@ interface HomePageProps {
   pricingPlans?: PricingPlan[];
   faqs?: FAQItem[];
   workflows?: WorkflowScenario[];
-  expertiseCards?: HomeExpertiseCard[];
-  pillars?: HomePillar[];
+  expertiseCards: HomeExpertiseCard[];
+  pillars: HomePillar[];
 }
 
 const staggerContainer = {
@@ -75,120 +75,6 @@ const staggerItem = {
     }
   }
 };
-
-
-export const DEFAULT_HOME_EXPERTISE_CARDS: HomeExpertiseCard[] = [
-  {
-    title: "Architecture Multi-Agents",
-    category: "Ingénierie IA",
-    level: 3,
-    bgImage: "/art/agent-core.webp"
-  },
-  {
-    title: "Workflows Hyper-Automatisés",
-    category: "Automatisation",
-    level: 4,
-    bgImage: "/art/workflow.webp"
-  },
-  {
-    title: "Pipelines de Données (ETL)",
-    category: "Data",
-    level: 2,
-    bgImage: "/art/data-vault.webp"
-  },
-  {
-    title: "Modèles RAG & Fine-Tuning",
-    category: "IA Générative",
-    level: 3,
-    bgImage: "/art/agent-core.webp"
-  },
-  {
-    title: "Intégration APIs REST & GraphQL",
-    category: "Développement",
-    level: 4,
-    bgImage: "/art/workflow.webp"
-  },
-  {
-    title: "Monitoring & Sécurité des flux",
-    category: "Infrastructure",
-    level: 2,
-    bgImage: "/art/data-vault.webp"
-  },
-  {
-    title: "Make",
-    category: "Outil",
-    level: 4,
-    bgImage: "/art/workflow.webp"
-  },
-  {
-    title: "Zapier",
-    category: "Outil",
-    level: 4,
-    bgImage: "/art/workflow.webp"
-  },
-  {
-    title: "n8n",
-    category: "Outil",
-    level: 3,
-    bgImage: "/art/workflow.webp"
-  },
-  {
-    title: "Supabase",
-    category: "Base de données",
-    level: 3,
-    bgImage: "/art/data-vault.webp"
-  },
-  {
-    title: "Python",
-    category: "Langage",
-    level: 4,
-    bgImage: "/art/agent-core.webp"
-  },
-  {
-    title: "PostgreSQL",
-    category: "Base de données",
-    level: 3,
-    bgImage: "/art/data-vault.webp"
-  }
-];
-
-export const DEFAULT_HOME_PILLARS: HomePillar[] = [
-  {
-    title: "Intelligence Collective Multi-Agents",
-    description: "Je conçois des architectures d'agents IA (LangGraph) capables d'interagir avec vos outils pour exécuter des tâches complexes de manière autonome.",
-    image: "/art/agent-core.webp",
-    tags: ["LangGraph", "Python", "Agents IA"],
-    span: "md:col-span-2 lg:col-span-3",
-  },
-  {
-    title: "Synchronisation d'APIs",
-    description: "Je connecte vos différents outils métiers via leurs APIs pour assurer une circulation fluide, sécurisée et fiable de vos données.",
-    image: "/art/workflow.webp",
-    tags: ["n8n", "Make", "REST APIs"],
-    span: "md:col-span-2 lg:col-span-3",
-  },
-  {
-    title: "Python & Traitement de Données",
-    description: "Lorsqu'un outil low-code atteint ses limites, je développe des scripts Python sur mesure pour traiter vos données spécifiques.",
-    image: "/art/data-vault.webp",
-    tags: ["Python", "Scripting", "Data"],
-    span: "md:col-span-1 lg:col-span-2",
-  },
-  {
-    title: "Pipelines & Décision",
-    description: "J'intègre l'IA (RAG, classification, génération) au cœur de vos processus pour vous faire gagner un temps précieux sur la prise de décision.",
-    image: "/art/data-vault.webp",
-    tags: ["RAG", "LLM", "Pipelines"],
-    span: "md:col-span-1 lg:col-span-2",
-  },
-  {
-    title: "Résilience & Fiabilité",
-    description: "Je construis des workflows robustes en anticipant les erreurs et les pannes d'API, pour une continuité de service à toute épreuve.",
-    image: "/art/workflow.webp",
-    tags: ["Webhooks", "Alerting", "Résilience"],
-    span: "md:col-span-2 lg:col-span-2",
-  }
-];
 
 const LevelDots: React.FC<{ level: number }> = ({ level }) => (
   <div className="flex items-center gap-1.5">
@@ -254,8 +140,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   pricingPlans = [],
   faqs = [],
   workflows = [],
-  expertiseCards = DEFAULT_HOME_EXPERTISE_CARDS,
-  pillars = DEFAULT_HOME_PILLARS
+  expertiseCards = [],
+  pillars = []
 }) => {
   const reduced = useReducedMotion();
   const [cardGroups, setCardGroups] = React.useState<HomeExpertiseCard[][]>([]);
@@ -263,13 +149,22 @@ export const HomePage: React.FC<HomePageProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    if (!expertiseCards || expertiseCards.length === 0) {
+      setCardGroups([]);
+      return;
+    }
+
     // Shuffle the array uniquely on each mount
     const shuffled = [...expertiseCards].sort(() => Math.random() - 0.5);
 
     // We want 6 fixed card slots, each containing 2 items to cycle between
     const groups: HomeExpertiseCard[][] = [];
-    for (let i = 0; i < 6; i++) {
-      groups.push(shuffled.slice(i * 2, i * 2 + 2));
+    const maxSlots = 6;
+    for (let i = 0; i < maxSlots; i++) {
+      const slice = shuffled.slice(i * 2, i * 2 + 2);
+      if (slice.length > 0) {
+        groups.push(slice);
+      }
     }
     setCardGroups(groups);
   }, [expertiseCards]);

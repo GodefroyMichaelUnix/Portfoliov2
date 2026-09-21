@@ -9,7 +9,11 @@ import {
   Certification,
   PricingPlan,
   FAQItem,
-  WorkflowScenario
+  WorkflowScenario,
+  HomeExpertiseCard,
+  HomePillar,
+  MakingOfStep,
+  MakingOfStackItem
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
 
@@ -21,6 +25,10 @@ export interface PortfolioDatabaseAdapter {
   getPricingPlans(): Promise<PricingPlan[]>;
   getFaqs(): Promise<FAQItem[]>;
   getWorkflows(): Promise<WorkflowScenario[]>;
+  getHomeExpertiseCards(): Promise<HomeExpertiseCard[]>;
+  getHomePillars(): Promise<HomePillar[]>;
+  getMakingOfSteps(): Promise<MakingOfStep[]>;
+  getMakingOfStack(): Promise<Array<string | MakingOfStackItem>>;
 }
 
 class SupabasePortfolioService implements PortfolioDatabaseAdapter {
@@ -230,6 +238,102 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       description: row.description,
       nodes: Array.isArray(row.nodes) ? row.nodes : [],
       sortOrder: row.sort_order
+    }));
+  }
+
+  async getHomeExpertiseCards(): Promise<HomeExpertiseCard[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('home_expertise_cards')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (home_expertise_cards): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      category: row.category,
+      level: typeof row.level === 'number' ? row.level : Number(row.level) || 1,
+      bgImage: row.bg_image || ''
+    }));
+  }
+
+  async getHomePillars(): Promise<HomePillar[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('home_pillars')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (home_pillars): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      image: row.image,
+      tags: Array.isArray(row.tags) ? row.tags : [],
+      span: row.span || undefined
+    }));
+  }
+
+  async getMakingOfSteps(): Promise<MakingOfStep[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('making_of_steps')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (making_of_steps): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      step: row.step,
+      title: row.title,
+      description: row.description,
+      iconName: row.icon_name || undefined
+    }));
+  }
+
+  async getMakingOfStack(): Promise<Array<string | MakingOfStackItem>> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('making_of_stack')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (making_of_stack): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      name: row.name
     }));
   }
 }
