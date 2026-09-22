@@ -12,14 +12,15 @@ import {
   Home,
   Sun,
   Moon,
-  BadgeCheck
+  BadgeCheck,
+  Code2
 } from 'lucide-react';
 import { ExplorerMenu } from './ExplorerMenu';
 import { ProfileInfo } from '../types/portfolio';
 import { MagneticWrapper } from './MagneticWrapper';
 import { useTheme } from '../context/ThemeContext';
 import { useSound } from '../context/SoundContext';
-import { AudioLines, VolumeX, Code2 } from 'lucide-react';
+import { AudioLines, VolumeX } from 'lucide-react';
 
 interface NavbarProps {
   profile: ProfileInfo;
@@ -153,7 +154,16 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 
         <nav id="desktop-nav" aria-label="Navigation principale" className="desktop-reference-nav hidden lg:flex">
           <ExplorerMenu />
-          {navLinks.slice(0, 2).map(link => <NavLink key={link.path} to={link.path} data-testid={`nav-${link.path.slice(1) || 'home'}`} className={({ isActive }) => `nav-plain-link ${isActive ? 'is-active' : ''}`}>{link.label}</NavLink>)}
+          {navLinks.filter(link => ['/', '/projets', '/coulisses'].includes(link.path)).map(link => (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              data-testid={`nav-${link.path.slice(1) || 'home'}`}
+              className={({ isActive }) => `nav-plain-link ${isActive ? 'is-active' : ''}`}
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Action Buttons & Theme Toggle : Serrés à droite */}
