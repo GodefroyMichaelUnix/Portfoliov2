@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Video, Volume2, VolumeX, Play, Pause, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, ArrowUpRight } from 'lucide-react';
 
 interface VideoPresentationProps {
   // Optionnel : URLs personnalisables pour les versions française et anglaise
@@ -133,7 +133,8 @@ export const VideoPresentation: React.FC<VideoPresentationProps> = ({
             </AnimatePresence>
 
             {/* Sélecteur de Langue (Pill flottant en bas au centre) */}
-            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20">
+            {videoSrcEn && (
+              <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20">
               <div 
                 onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-white/60 dark:border-zinc-700/60 shadow-xl"
@@ -179,7 +180,8 @@ export const VideoPresentation: React.FC<VideoPresentationProps> = ({
                   <span>Anglais</span>
                 </button>
               </div>
-            </div>
+              </div>
+            )}
             </> : <div className="absolute inset-0 flex flex-col justify-end items-start p-6 sm:p-12 bg-gradient-to-t from-black/80 via-transparent to-transparent text-left">
               <span className="font-mono text-[9px] tracking-widest text-zinc-300 mb-4" data-testid="video-pending">PRÉSENTATION FILMÉE — EN PRÉPARATION</span>
               <Link data-testid="video-about-link" to="/a-propos" className="text-white font-serif-accent italic text-2xl sm:text-4xl flex items-center gap-5">L’humain derrière la machine <ArrowUpRight size={25} /></Link>
