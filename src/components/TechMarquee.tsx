@@ -17,10 +17,10 @@ const TECH_LOGOS = [
   { name: "GitHub", src: "https://cdn.simpleicons.org/github" },
   { name: "TypeScript", src: "https://cdn.simpleicons.org/typescript" },
   { name: "React", src: "https://cdn.simpleicons.org/react" },
-  { name: "OpenAI", src: "https://cdn.jsdelivr.net/npm/@yldm-tech/ai-logo-static-svg@latest/icons/openai.svg" },
-  { name: "Claude", src: "https://cdn.jsdelivr.net/npm/@yldm-tech/ai-logo-static-svg@latest/icons/claude.svg" },
-  { name: "Gemini", src: "https://cdn.jsdelivr.net/npm/@yldm-tech/ai-logo-static-svg@latest/icons/gemini.svg" },
-  { name: "TypeSafe AI", src: "https://raw.githubusercontent.com/typesafe-ai/typesafe-ai.github.io/main/logo.svg" },
+  { name: "OpenAI", src: "https://cdn.simpleicons.org/openai", large: true },
+  { name: "Claude", src: "https://cdn.simpleicons.org/anthropic", large: true },
+  { name: "Gemini", src: "https://cdn.simpleicons.org/googlegemini", large: true },
+  { name: "TypeSafe AI", src: "https://cdn.jsdelivr.net/gh/typesafe-ai/typesafe-ai.github.io@main/logo.svg", large: true },
   { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
   { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/slack.svg" },
 ];
@@ -45,7 +45,7 @@ export const TechMarquee: React.FC = () => {
           animate={{ x: ["0%", "-50%"] }}
           transition={{
             ease: "linear",
-            duration: 34,
+            duration: 24,
             repeat: Infinity,
           }}
         >
@@ -61,7 +61,7 @@ export const TechMarquee: React.FC = () => {
                 <img
                   src={tech.src}
                   alt={tech.name}
-                  className="max-w-10 max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300"
+                  className={`${tech.large ? "max-w-12 scale-125" : "max-w-10"} max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300`}
                   draggable={false}
                 />
               </div>
