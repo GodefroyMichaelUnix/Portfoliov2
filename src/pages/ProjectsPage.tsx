@@ -45,34 +45,51 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects }) => {
     <PageTransition>
       <div className="studio-page projects-page">
         <PageIntro number="01" label="Réalisations" title="Moins de friction." accent="Plus d’impact." description="Des problèmes concrets. Des systèmes sur mesure. Découvrez ce qui se passe derrière chaque automatisation." />
-        <div className="project-index-bar">
-          <span className="chapter-meta">INDEX / {String(projects.length).padStart(2, '0')} SYSTÈMES</span>
-          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrer les projets">
-            {[
-              { id: 'all', label: `Tous (${projects.length})` },
-              { id: 'ai-agents', label: 'IA' },
-              { id: 'workflows', label: 'Workflows' },
-              { id: 'data-infra', label: 'Data' },
-            ].map((tab) => (
-              <motion.button
-                key={tab.id}
-                data-testid={`project-filter-${tab.id}`}
-                aria-pressed={activeFilter === tab.id}
-                onClick={() => setActiveFilter(tab.id as any)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer ${
-                  activeFilter === tab.id
-                    ? 'bg-orange-600 dark:bg-orange-500 text-white dark:text-white'
-                    : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800'
-                }`}
-              >
-                {tab.label}
-              </motion.button>
-            ))}
+        {projects.length > 0 && (
+          <div className="project-index-bar">
+            <span className="chapter-meta">INDEX / {String(projects.length).padStart(2, '0')} SYSTÈMES</span>
+            <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrer les projets">
+              {[
+                { id: 'all', label: `Tous (${projects.length})` },
+                { id: 'ai-agents', label: 'IA' },
+                { id: 'workflows', label: 'Workflows' },
+                { id: 'data-infra', label: 'Data' },
+              ].map((tab) => (
+                <motion.button
+                  key={tab.id}
+                  data-testid={`project-filter-${tab.id}`}
+                  aria-pressed={activeFilter === tab.id}
+                  onClick={() => setActiveFilter(tab.id as any)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer ${
+                    activeFilter === tab.id
+                      ? 'bg-orange-600 dark:bg-orange-500 text-white dark:text-white'
+                      : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  {tab.label}
+                </motion.button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
+        {projects.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="min-h-[420px] flex flex-col items-center justify-center text-center border border-zinc-200 dark:border-zinc-800 rounded-3xl px-6 py-20 bg-white/60 dark:bg-zinc-900/30"
+          >
+            <span className="chapter-meta mb-5">EN PRÉPARATION</span>
+            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter text-zinc-900 dark:text-zinc-100">
+              Projets à venir.
+            </h2>
+            <p className="max-w-xl mt-5 text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              De nouveaux systèmes d’automatisation, d’intégration IA et d’ingénierie seront présentés ici au fur et à mesure de leur construction.
+            </p>
+          </motion.div>
+        ) : (
         {/* Minimal Project Feed */}
         <motion.div 
           variants={staggerContainer}
@@ -162,6 +179,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects }) => {
             ))}
           </AnimatePresence>
         </motion.div>
+        )}
       </div>
     </PageTransition>
   );
