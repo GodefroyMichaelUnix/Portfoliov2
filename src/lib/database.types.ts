@@ -435,6 +435,45 @@ export type Database = {
         }
         Relationships: []
       }
+      tech_stack: {
+        Row: {
+          active: boolean
+          alt_text: string
+          created_at: string
+          display_scale: number
+          fallback_url: string | null
+          id: string
+          name: string
+          sort_order: number
+          storage_path: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          alt_text: string
+          created_at?: string
+          display_scale?: number
+          fallback_url?: string | null
+          id?: string
+          name: string
+          sort_order?: number
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          alt_text?: string
+          created_at?: string
+          display_scale?: number
+          fallback_url?: string | null
+          id?: string
+          name?: string
+          sort_order?: number
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       workflows: {
         Row: {
           created_at: string
