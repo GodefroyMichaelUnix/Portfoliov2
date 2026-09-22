@@ -158,7 +158,7 @@ html.dark body::after {
 .editorial-contact-banner h2 > span { color: #fb8539; }
 .editorial-contact-banner p { font-size: 13px; line-height: 1.8; color: #b7b7be; font-weight: 400; max-width: 440px; }
 .editorial-contact-banner a { padding: 16px 22px; border-radius: 4px; background: #ea580c; color: white; font-size: 11px; letter-spacing: .04em; box-shadow: none; }
-.about-film { margin: 90px auto 0; max-width: 840px; }
+.about-film { margin: 90px auto; max-width: 1140px; width: 100%; padding-inline: 24px; }
 .about-film section { padding: 0; }
 .about-film section > div { gap: 26px; }
 .about-film h3 { font: 400 32px/1.2 'Archivo',sans-serif; }

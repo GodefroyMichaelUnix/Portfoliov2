@@ -73,12 +73,6 @@ export const VideoPresentation: React.FC<VideoPresentationProps> = ({
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col items-center text-center space-y-6 sm:space-y-8"
       >
-        {/* Badge supérieur */}
-        <div className="chapter-meta">
-          <span className="signal-dot" />
-          <span>PORTRAIT / LA VISION DERRIÈRE LES FLUX</span>
-        </div>
-
         {/* Titre Principal */}
         <div className="space-y-4 max-w-3xl mx-auto">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight leading-[1.15]">

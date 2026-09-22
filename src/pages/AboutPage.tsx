@@ -7,7 +7,6 @@ import { ProfileInfo } from '../types/portfolio';
 import { PopoutPortrait } from '../components/PopoutPortrait';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { PageIntro } from '../components/PageIntro';
-import { VideoPresentation } from '../components/VideoPresentation';
 
 interface AboutPageProps {
   profile: ProfileInfo;
@@ -222,12 +221,6 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           </motion.div>
         )}
 
-        <div className="about-film">
-          <VideoPresentation
-            videoSrcFr={profile.presentationVideoUrl}
-            posterUrl={profile.presentationVideoPoster || '/art/agent-core.webp'}
-          />
-        </div>
         {/* CTA */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

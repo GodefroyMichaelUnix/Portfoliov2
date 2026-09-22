@@ -36,6 +36,7 @@ import { EditorialMarquee } from '../components/EditorialMarquee';
 import { CountUpNumber } from '../components/CountUpNumber';
 import { FAQSection } from '../components/FAQSection';
 import { AboutPreview } from '../components/AboutPreview';
+import { VideoPresentation } from '../components/VideoPresentation';
 import { CertificateCard } from '../components/CertificateCard';
 import { AnimatedTitle } from '../components/AnimatedTitle';
 
@@ -176,6 +177,13 @@ export const HomePage: React.FC<HomePageProps> = ({
         <Hero profile={profile} />
         <TechMarquee />
         <AboutPreview profile={profile} />
+
+        <div className="about-film">
+          <VideoPresentation
+            videoSrcFr={profile.presentationVideoUrl}
+            posterUrl={profile.presentationVideoPoster || '/art/agent-core.webp'}
+          />
+        </div>
 
         {/* 1. IMMERSIVE PROJECTS PREVIEW */}
         <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto">
