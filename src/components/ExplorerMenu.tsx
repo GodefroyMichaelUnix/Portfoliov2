@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Award, ArrowUpRight, ChevronDown, Code2, User, Wrench } from 'lucide-react';
+import { Award, ArrowUpRight, ChevronDown, User, Wrench } from 'lucide-react';
 
 const destinations = [
   { path: '/competences', label: 'Compétences', description: 'Les outils au service des idées', icon: Wrench, image: 'workflow', caption: 'Du savoir-faire aux systèmes utiles.' },
