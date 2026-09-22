@@ -13,7 +13,8 @@ import {
   HomeExpertiseCard,
   HomePillar,
   MakingOfStep,
-  MakingOfStackItem
+  MakingOfStackItem,
+  TechStackItem
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
 import type { Json } from '../lib/database.types';
@@ -53,6 +54,7 @@ export interface PortfolioDatabaseAdapter {
   getHomePillars(): Promise<HomePillar[]>;
   getMakingOfSteps(): Promise<MakingOfStep[]>;
   getMakingOfStack(): Promise<Array<string | MakingOfStackItem>>;
+  getTechStack(): Promise<TechStackItem[]>;
 }
 
 class SupabasePortfolioService implements PortfolioDatabaseAdapter {
@@ -468,6 +470,35 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       title: row.title,
       description: row.description,
       iconName: row.icon_name || undefined
+    }));
+  }
+
+  async getTechStack(): Promise<TechStackItem[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('tech_stack')
+      .select('*')
+      .eq('active', true)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (tech_stack): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      name: row.name,
+      storagePath: row.storage_path || undefined,
+      fallbackUrl: row.fallback_url || undefined,
+      altText: row.alt_text,
+      sortOrder: row.sort_order,
+      active: row.active,
+      displayScale: Number(row.display_scale) || 1
     }));
   }
 
