@@ -8,6 +8,10 @@ const TECH_LOGOS = [
   { name: "n8n", src: "https://cdn.simpleicons.org/n8n" },
   { name: "Make", src: "https://cdn.simpleicons.org/make" },
   { name: "Zapier", src: "https://cdn.simpleicons.org/zapier" },
+  { name: "HighLevel", src: "https://assets.cdn.filesafe.space/zELBHkVp0JPbbLvKIlF5/media/690a5f4a57ea175183408da2.png" },
+  { name: "Twilio", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/twilio.svg" },
+  { name: "Vapi", src: "https://cdn.jsdelivr.net/npm/@thesvg/icons/icons/vapi.svg" },
+  { name: "Retell AI", src: "https://cdn.prod.website-files.com/64ada0f2685b2d18caa5e699/6a25e25759e725c1b46fec54_Main%20Logo%20dark.svg" },
   { name: "Supabase", src: "https://cdn.simpleicons.org/supabase" },
   { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql" },
   { name: "GitHub", src: "https://cdn.simpleicons.org/github" },
@@ -16,8 +20,8 @@ const TECH_LOGOS = [
   { name: "OpenAI", src: "https://cdn.simpleicons.org/openai" },
   { name: "Claude", src: "https://cdn.simpleicons.org/anthropic" },
   { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
-  { name: "Slack", src: "https://cdn.simpleicons.org/slack" },
-  { name: "Motion", src: "https://cdn.simpleicons.org/motion" },
+  { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/slack.svg" },
+  { name: "Motion", src: "https://motion.dev/layout/favicon.png", preserveBranding: true },
 ];
 
 export const TechMarquee: React.FC = () => {
@@ -56,7 +60,10 @@ export const TechMarquee: React.FC = () => {
                 <img
                   src={tech.src}
                   alt={tech.name}
-                  className="max-w-10 max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300"
+                  className={[
+                    "max-w-10 max-h-full object-contain select-none pointer-events-none transition-all duration-300",
+                    tech.preserveBranding ? "grayscale" : "grayscale brightness-0 dark:invert",
+                  ].join(" ")}
                   draggable={false}
                 />
               </div>
