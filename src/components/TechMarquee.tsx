@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 
 // Stack réellement cohérente avec le positionnement actuel :
-// AI Automation • IT Automation • AI Engineering • Web
+// AI Automation • IT Automation • AI Engineering • Integrations
 const TECH_LOGOS = [
   { name: "Python", src: "https://cdn.simpleicons.org/python" },
   { name: "n8n", src: "https://cdn.simpleicons.org/n8n" },
@@ -13,7 +13,7 @@ const TECH_LOGOS = [
   { name: "GitHub", src: "https://cdn.simpleicons.org/github" },
   { name: "TypeScript", src: "https://cdn.simpleicons.org/typescript" },
   { name: "React", src: "https://cdn.simpleicons.org/react" },
-  { name: "OpenAI", src: "" },
+  { name: "OpenAI", src: "https://cdn.simpleicons.org/openai" },
   { name: "Claude", src: "https://cdn.simpleicons.org/anthropic" },
   { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
   { name: "Slack", src: "https://cdn.simpleicons.org/slack" },
@@ -53,12 +53,12 @@ export const TechMarquee: React.FC = () => {
               title={tech.name}
             >
               <div className="shrink-0 min-w-8 h-8 md:min-w-10 md:h-10 flex items-center justify-center">
-                {tech.src ? <img
+                <img
                   src={tech.src}
                   alt={tech.name}
                   className="max-w-10 max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300"
                   draggable={false}
-                /> : <span className="font-display text-lg tracking-tight font-semibold">{tech.name}</span>}
+                />
               </div>
             </div>
           ))}
