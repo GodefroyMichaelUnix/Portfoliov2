@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowDownRight,
   ArrowRight,
+  ArrowUpRight,
   Bot,
   Braces,
   CheckCircle2,
