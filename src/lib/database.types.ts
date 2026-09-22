@@ -55,7 +55,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string
-          id: string
+          id: number
           message: string
           name: string
           project_type: string
@@ -63,7 +63,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
-          id?: string
+          id?: number
           message: string
           name: string
           project_type: string
@@ -71,7 +71,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
-          id?: string
+          id?: number
           message?: string
           name?: string
           project_type?: string
@@ -108,7 +108,7 @@ export type Database = {
           category: string
           id: string
           level: number
-          sort_order: number | null
+          sort_order: number
           title: string
         }
         Insert: {
@@ -116,7 +116,7 @@ export type Database = {
           category: string
           id: string
           level: number
-          sort_order?: number | null
+          sort_order?: number
           title: string
         }
         Update: {
@@ -124,7 +124,7 @@ export type Database = {
           category?: string
           id?: string
           level?: number
-          sort_order?: number | null
+          sort_order?: number
           title?: string
         }
         Relationships: []
@@ -134,27 +134,27 @@ export type Database = {
           description: string
           id: string
           image: string
-          sort_order: number | null
+          sort_order: number
           span: string | null
-          tags: Json | null
+          tags: Json
           title: string
         }
         Insert: {
           description: string
           id: string
           image: string
-          sort_order?: number | null
+          sort_order?: number
           span?: string | null
-          tags?: Json | null
+          tags?: Json
           title: string
         }
         Update: {
           description?: string
           id?: string
           image?: string
-          sort_order?: number | null
+          sort_order?: number
           span?: string | null
-          tags?: Json | null
+          tags?: Json
           title?: string
         }
         Relationships: []
@@ -163,17 +163,17 @@ export type Database = {
         Row: {
           id: string
           name: string
-          sort_order: number | null
+          sort_order: number
         }
         Insert: {
           id: string
           name: string
-          sort_order?: number | null
+          sort_order?: number
         }
         Update: {
           id?: string
           name?: string
-          sort_order?: number | null
+          sort_order?: number
         }
         Relationships: []
       }
@@ -182,7 +182,7 @@ export type Database = {
           description: string
           icon_name: string | null
           id: string
-          sort_order: number | null
+          sort_order: number
           step: string
           title: string
         }
@@ -190,7 +190,7 @@ export type Database = {
           description: string
           icon_name?: string | null
           id: string
-          sort_order?: number | null
+          sort_order?: number
           step: string
           title: string
         }
@@ -198,7 +198,7 @@ export type Database = {
           description?: string
           icon_name?: string | null
           id?: string
-          sort_order?: number | null
+          sort_order?: number
           step?: string
           title?: string
         }
