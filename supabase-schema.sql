@@ -256,3 +256,53 @@ CREATE INDEX IF NOT EXISTS making_of_steps_sort_order_idx
 
 CREATE INDEX IF NOT EXISTS making_of_stack_sort_order_idx
   ON public.making_of_stack(sort_order);
+
+
+-- ==============================================================================
+-- TECH STACK MARQUEE
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.tech_stack (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL UNIQUE,
+  storage_path TEXT,
+  fallback_url TEXT,
+  alt_text TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  display_scale NUMERIC(4,2) NOT NULL DEFAULT 1.00,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT tech_stack_source_check CHECK (storage_path IS NOT NULL OR fallback_url IS NOT NULL),
+  CONSTRAINT tech_stack_scale_check CHECK (display_scale > 0 AND display_scale <= 2)
+);
+
+ALTER TABLE public.tech_stack ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Tech stack is publicly readable" ON public.tech_stack;
+CREATE POLICY "Tech stack is publicly readable"
+  ON public.tech_stack
+  FOR SELECT
+  TO anon, authenticated
+  USING (TRUE);
+
+GRANT SELECT ON public.tech_stack TO anon, authenticated;
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'tech-logos',
+  'tech-logos',
+  TRUE,
+  1048576,
+  ARRAY['image/svg+xml','image/png','image/jpeg','image/webp']
+)
+ON CONFLICT (id) DO UPDATE
+SET public = EXCLUDED.public,
+    file_size_limit = EXCLUDED.file_size_limit,
+    allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+DROP POLICY IF EXISTS "Tech logos are publicly readable" ON storage.objects;
+CREATE POLICY "Tech logos are publicly readable"
+  ON storage.objects
+  FOR SELECT
+  TO anon, authenticated
+  USING (bucket_id = 'tech-logos');
