@@ -158,10 +158,10 @@ html.dark body::after {
 .editorial-contact-banner h2 > span { color: #fb8539; }
 .editorial-contact-banner p { font-size: 13px; line-height: 1.8; color: #b7b7be; font-weight: 400; max-width: 440px; }
 .editorial-contact-banner a { padding: 16px 22px; border-radius: 4px; background: #ea580c; color: white; font-size: 11px; letter-spacing: .04em; box-shadow: none; }
-.about-film { margin: 90px auto; max-width: 1140px; width: 100%; padding-inline: 24px; }
-.about-film section { padding: 0; }
-.about-film section > div { gap: 26px; }
-.about-film h3 { font: 400 32px/1.2 'Archivo',sans-serif; }
+.presentation-film { margin: 90px auto; max-width: 1140px; width: 100%; padding-inline: 24px; }
+.presentation-film section { padding: 0; }
+.presentation-film section > div { gap: 26px; }
+.presentation-film h3 { font: 400 32px/1.2 'Archivo',sans-serif; }
 .about-page > .space-y-12 { margin-top: 90px; }
 .contact-person { display: flex; align-items: center; gap: 24px; padding-bottom: 25px; border-bottom: 1px solid var(--studio-line); }
 .contact-person-photo { position: relative; width: 98px; height: 114px; flex-shrink: 0; overflow: hidden; background: #ece9e0; border-radius: 3px 24px 3px 3px; }
@@ -196,7 +196,7 @@ html.dark body::after {
   .home-contact-curtain { padding-inline: 22px; }
   .editorial-contact-banner { padding: 42px 26px; min-height: 420px; }
   .editorial-contact-banner::after { font-size: 160px; top: 35%; right: -4%; }
-  .about-film h3 { font-size: 27px; }
+  .presentation-film h3 { font-size: 27px; }
   .contact-person { gap: 16px; }
   .contact-person-photo { width: 74px; height: 93px; }
   .contact-person p { font-size: 20px; }
