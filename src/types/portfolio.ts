@@ -183,6 +183,17 @@ export interface HomePillar {
   span?: string;
 }
 
+export interface TechStackItem {
+  id: string;
+  name: string;
+  storagePath?: string;
+  fallbackUrl?: string;
+  altText: string;
+  sortOrder: number;
+  active: boolean;
+  displayScale: number;
+}
+
 export interface MakingOfStep {
   step: string;
   title: string;
