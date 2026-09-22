@@ -306,3 +306,22 @@ CREATE POLICY "Tech logos are publicly readable"
   FOR SELECT
   TO anon, authenticated
   USING (bucket_id = 'tech-logos');
+
+
+DROP POLICY IF EXISTS "Authenticated users can manage tech stack" ON public.tech_stack;
+CREATE POLICY "Authenticated users can manage tech stack"
+  ON public.tech_stack
+  FOR ALL
+  TO authenticated
+  USING (TRUE)
+  WITH CHECK (TRUE);
+
+GRANT INSERT, UPDATE, DELETE ON public.tech_stack TO authenticated;
+
+DROP POLICY IF EXISTS "Authenticated users can manage tech logos" ON storage.objects;
+CREATE POLICY "Authenticated users can manage tech logos"
+  ON storage.objects
+  FOR ALL
+  TO authenticated
+  USING (bucket_id = 'tech-logos')
+  WITH CHECK (bucket_id = 'tech-logos');
