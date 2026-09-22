@@ -21,7 +21,6 @@ const TECH_LOGOS = [
   { name: "Claude", src: "https://cdn.simpleicons.org/anthropic" },
   { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
   { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/slack.svg" },
-  { name: "Motion", src: "https://motion.dev/layout/favicon.png", preserveBranding: true },
 ];
 
 export const TechMarquee: React.FC = () => {
@@ -60,10 +59,7 @@ export const TechMarquee: React.FC = () => {
                 <img
                   src={tech.src}
                   alt={tech.name}
-                  className={[
-                    "max-w-10 max-h-full object-contain select-none pointer-events-none transition-all duration-300",
-                    tech.preserveBranding ? "grayscale" : "grayscale brightness-0 dark:invert",
-                  ].join(" ")}
+                  className="max-w-10 max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300"
                   draggable={false}
                 />
               </div>
