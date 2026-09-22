@@ -259,7 +259,8 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
               useCase: getString(s, 'useCase'),
               tags: Array.isArray(s.tags)
                 ? getStringArray(s.tags)
-                : undefined
+                : undefined,
+              imageUrl: getOptionalString(s, 'imageUrl')
             }))
         : [];
 
