@@ -17,8 +17,10 @@ const TECH_LOGOS = [
   { name: "GitHub", src: "https://cdn.simpleicons.org/github" },
   { name: "TypeScript", src: "https://cdn.simpleicons.org/typescript" },
   { name: "React", src: "https://cdn.simpleicons.org/react" },
-  { name: "OpenAI", src: "https://cdn.simpleicons.org/openai" },
-  { name: "Claude", src: "https://cdn.simpleicons.org/anthropic" },
+  { name: "OpenAI", src: "https://cdn.jsdelivr.net/npm/@yldm-tech/ai-logo-static-svg@latest/icons/openai.svg" },
+  { name: "Claude", src: "https://cdn.jsdelivr.net/npm/@yldm-tech/ai-logo-static-svg@latest/icons/claude.svg" },
+  { name: "Gemini", src: "https://cdn.jsdelivr.net/npm/@yldm-tech/ai-logo-static-svg@latest/icons/gemini.svg" },
+  { name: "TypeSafe AI", src: "https://raw.githubusercontent.com/typesafe-ai/typesafe-ai.github.io/main/logo.svg" },
   { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
   { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/slack.svg" },
 ];
