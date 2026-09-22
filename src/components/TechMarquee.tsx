@@ -1,39 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { portfolioService } from '../services/portfolioService';
+import { supabase } from '../lib/supabase';
+import type { TechStackItem } from '../types/portfolio';
 
-// Stack réellement cohérente avec le positionnement actuel :
-// AI Automation • IT Automation • AI Engineering • Integrations
-const TECH_LOGOS = [
-  { name: "Python", src: "https://cdn.simpleicons.org/python" },
-  { name: "n8n", src: "https://cdn.simpleicons.org/n8n" },
-  { name: "Make", src: "https://cdn.simpleicons.org/make" },
-  { name: "Zapier", src: "https://cdn.simpleicons.org/zapier" },
-  { name: "HighLevel", src: "https://assets.cdn.filesafe.space/zELBHkVp0JPbbLvKIlF5/media/690a5f4a57ea175183408da2.png" },
-  { name: "Twilio", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/twilio.svg" },
-  { name: "Vapi", src: "https://cdn.jsdelivr.net/npm/@thesvg/icons/icons/vapi.svg" },
-  { name: "Retell AI", src: "https://cdn.prod.website-files.com/64ada0f2685b2d18caa5e699/6a25e25759e725c1b46fec54_Main%20Logo%20dark.svg" },
-  { name: "Supabase", src: "https://cdn.simpleicons.org/supabase" },
-  { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql" },
-  { name: "GitHub", src: "https://cdn.simpleicons.org/github" },
-  { name: "TypeScript", src: "https://cdn.simpleicons.org/typescript" },
-  { name: "React", src: "https://cdn.simpleicons.org/react" },
-  { name: "OpenAI", src: "https://cdn.simpleicons.org/openai", large: true },
-  { name: "Claude", src: "https://cdn.simpleicons.org/anthropic", large: true },
-  { name: "Gemini", src: "https://cdn.simpleicons.org/googlegemini", large: true },
-  { name: "TypeSafe AI", src: "https://cdn.jsdelivr.net/gh/typesafe-ai/typesafe-ai.github.io@main/logo.svg", large: true },
-  { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
-  { name: "Slack", src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/slack.svg" },
-];
+const STORAGE_BUCKET = 'tech-logos';
+
+function getStorageUrl(path?: string): string | undefined {
+  if (!path || !supabase) return undefined;
+  return supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path).data.publicUrl;
+}
 
 export const TechMarquee: React.FC = () => {
+  const [logos, setLogos] = useState<TechStackItem[]>([]);
+  const [failedStorage, setFailedStorage] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+
+    portfolioService
+      .getTechStack()
+      .then((data) => {
+        if (!cancelled) setLogos(data);
+      })
+      .catch((error) => {
+        console.error('Impossible de charger le Tech Stack depuis Supabase:', error);
+        if (!cancelled) setLogos([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (logos.length === 0) return null;
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto">
-      {/* 
-        Utilisation de maskImage au lieu de divs dégradées opaques :
-        Permet aux bords gauche et droit de se dissoudre en transparence totale de manière floue et progressive,
-        sans créer de rectangle opaque ou de démarcation visible sur le fond (en mode sombre comme en mode clair).
-      */}
-      <div 
+      <div
         className="w-full overflow-hidden py-6 sm:py-8 relative"
         style={{
           maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 3%, rgba(0,0,0,0.7) 8%, black 15%, black 85%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.2) 97%, transparent 100%)',
@@ -42,31 +46,42 @@ export const TechMarquee: React.FC = () => {
       >
         <motion.div
           className="flex items-center gap-16 md:gap-20 w-max"
-          animate={{ x: ["0%", "-50%"] }}
+          animate={{ x: ['0%', '-50%'] }}
           transition={{
-            ease: "linear",
+            ease: 'linear',
             duration: 24,
             repeat: Infinity,
           }}
         >
-          {/* Exactement 2 copies : la translation de -50% correspond pile à une copie,
-              ce qui garantit une boucle parfaitement continue sans saut ni tremblement. */}
-          {[...TECH_LOGOS, ...TECH_LOGOS].map((tech, index) => (
-            <div
-              key={index}
-              className="shrink-0 flex items-center justify-center transition-opacity duration-300 opacity-60 hover:opacity-100 cursor-default"
-              title={tech.name}
-            >
-              <div className="shrink-0 min-w-8 h-8 md:min-w-10 md:h-10 flex items-center justify-center">
-                <img
-                  src={tech.src}
-                  alt={tech.name}
-                  className={`${tech.large ? "max-w-12 scale-125" : "max-w-10"} max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300`}
-                  draggable={false}
-                />
+          {[...logos, ...logos].map((tech, index) => {
+            const storageUrl = getStorageUrl(tech.storagePath);
+            const src = !failedStorage[tech.id] && storageUrl
+              ? storageUrl
+              : tech.fallbackUrl;
+
+            return (
+              <div
+                key={`${tech.id}-${index}`}
+                className="shrink-0 flex items-center justify-center transition-opacity duration-300 opacity-60 hover:opacity-100 cursor-default"
+                title={tech.name}
+              >
+                <div className="shrink-0 min-w-8 h-8 md:min-w-10 md:h-10 flex items-center justify-center">
+                  <img
+                    src={src}
+                    alt={tech.altText}
+                    onError={() => {
+                      if (!failedStorage[tech.id] && storageUrl && tech.fallbackUrl) {
+                        setFailedStorage((current) => ({ ...current, [tech.id]: true }));
+                      }
+                    }}
+                    style={{ transform: `scale(${tech.displayScale})` }}
+                    className="max-w-10 max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300"
+                    draggable={false}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </motion.div>
       </div>
     </div>
