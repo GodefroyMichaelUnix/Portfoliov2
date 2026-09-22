@@ -1,13 +1,34 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowDownRight } from 'lucide-react';
+import { ArrowDownRight, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PageIntroProps { number: string; label: string; title: string; accent: string; description: string; children?: React.ReactNode }
 
 export const PageIntro = ({ number, label, title, accent, description, children }: PageIntroProps) => {
   const reduced = useReducedMotion();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/');
+  };
+
   return (
     <header className="page-intro" data-testid={`page-intro-${number}`}>
+      <button
+        type="button"
+        onClick={handleBack}
+        className="inline-flex items-center gap-2 mb-7 px-4 py-2.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/60 text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 hover:border-orange-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+        data-testid={`page-back-${number}`}
+      >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        <span>Retour</span>
+      </button>
+
       <div className="chapter-meta"><span className="signal-dot" />{label}<span className="chapter-meta-end">PORTFOLIO / {number}</span></div>
       <div className="page-intro-layout">
         <h1 className="editorial-title" data-testid={`page-title-${number}`}>
