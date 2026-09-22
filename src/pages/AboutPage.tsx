@@ -51,7 +51,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
   return (
     <PageTransition>
       <div className="studio-page about-page">
-        <PageIntro number="04" label="L’humain derrière les systèmes" title="Curieux par nature." accent="Bâtisseur par choix." description="Je suis Michael Godefroy. Je relie les idées, les outils et les personnes — pour transformer la complexité en quelque chose d’utile." />
+        <PageIntro
+          number="04"
+          label={profile.aboutPageLabel || ''}
+          title={profile.aboutPageTitle || ''}
+          accent={profile.aboutPageAccent || ''}
+          description={profile.aboutPageDescription || ''}
+        />
         {/* Intro Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -61,52 +67,39 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
         >
           <div className="lg:w-1/2 min-w-0 space-y-10">
             <h2 className="chapter-meta">
-              01 / Ingénieur Automatisation & IA
+              01 / {profile.roleSubtitle || profile.title || ''}
             </h2>
             
-            <div className="space-y-6 text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
-              {profile.bioSummary && profile.bioSummary.length > 0 ? (
-                profile.bioSummary.map((paragraph, idx) => (
+            {profile.bioSummary && profile.bioSummary.length > 0 && (
+              <div className="space-y-6 text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
+                {profile.bioSummary.map((paragraph, idx) => (
                   <p key={idx}>{paragraph}</p>
-                ))
-              ) : (
-                <>
-                  <p>
-                    Je suis étudiant en informatique et je construis progressivement mon parcours vers l’ingénierie de l’automatisation.
-                  </p>
-                  <p>
-                    Ce qui a commencé comme une simple curiosité est devenu un véritable parcours d’apprentissage autour des workflows, des APIs, du scripting, de l’IA et des intégrations. J’aime résoudre des problèmes techniques et transformer des idées en systèmes fonctionnels.
-                  </p>
-                  <p>
-                    Mon objectif à long terme est de construire des systèmes d’automatisation qui connectent les personnes, les applications, les données et l’IA. Je développe mes compétences projet après projet, car je pense que la meilleure façon de comprendre une technologie est de construire avec elle.
-                  </p>
-                </>
-              )}
-            </div>
+                ))}
+              </div>
+            )}
 
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              {[
-                { label: 'Workflows', sub: 'Conception & Logique' },
-                { label: 'APIs', sub: 'Intégration & Flux' },
-                { label: 'IA', sub: 'Agents & Traitement' },
-                { label: 'Code', sub: 'Python & Scripting' }
-              ].map((item, idx) => (
-                <div key={idx} className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-[24px]">
-                  <span className="block text-sm font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest mb-1">{item.label}</span>
-                  <span className="block text-xs font-bold text-zinc-500 dark:text-zinc-400">{item.sub}</span>
-                </div>
-              ))}
-            </div>
+            {profile.aboutExpertise && profile.aboutExpertise.length > 0 && (
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                {profile.aboutExpertise.map((item, idx) => (
+                  <div key={idx} className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-[24px]">
+                    <span className="block text-sm font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest mb-1">{item.label}</span>
+                    <span className="block text-xs font-bold text-zinc-500 dark:text-zinc-400">{item.sub}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="lg:w-1/2 min-w-0 flex flex-col items-center justify-center">
             <PopoutPortrait 
               treatment="machine"
               badgeText="L’HUMAIN / MG"
+              imageSrc={profile.heroPhotoUrl || profile.avatarUrl}
+              name={profile.name}
             />
             <div className="mt-4 px-6 py-2.5 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg text-center">
               <span className="block font-black text-2xl tracking-tight text-zinc-900 dark:text-white">{profile.name}</span>
-              <span className="block text-xs font-bold uppercase tracking-widest text-orange-500 mt-1">{profile.location}</span>
+              {profile.location && <span className="block text-xs font-bold uppercase tracking-widest text-orange-500 mt-1">{profile.location}</span>}
             </div>
           </div>
         </motion.div>
@@ -120,14 +113,20 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           className="journey-section space-y-16 border-t border-zinc-200 dark:border-zinc-800 pt-20"
         >
           {/* 1. Paragraphe d'ouverture */}
-          <motion.div variants={staggerItem} className="max-w-3xl space-y-6">
-            <h2 className="text-4xl sm:text-5xl font-black text-orange-600 dark:text-orange-500 tracking-tighter leading-[1.1]">
-              Je m'appelle Michael, j'ai 21 ans.
-            </h2>
-            <p className="text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
-              Après l'obtention du Baccalauréat à 16 ans, je n'ai malheureusement pas pu poursuivre mes études universitaires. J'ai donc commencé à travailler dès l'âge de 18 ans.
-            </p>
-          </motion.div>
+          {(profile.aboutJourneyIntroTitle || profile.aboutJourneyIntroText) && (
+            <motion.div variants={staggerItem} className="max-w-3xl space-y-6">
+              {profile.aboutJourneyIntroTitle && (
+                <h2 className="text-4xl sm:text-5xl font-black text-orange-600 dark:text-orange-500 tracking-tighter leading-[1.1]">
+                  {profile.aboutJourneyIntroTitle}
+                </h2>
+              )}
+              {profile.aboutJourneyIntroText && (
+                <p className="text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
+                  {profile.aboutJourneyIntroText}
+                </p>
+              )}
+            </motion.div>
+          )}
 
           {/* 2. Timeline de parcours */}
           {journeyItems.length > 0 && (
@@ -158,11 +157,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           )}
 
           {/* 4. Paragraphe de transition */}
-          <motion.div variants={staggerItem} className="max-w-4xl mx-auto text-center space-y-6">
-            <p className="text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
-              Aujourd'hui, je veux franchir une nouvelle étape et devenir AI & Automation Engineer. Je me suis formé principalement en autodidacte, en travaillant sérieusement sur Python, l'automatisation, les APIs, les workflows, les outils no-code/low-code et l'intelligence artificielle. Je suis également des formations et passe des certifications afin de structurer mes connaissances et de pouvoir progressivement proposer mes compétences en freelance.
-            </p>
-          </motion.div>
+          {profile.aboutTransitionText && (
+            <motion.div variants={staggerItem} className="max-w-4xl mx-auto text-center space-y-6">
+              <p className="text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
+                {profile.aboutTransitionText}
+              </p>
+            </motion.div>
+          )}
 
           {/* 5. Bloc de clôture mis en avant */}
           {closingText && (
@@ -221,7 +222,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           </motion.div>
         )}
 
-        <div className="about-film"><VideoPresentation /></div>
+        <div className="about-film">
+          <VideoPresentation
+            videoSrcFr={profile.presentationVideoUrl}
+            posterUrl={profile.presentationVideoPoster || '/art/agent-core.webp'}
+          />
+        </div>
         {/* CTA */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

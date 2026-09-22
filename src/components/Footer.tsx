@@ -12,6 +12,8 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
     window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   };
 
+  const wordmark = profile.name ? (profile.name.trim().split(/\s+/).pop() || '').toUpperCase() : '';
+
   return (
     <footer id="main-footer" className="footer-studio">
       <div className="footer-next"><div><p className="text-sm text-zinc-500">Les meilleures connexions commencent par une conversation.</p></div><Link to="/contact" data-testid="footer-start-conversation">Créons la suite. <ArrowUpRight size={34} strokeWidth={1} /></Link></div>
@@ -43,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
           </button>
         </div>
       </div>
-      <div className="footer-wordmark" aria-hidden="true">GODEFROY.</div>
+      {wordmark && <div className="footer-wordmark" aria-hidden="true">{wordmark}.</div>}
     </footer>
   );
 };

@@ -80,7 +80,7 @@ export const Hero: React.FC<HeroProps> = ({ profile }) => {
                 </span>
               </MaskedLine>
             </h1>
-            <p className="hero-profession" data-testid="hero-profession">{profile.title}<span>{profile.roleSubtitle || 'Automatisation & intégrations'}</span></p>
+            <p className="hero-profession" data-testid="hero-profession">{profile.title}<span>{profile.roleSubtitle || ''}</span></p>
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}
@@ -133,6 +133,8 @@ export const Hero: React.FC<HeroProps> = ({ profile }) => {
           <motion.div className="hero-portrait-wrap" style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
             <PopoutPortrait
               badgeText="AI & AGENT"
+              imageSrc={profile.heroPhotoUrl || profile.avatarUrl}
+              name={profile.name}
             />
           </motion.div>
         </motion.div>

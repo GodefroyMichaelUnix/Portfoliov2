@@ -147,7 +147,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
             className="contact-direct space-y-8 min-w-0"
           >
             <div className="contact-person" data-testid="contact-person">
-              <div className="contact-person-photo"><img src={michaelPortrait} alt={profile.name} /></div>
+              <div className="contact-person-photo"><img src={profile.avatarUrl || michaelPortrait} alt={profile.name} /></div>
               <div><span className="chapter-meta"><span className="signal-dot" />{profile.availability.status}</span><p>{profile.name}</p><span className="text-xs text-zinc-500 dark:text-zinc-400">Une conversation, pas un ticket support.</span></div>
             </div>
             <motion.div variants={staggerItem} className="space-y-4">

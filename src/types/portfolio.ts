@@ -84,6 +84,11 @@ export interface ProfileMethodologyStep {
   tasks: string[];
 }
 
+export interface ProfileExpertiseItem {
+  label: string;
+  sub: string;
+}
+
 export interface ProfileInfo {
   name: string;
   title: string;
@@ -110,6 +115,30 @@ export interface ProfileInfo {
     label: string;
     sublabel: string;
   }[];
+  avatarUrl?: string;
+  avatar_url?: string;
+  heroPhotoUrl?: string;
+  hero_photo_url?: string;
+  presentationVideoUrl?: string;
+  presentation_video_url?: string;
+  presentationVideoPoster?: string;
+  presentation_video_poster?: string;
+  aboutPageLabel?: string;
+  about_page_label?: string;
+  aboutPageTitle?: string;
+  about_page_title?: string;
+  aboutPageAccent?: string;
+  about_page_accent?: string;
+  aboutPageDescription?: string;
+  about_page_description?: string;
+  aboutJourneyIntroTitle?: string;
+  about_journey_intro_title?: string;
+  aboutJourneyIntroText?: string;
+  about_journey_intro_text?: string;
+  aboutTransitionText?: string;
+  about_transition_text?: string;
+  aboutExpertise?: ProfileExpertiseItem[];
+  about_expertise?: ProfileExpertiseItem[];
   about_journey?: ProfileJourneyItem[];
   aboutJourney?: ProfileJourneyItem[];
   about_manifesto?: string;

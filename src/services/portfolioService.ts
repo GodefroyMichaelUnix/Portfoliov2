@@ -124,6 +124,15 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
           }))
       : [];
 
+    const aboutExpertise = Array.isArray(data.about_expertise)
+      ? data.about_expertise
+          .filter(isJsonObject)
+          .map((e) => ({
+            label: getString(e, 'label'),
+            sub: getString(e, 'sub')
+          }))
+      : [];
+
     const bioSummary = getStringArray(data.bio_summary);
 
     return {
@@ -136,6 +145,30 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       location: data.location || '',
       contact,
       stats,
+      avatarUrl: data.avatar_url || '',
+      avatar_url: data.avatar_url || '',
+      heroPhotoUrl: data.hero_photo_url || '',
+      hero_photo_url: data.hero_photo_url || '',
+      presentationVideoUrl: data.presentation_video_url || '',
+      presentation_video_url: data.presentation_video_url || '',
+      presentationVideoPoster: data.presentation_video_poster || '',
+      presentation_video_poster: data.presentation_video_poster || '',
+      aboutPageLabel: data.about_page_label || '',
+      about_page_label: data.about_page_label || '',
+      aboutPageTitle: data.about_page_title || '',
+      about_page_title: data.about_page_title || '',
+      aboutPageAccent: data.about_page_accent || '',
+      about_page_accent: data.about_page_accent || '',
+      aboutPageDescription: data.about_page_description || '',
+      about_page_description: data.about_page_description || '',
+      aboutJourneyIntroTitle: data.about_journey_intro_title || '',
+      about_journey_intro_title: data.about_journey_intro_title || '',
+      aboutJourneyIntroText: data.about_journey_intro_text || '',
+      about_journey_intro_text: data.about_journey_intro_text || '',
+      aboutTransitionText: data.about_transition_text || '',
+      about_transition_text: data.about_transition_text || '',
+      aboutExpertise,
+      about_expertise: aboutExpertise,
       about_journey: aboutJourney,
       aboutJourney,
       about_manifesto: data.about_manifesto || '',

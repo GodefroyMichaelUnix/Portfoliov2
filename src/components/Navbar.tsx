@@ -130,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               className="navbar-avatar"
               data-testid="navbar-avatar"
             >
-              <img src={navbarAvatar} alt={profile.name} className="navbar-avatar-img" />
+              <img src={profile.avatarUrl || navbarAvatar} alt={profile.name} className="navbar-avatar-img" />
               <span className="navbar-avatar-badge" aria-label="Profil vérifié" title="Profil vérifié">
                 <BadgeCheck className="w-full h-full" strokeWidth={2.4} />
               </span>
@@ -140,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                 <span>{profile.name}</span>
               </div>
               <div className="navbar-brand-tagline">
-                AI &amp; IT Automation
+                {profile.roleSubtitle || ''}
               </div>
             </div>
           </Link>

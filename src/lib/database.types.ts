@@ -243,8 +243,16 @@ export type Database = {
       profile: {
         Row: {
           about_closing: string | null
+          about_expertise: Json | null
           about_journey: Json | null
+          about_journey_intro_text: string | null
+          about_journey_intro_title: string | null
           about_manifesto: string | null
+          about_page_accent: string | null
+          about_page_description: string | null
+          about_page_label: string | null
+          about_page_title: string | null
+          about_transition_text: string | null
           availability: Json
           avatar_url: string | null
           bio_summary: Json | null
@@ -264,8 +272,16 @@ export type Database = {
         }
         Insert: {
           about_closing?: string | null
+          about_expertise?: Json | null
           about_journey?: Json | null
+          about_journey_intro_text?: string | null
+          about_journey_intro_title?: string | null
           about_manifesto?: string | null
+          about_page_accent?: string | null
+          about_page_description?: string | null
+          about_page_label?: string | null
+          about_page_title?: string | null
+          about_transition_text?: string | null
           availability: Json
           avatar_url?: string | null
           bio_summary?: Json | null
@@ -285,8 +301,16 @@ export type Database = {
         }
         Update: {
           about_closing?: string | null
+          about_expertise?: Json | null
           about_journey?: Json | null
+          about_journey_intro_text?: string | null
+          about_journey_intro_title?: string | null
           about_manifesto?: string | null
+          about_page_accent?: string | null
+          about_page_description?: string | null
+          about_page_label?: string | null
+          about_page_title?: string | null
+          about_transition_text?: string | null
           availability?: Json
           avatar_url?: string | null
           bio_summary?: Json | null

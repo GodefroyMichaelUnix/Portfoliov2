@@ -59,7 +59,19 @@ const initialProfile: ProfileInfo = {
     upwork: '',
     github: ''
   },
-  stats: []
+  stats: [],
+  avatarUrl: '',
+  heroPhotoUrl: '',
+  presentationVideoUrl: '',
+  presentationVideoPoster: '',
+  aboutPageLabel: '',
+  aboutPageTitle: '',
+  aboutPageAccent: '',
+  aboutPageDescription: '',
+  aboutJourneyIntroTitle: '',
+  aboutJourneyIntroText: '',
+  aboutTransitionText: '',
+  aboutExpertise: []
 };
 
 export default function App() {
