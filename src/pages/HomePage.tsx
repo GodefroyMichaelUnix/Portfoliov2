@@ -178,7 +178,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <TechMarquee />
         <AboutPreview profile={profile} />
 
-        <div className="about-film">
+        <div className="presentation-film">
           <VideoPresentation
             videoSrcFr={profile.presentationVideoUrl}
             posterUrl={profile.presentationVideoPoster || '/art/agent-core.webp'}
