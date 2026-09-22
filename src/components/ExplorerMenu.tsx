@@ -7,7 +7,6 @@ const destinations = [
   { path: '/competences', label: 'Compétences', description: 'Les outils au service des idées', icon: Wrench, image: 'workflow', caption: 'Du savoir-faire aux systèmes utiles.' },
   { path: '/certifications', label: 'Certifications', description: 'Apprendre, pratiquer, progresser', icon: Award, image: 'data-vault', caption: 'Une expertise qui se construit.' },
   { path: '/a-propos', label: 'À propos', description: 'L’humain derrière les projets', icon: User, image: 'agent-core', caption: 'Curieux par nature. Bâtisseur par choix.' },
-  { path: '/coulisses', label: 'Coulisses', description: 'Du premier brief au dernier pixel', icon: Code2, image: 'workflow', caption: 'Entrez dans les coulisses du portfolio.' },
 ];
 
 export const ExplorerMenu: React.FC = () => {
