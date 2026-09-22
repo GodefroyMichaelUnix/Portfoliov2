@@ -37,16 +37,16 @@ const staggerItem = {
 };
 
 export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
-  const journeyItems = (profile.about_journey && profile.about_journey.length > 0)
-    ? profile.about_journey
-    : (profile.aboutJourney && profile.aboutJourney.length > 0 ? profile.aboutJourney : []);
+  const journeyItems = (profile.aboutJourney && profile.aboutJourney.length > 0)
+    ? profile.aboutJourney
+    : [];
 
   const methodologyPhases = (profile.methodology && profile.methodology.length > 0)
     ? profile.methodology
     : [];
 
-  const manifestoText = (profile.about_manifesto || profile.aboutManifesto || '').trim();
-  const closingText = (profile.about_closing || profile.aboutClosing || '').trim();
+  const manifestoText = (profile.aboutManifesto || '').trim();
+  const closingText = (profile.aboutClosing || '').trim();
 
   return (
     <PageTransition>

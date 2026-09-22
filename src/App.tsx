@@ -71,7 +71,12 @@ const initialProfile: ProfileInfo = {
   aboutJourneyIntroTitle: '',
   aboutJourneyIntroText: '',
   aboutTransitionText: '',
-  aboutExpertise: []
+  aboutExpertise: [],
+  homeAboutTitle: '',
+  homeAboutAccent: '',
+  homeAboutDescription: '',
+  homeSavoirFaireDescription: '',
+  homeContactDescription: ''
 };
 
 export default function App() {

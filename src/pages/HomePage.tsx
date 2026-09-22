@@ -175,7 +175,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <div ref={containerRef} className="home-editorial relative z-10">
         <Hero profile={profile} />
         <TechMarquee />
-        <AboutPreview />
+        <AboutPreview profile={profile} />
 
         {/* 1. IMMERSIVE PROJECTS PREVIEW */}
         <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto">
@@ -415,9 +415,11 @@ export const HomePage: React.FC<HomePageProps> = ({
                   text="Savoir-faire"
                   className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter text-white"
                 />
-                <p className="text-white/90 font-medium leading-relaxed max-w-md text-lg">
-                  Je m'intéresse particulièrement à l'intersection entre l'IA, l'automatisation, les APIs et les processus métier. Mon approche consiste d'abord à comprendre le problème, avant de choisir la technologie.
-                </p>
+                {profile.homeSavoirFaireDescription && (
+                  <p className="text-white/90 font-medium leading-relaxed max-w-md text-lg">
+                    {profile.homeSavoirFaireDescription}
+                  </p>
+                )}
                 <MagneticWrapper strength={0.2} className="self-start mt-4">
                   <Link
                     data-testid="home-all-skills"
@@ -575,9 +577,11 @@ export const HomePage: React.FC<HomePageProps> = ({
           <h2 className="font-display text-5xl md:text-7xl font-black tracking-tighter relative z-10 drop-shadow-sm">
             Un projet <span className="font-serif-accent italic font-normal">en tête ?</span>
           </h2>
-          <p className="text-white/90 text-lg max-w-xl relative z-10 mb-8 font-medium">
-            Je suis disponible pour discuter de vos besoins en développement IA et automatisation.
-          </p>
+          {profile.homeContactDescription && (
+            <p className="text-white/90 text-lg max-w-xl relative z-10 mb-8 font-medium">
+              {profile.homeContactDescription}
+            </p>
+          )}
 
           <MagneticWrapper strength={0.4}>
             <Link

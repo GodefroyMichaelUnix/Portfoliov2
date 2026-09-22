@@ -14,7 +14,6 @@ import {
   Moon,
   BadgeCheck
 } from 'lucide-react';
-import navbarAvatar from '../assets/images/michael_portrait_1788677438561.jpg';
 import { ExplorerMenu } from './ExplorerMenu';
 import { ProfileInfo } from '../types/portfolio';
 import { MagneticWrapper } from './MagneticWrapper';
@@ -130,7 +129,13 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               className="navbar-avatar"
               data-testid="navbar-avatar"
             >
-              <img src={profile.avatarUrl || navbarAvatar} alt={profile.name} className="navbar-avatar-img" />
+              {profile.avatarUrl ? (
+                <img src={profile.avatarUrl} alt={profile.name} className="navbar-avatar-img" />
+              ) : (
+                <div className="navbar-avatar-img bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[11px] font-bold text-zinc-600 dark:text-zinc-300 uppercase">
+                  {profile.name ? profile.name.slice(0, 2) : ''}
+                </div>
+              )}
               <span className="navbar-avatar-badge" aria-label="Profil vérifié" title="Profil vérifié">
                 <BadgeCheck className="w-full h-full" strokeWidth={2.4} />
               </span>

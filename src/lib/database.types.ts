@@ -258,6 +258,11 @@ export type Database = {
           bio_summary: Json | null
           contact: Json
           hero_photo_url: string | null
+          home_about_accent: string | null
+          home_about_description: string | null
+          home_about_title: string | null
+          home_contact_description: string | null
+          home_savoir_faire_description: string | null
           id: string
           location: string | null
           methodology: Json | null
@@ -287,6 +292,11 @@ export type Database = {
           bio_summary?: Json | null
           contact: Json
           hero_photo_url?: string | null
+          home_about_accent?: string | null
+          home_about_description?: string | null
+          home_about_title?: string | null
+          home_contact_description?: string | null
+          home_savoir_faire_description?: string | null
           id?: string
           location?: string | null
           methodology?: Json | null
@@ -316,6 +326,11 @@ export type Database = {
           bio_summary?: Json | null
           contact?: Json
           hero_photo_url?: string | null
+          home_about_accent?: string | null
+          home_about_description?: string | null
+          home_about_title?: string | null
+          home_contact_description?: string | null
+          home_savoir_faire_description?: string | null
           id?: string
           location?: string | null
           methodology?: Json | null

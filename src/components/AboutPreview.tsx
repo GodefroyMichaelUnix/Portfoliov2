@@ -2,12 +2,25 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Code2, Workflow, Sparkles } from 'lucide-react';
+import { ProfileInfo } from '../types/portfolio';
 
-export const AboutPreview: React.FC = () => (
+interface AboutPreviewProps {
+  profile: ProfileInfo;
+}
+
+export const AboutPreview: React.FC<AboutPreviewProps> = ({ profile }) => (
   <section className="home-about-preview" data-testid="home-about-preview">
     <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="home-about-story">
-      <h2>Comprendre le problème.<br /><span className="font-serif-accent italic">Construire la bonne réponse.</span></h2>
-      <p>Je construis mon parcours vers l’ingénierie de l’automatisation, un projet à la fois. Ce qui m’anime : connecter les outils, simplifier le quotidien et rendre la technologie vraiment utile.</p>
+      <h2>
+        {profile.homeAboutTitle}
+        {profile.homeAboutAccent && (
+          <>
+            <br />
+            <span className="font-serif-accent italic">{profile.homeAboutAccent}</span>
+          </>
+        )}
+      </h2>
+      {profile.homeAboutDescription && <p>{profile.homeAboutDescription}</p>}
       <Link data-testid="home-about-link" to="/a-propos" className="text-link">Un peu plus sur moi <ArrowUpRight size={17} /></Link>
     </motion.div>
     <div className="home-services-index">
