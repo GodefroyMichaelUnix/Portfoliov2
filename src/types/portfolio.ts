@@ -22,6 +22,7 @@ export interface SkillItem {
   levelBadge?: string;
   useCase: string;
   tags?: string[];
+  imageUrl?: string;
 }
 
 export interface SkillCategory {
