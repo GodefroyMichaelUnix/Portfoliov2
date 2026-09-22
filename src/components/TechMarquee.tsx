@@ -1,21 +1,23 @@
 import React from 'react';
 import { motion } from 'motion/react';
 
-// Logos officiels en noir et blanc (monochrome pur adapté au thème clair/sombre)
+// Stack réellement cohérente avec le positionnement actuel :
+// AI Automation • IT Automation • AI Engineering • Web
 const TECH_LOGOS = [
   { name: "Python", src: "https://cdn.simpleicons.org/python" },
   { name: "n8n", src: "https://cdn.simpleicons.org/n8n" },
   { name: "Make", src: "https://cdn.simpleicons.org/make" },
   { name: "Zapier", src: "https://cdn.simpleicons.org/zapier" },
+  { name: "Supabase", src: "https://cdn.simpleicons.org/supabase" },
   { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql" },
-  { name: "Redis", src: "https://cdn.simpleicons.org/redis" },
-  { name: "Docker", src: "https://cdn.simpleicons.org/docker" },
+  { name: "GitHub", src: "https://cdn.simpleicons.org/github" },
+  { name: "TypeScript", src: "https://cdn.simpleicons.org/typescript" },
+  { name: "React", src: "https://cdn.simpleicons.org/react" },
   { name: "OpenAI", src: "" },
   { name: "Claude", src: "https://cdn.simpleicons.org/anthropic" },
-  { name: "LangChain", src: "https://cdn.simpleicons.org/langchain" },
-  { name: "Stripe", src: "https://cdn.simpleicons.org/stripe" },
-  { name: "Grafana", src: "https://cdn.simpleicons.org/grafana" },
-  { name: "TypeScript", src: "https://cdn.simpleicons.org/typescript" },
+  { name: "Google Sheets", src: "https://cdn.simpleicons.org/googlesheets" },
+  { name: "Slack", src: "https://cdn.simpleicons.org/slack" },
+  { name: "Motion", src: "https://cdn.simpleicons.org/motion" },
 ];
 
 export const TechMarquee: React.FC = () => {
