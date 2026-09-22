@@ -197,7 +197,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="space-y-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
               <div className="flex items-end justify-between">
                 <AnimatedTitle
-                  text="Sélection de projets"
+                  text={projects.length > 0 ? "Sélection de projets" : "Projets à venir"}
                   className="font-display text-3xl sm:text-4xl font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter"
                 />
                 <motion.div variants={staggerItem}>
@@ -214,20 +214,15 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
 
-            <div className="selected-work-grid">
-              {pillars.map((item, i) => (
+            <div className={projects.length > 0 ? "selected-work-grid" : "min-h-[260px] flex items-center justify-center border border-zinc-200 dark:border-zinc-800 rounded-3xl bg-white/60 dark:bg-zinc-900/30"}>
+              {projects.length > 0 ? pillars.map((item, i) => (
                 <Link
                   to="/projets"
                   data-testid={`home-project-${i}`}
                   key={i}
                   className={`block ${item.span || ''}`}
                 >
-                  <motion.div
-                    variants={staggerItem}
-                    whileHover={{ y: -8 }}
-                    data-cursor="project"
-                    className="group selected-work-card"
-                  >
+                  <motion.div variants={staggerItem} whileHover={{ y: -8 }} data-cursor="project" className="group selected-work-card">
                     <div className="selected-work-image">
                       <img src={item.image} alt={item.title} loading="lazy" />
                       <span className="selected-work-index">{String(i + 1).padStart(2, '0')}</span>
@@ -241,8 +236,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </div>
                   </motion.div>
                 </Link>
-              ))}
-            </div>
+              )) : (
+                <div className="text-center px-6 py-16">
+                  <span className="chapter-meta">EN PRÉPARATION</span>
+                  <h3 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tighter mt-4">Les premiers projets arrivent bientôt.</h3>
+                  <p className="max-w-xl mx-auto mt-4 text-zinc-500 dark:text-zinc-400 leading-relaxed">Cette section accueillera progressivement les systèmes et automatisations que je construis et documente.</p>
+                </div>
+              )}            </div>
           </motion.div>
         </section>
 
