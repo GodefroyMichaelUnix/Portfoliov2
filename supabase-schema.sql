@@ -325,3 +325,31 @@ CREATE POLICY "Authenticated users can manage tech logos"
   TO authenticated
   USING (bucket_id = 'tech-logos')
   WITH CHECK (bucket_id = 'tech-logos');
+
+
+-- Final RLS cleanup for tech_stack
+DROP POLICY IF EXISTS "Authenticated users can manage tech stack" ON public.tech_stack;
+
+DROP POLICY IF EXISTS "Authenticated users can insert tech stack" ON public.tech_stack;
+CREATE POLICY "Authenticated users can insert tech stack"
+  ON public.tech_stack
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (TRUE);
+
+DROP POLICY IF EXISTS "Authenticated users can update tech stack" ON public.tech_stack;
+CREATE POLICY "Authenticated users can update tech stack"
+  ON public.tech_stack
+  FOR UPDATE
+  TO authenticated
+  USING (TRUE)
+  WITH CHECK (TRUE);
+
+DROP POLICY IF EXISTS "Authenticated users can delete tech stack" ON public.tech_stack;
+CREATE POLICY "Authenticated users can delete tech stack"
+  ON public.tech_stack
+  FOR DELETE
+  TO authenticated
+  USING (TRUE);
+
+DROP INDEX IF EXISTS public.tech_stack_sort_order_idx;
