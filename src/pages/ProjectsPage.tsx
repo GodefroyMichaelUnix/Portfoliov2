@@ -90,6 +90,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects }) => {
             </p>
           </motion.div>
         ) : (
+        <>
         {/* Minimal Project Feed */}
         <motion.div 
           variants={staggerContainer}
@@ -179,6 +180,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ projects }) => {
             ))}
           </AnimatePresence>
         </motion.div>
+        </>
         )}
       </div>
     </PageTransition>
