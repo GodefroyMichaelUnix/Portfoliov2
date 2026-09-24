@@ -285,6 +285,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                 {formStatus === 'success' ? (
                   <motion.div 
                     key="success"
+                    role="status"
+                    aria-live="polite"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
@@ -338,6 +340,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
                         role="alert"
+                        aria-live="assertive"
                         data-testid="contact-error-notice"
                         className="p-4 rounded-[16px] bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-xs font-medium flex items-start gap-3"
                       >
@@ -379,8 +382,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest pl-2">Besoin</label>
+                    <fieldset className="space-y-2">
+                      <legend className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest pl-2">Besoin</legend>
                       <div className="grid grid-cols-2 gap-3">
                         {[
                           { id: 'cdi', label: 'CDI' },
@@ -405,7 +408,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </fieldset>
 
                     <div className="space-y-2">
                       <label htmlFor="contact-message" className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest pl-2">Message</label>
