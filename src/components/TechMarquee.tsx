@@ -85,7 +85,6 @@ export const TechMarquee: React.FC = () => {
           })}
         </motion.div>
       </div>
-    </div>
     </section>
   );
 };
