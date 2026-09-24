@@ -180,6 +180,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
                     onClick={handleCopyEmail}
                     className="p-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors shrink-0 cursor-pointer"
                     title="Copier l'adresse"
+                    aria-label={copiedEmail ? "Adresse email copiée" : "Copier l'adresse email"}
                   >
                     {copiedEmail ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
                   </button>
