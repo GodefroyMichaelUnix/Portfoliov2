@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { portfolioService } from '../services/portfolioService';
 import { supabase } from '../lib/supabase';
 import type { TechStackItem } from '../types/portfolio';
@@ -14,6 +14,7 @@ function getStorageUrl(path?: string): string | undefined {
 export const TechMarquee: React.FC = () => {
   const [logos, setLogos] = useState<TechStackItem[]>([]);
   const [failedStorage, setFailedStorage] = useState<Record<string, boolean>>({});
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     let cancelled = false;
@@ -36,7 +37,7 @@ export const TechMarquee: React.FC = () => {
   if (logos.length === 0) return null;
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto">
+    <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto" aria-label="Technologies utilisées">
       <div
         className="w-full overflow-hidden py-6 sm:py-8 relative"
         style={{
@@ -46,12 +47,12 @@ export const TechMarquee: React.FC = () => {
       >
         <motion.div
           className="flex items-center gap-16 md:gap-20 w-max"
-          animate={{ x: ['0%', '-50%'] }}
-          transition={{
-            ease: 'linear',
-            duration: 24,
-            repeat: Infinity,
-          }}
+          animate={reduced ? { x: '0%' } : { x: ['0%', '-50%'] }}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : { ease: 'linear', duration: 24, repeat: Infinity }
+          }
         >
           {[...logos, ...logos].map((tech, index) => {
             const storageUrl = getStorageUrl(tech.storagePath);
@@ -85,5 +86,6 @@ export const TechMarquee: React.FC = () => {
         </motion.div>
       </div>
     </div>
+    </section>
   );
 };
