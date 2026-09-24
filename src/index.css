@@ -771,10 +771,18 @@ textarea:disabled {
   line-height: 1.7;
 }
 
-.studio-page .text-zinc-500,
-.studio-page .text-zinc-400,
-.studio-page .text-zinc-600 {
-  color: var(--studio-muted);
+.text-zinc-500,
+.text-zinc-400,
+.text-zinc-600,
+.text-zinc-500\/90,
+.text-zinc-400\/90 {
+  color: var(--studio-muted) !important;
+}
+
+.dark .text-zinc-400,
+.dark .text-zinc-500,
+.dark .text-zinc-600 {
+  color: var(--studio-muted) !important;
 }
 
 .skills-page .text-[9px],
@@ -916,5 +924,30 @@ textarea:disabled {
   button,
   a {
     forced-color-adjust: auto;
+  }
+}
+
+/* High-contrast primary actions */
+#navbar-contact-cta,
+#navbar-contact-compact {
+  background-color: var(--studio-orange) !important;
+}
+
+#navbar-contact-cta:hover,
+#navbar-contact-compact:hover {
+  background-color: #963306 !important;
+}
+
+.studio-page .studio-cta p,
+.studio-page .studio-cta li {
+  color: inherit;
+}
+
+@media (max-width: 767px) {
+  #navbar-contact-compact {
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 !important;
   }
 }
