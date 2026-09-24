@@ -10,7 +10,8 @@ export const PageIntro = ({ number, label, title, accent, description, children 
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (window.history.length > 1) {
+    const referrerIsInternal = document.referrer.startsWith(window.location.origin);
+    if (referrerIsInternal && window.history.length > 1) {
       navigate(-1);
       return;
     }
