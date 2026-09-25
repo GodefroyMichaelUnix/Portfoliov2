@@ -676,11 +676,11 @@ a:not(.nav-plain-link):not(.nav-disclosure):not(.explorer-link):not(.mobile-refe
   text-underline-offset: 0.18em;
 }
 
-.text-[7px],
-.text-[8px],
-.text-[9px],
-.text-[10px],
-.text-[11px] {
+.text-\[7px\],
+.text-\[8px\],
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\] {
   font-size: 12px !important;
   line-height: 1.45 !important;
 }
@@ -785,21 +785,21 @@ textarea:disabled {
   color: var(--studio-muted) !important;
 }
 
-.skills-page .text-[9px],
-.skills-page .text-[10px],
-.skills-page .text-[11px],
-.projects-page .text-[10px],
-.projects-page .text-[11px] {
+.skills-page .text-\[9px\],
+.skills-page .text-\[10px\],
+.skills-page .text-\[11px\],
+.projects-page .text-\[10px\],
+.projects-page .text-\[11px\] {
   font-size: 12px !important;
 }
 
-.workflow-diagram .text-[9px] {
+.workflow-diagram .text-\[9px\] {
   font-size: 12px !important;
   opacity: .85 !important;
 }
 
-.contact-page .text-[10px],
-.contact-page .text-[11px],
+.contact-page .text-\[10px\],
+.contact-page .text-\[11px\],
 .contact-page .text-xs {
   font-size: 13px !important;
 }

@@ -2,3 +2,4 @@
 
 [functions.send-contact-message]
 verify_jwt = false
+# Set ALLOWED_ORIGINS as a Supabase secret for explicitly approved preview URLs.

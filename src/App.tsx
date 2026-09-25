@@ -5,7 +5,7 @@
  * Stack: React 19 + TypeScript + Tailwind CSS + React Router + Motion
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MotionConfig } from 'motion/react';
 import { SoundProvider } from './context/SoundContext';
@@ -33,13 +33,13 @@ import { AutomationBackground } from './components/AutomationBackground';
 import { SmoothScroll } from './components/SmoothScroll';
 import { CustomCursor } from './components/CustomCursor';
 
-import { HomePage } from './pages/HomePage';
-import { ProjectsPage } from './pages/ProjectsPage';
-import { SkillsPage } from './pages/SkillsPage';
-import { CertificationsPage } from './pages/CertificationsPage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { MakingOfPage } from './pages/MakingOfPage';
+const HomePage = lazy(() => import('./pages/HomePage').then(({ HomePage }) => ({ default: HomePage })));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage').then(({ ProjectsPage }) => ({ default: ProjectsPage })));
+const SkillsPage = lazy(() => import('./pages/SkillsPage').then(({ SkillsPage }) => ({ default: SkillsPage })));
+const CertificationsPage = lazy(() => import('./pages/CertificationsPage').then(({ CertificationsPage }) => ({ default: CertificationsPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then(({ AboutPage }) => ({ default: AboutPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(({ ContactPage }) => ({ default: ContactPage })));
+const MakingOfPage = lazy(() => import('./pages/MakingOfPage').then(({ MakingOfPage }) => ({ default: MakingOfPage })));
 
 const initialProfile: ProfileInfo = {
   name: '',
@@ -158,6 +158,7 @@ export default function App() {
 
           {/* Main Content Area: Multi-Page Routing */}
           <main id="main-content" className="relative z-10 pt-28 pb-16 flex-1">
+            <Suspense fallback={<div className="min-h-[40vh]" aria-busy="true" aria-label="Chargement de la page" />}>
             <Routes>
               <Route
                 path="/"
@@ -207,6 +208,7 @@ export default function App() {
               {/* Fallback route */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            </Suspense>
           </main>
 
           {/* Footer */}

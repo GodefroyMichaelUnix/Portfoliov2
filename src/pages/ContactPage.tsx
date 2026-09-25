@@ -51,6 +51,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [formStatus, setFormStatus] = useState<FormStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [requestId, setRequestId] = useState(() => crypto.randomUUID());
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -59,11 +60,15 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
     honeypot: ''
   });
 
-  const handleCopyEmail = (e: React.MouseEvent) => {
+  const handleCopyEmail = async (e: React.MouseEvent) => {
     e.preventDefault();
-    navigator.clipboard.writeText(profile.contact.email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2000);
+    try {
+      await navigator.clipboard.writeText(profile.contact.email);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {
+      setErrorMessage("La copie automatique n'est pas disponible. Vous pouvez sélectionner l'adresse email.");
+    }
   };
 
   const handleResetForm = () => {
@@ -93,7 +98,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
           email: formData.email.trim(),
           projectType: formData.projectType,
           message: formData.message.trim(),
-          honeypot: formData.honeypot
+          honeypot: formData.honeypot,
+          requestId
         }
       });
 
@@ -123,6 +129,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile }) => {
         message: '',
         honeypot: ''
       });
+      setRequestId(crypto.randomUUID());
     } catch (err: unknown) {
       console.error('Erreur lors de la soumission du formulaire :', err);
       const errMsg = err instanceof Error ? err.message : String(err);

@@ -131,6 +131,10 @@ CREATE TABLE IF NOT EXISTS public.contact_messages (
   email TEXT NOT NULL,
   project_type TEXT NOT NULL CHECK (project_type IN ('cdi', 'freelance', 'audit', 'autre')),
   message TEXT NOT NULL,
+  request_id UUID UNIQUE,
+  source_hash TEXT,
+  delivery_status TEXT NOT NULL DEFAULT 'pending' CHECK (delivery_status IN ('pending', 'sent', 'failed')),
+  resend_message_id TEXT,
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -236,9 +240,9 @@ CREATE POLICY "Public select making_of_stack"
   USING (true);
 
 -- Politiques pour les messages de contact (contact_messages)
--- Insertion autorisée pour réceptionner les messages (Edge Function / API)
+-- L'Edge Function utilise la service role key et contourne RLS. Aucun client
+-- public ne doit pouvoir contourner sa validation et sa protection anti-abus.
 DROP POLICY IF EXISTS "Allow insert for contact_messages" ON public.contact_messages;
-CREATE POLICY "Allow insert for contact_messages" ON public.contact_messages FOR INSERT WITH CHECK (true);
 -- Remarque de sécurité : Aucun droit SELECT public n'est accordé. Seule la clé de service ou
 -- l'administrateur connecté au dashboard Supabase peut consulter les messages reçus.
 
@@ -313,8 +317,8 @@ CREATE POLICY "Authenticated users can manage tech stack"
   ON public.tech_stack
   FOR ALL
   TO authenticated
-  USING (TRUE)
-  WITH CHECK (TRUE);
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 GRANT INSERT, UPDATE, DELETE ON public.tech_stack TO authenticated;
 
@@ -323,8 +327,8 @@ CREATE POLICY "Authenticated users can manage tech logos"
   ON storage.objects
   FOR ALL
   TO authenticated
-  USING (bucket_id = 'tech-logos')
-  WITH CHECK (bucket_id = 'tech-logos');
+  USING (bucket_id = 'tech-logos' AND (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK (bucket_id = 'tech-logos' AND (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 
 -- Final RLS cleanup for tech_stack
@@ -335,21 +339,21 @@ CREATE POLICY "Authenticated users can insert tech stack"
   ON public.tech_stack
   FOR INSERT
   TO authenticated
-  WITH CHECK (TRUE);
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 DROP POLICY IF EXISTS "Authenticated users can update tech stack" ON public.tech_stack;
 CREATE POLICY "Authenticated users can update tech stack"
   ON public.tech_stack
   FOR UPDATE
   TO authenticated
-  USING (TRUE)
-  WITH CHECK (TRUE);
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 DROP POLICY IF EXISTS "Authenticated users can delete tech stack" ON public.tech_stack;
 CREATE POLICY "Authenticated users can delete tech stack"
   ON public.tech_stack
   FOR DELETE
   TO authenticated
-  USING (TRUE);
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 DROP INDEX IF EXISTS public.tech_stack_sort_order_idx;

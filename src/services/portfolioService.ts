@@ -18,6 +18,7 @@ import {
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
 import type { Json } from '../lib/database.types';
+import { safeExternalUrl } from '../lib/url';
 
 type JsonObject = { [key: string]: Json | undefined };
 
@@ -89,12 +90,12 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
 
     const contact = {
       email: getString(rawContact, 'email'),
-      linkedin: getString(rawContact, 'linkedin'),
-      upwork: getString(rawContact, 'upwork'),
-      github: getString(rawContact, 'github'),
-      fiverr: getOptionalString(rawContact, 'fiverr'),
-      malt: getOptionalString(rawContact, 'malt'),
-      instagram: getOptionalString(rawContact, 'instagram')
+      linkedin: safeExternalUrl(getString(rawContact, 'linkedin')) || '',
+      upwork: safeExternalUrl(getString(rawContact, 'upwork')) || '',
+      github: safeExternalUrl(getString(rawContact, 'github')) || '',
+      fiverr: safeExternalUrl(getOptionalString(rawContact, 'fiverr')),
+      malt: safeExternalUrl(getOptionalString(rawContact, 'malt')),
+      instagram: safeExternalUrl(getOptionalString(rawContact, 'instagram'))
     };
 
     const stats = Array.isArray(data.stats)
@@ -147,10 +148,10 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       location: data.location || '',
       contact,
       stats,
-      avatarUrl: data.avatar_url || '',
-      heroPhotoUrl: data.hero_photo_url || '',
-      presentationVideoUrl: data.presentation_video_url || '',
-      presentationVideoPoster: data.presentation_video_poster || '',
+      avatarUrl: safeExternalUrl(data.avatar_url) || '',
+      heroPhotoUrl: safeExternalUrl(data.hero_photo_url) || '',
+      presentationVideoUrl: safeExternalUrl(data.presentation_video_url) || '',
+      presentationVideoPoster: safeExternalUrl(data.presentation_video_poster) || '',
       aboutPageLabel: data.about_page_label || '',
       aboutPageTitle: data.about_page_title || '',
       aboutPageAccent: data.about_page_accent || '',
@@ -226,8 +227,8 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
         metrics,
         architectureSummary,
         featured: Boolean(row.featured),
-        demoUrl: row.demo_url || undefined,
-        githubUrl: row.github_url || undefined,
+        demoUrl: safeExternalUrl(row.demo_url),
+        githubUrl: safeExternalUrl(row.github_url),
         mockupType
       };
     });
@@ -260,7 +261,7 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
               tags: Array.isArray(s.tags)
                 ? getStringArray(s.tags)
                 : undefined,
-              imageUrl: getOptionalString(s, 'imageUrl')
+              imageUrl: safeExternalUrl(getOptionalString(s, 'imageUrl'))
             }))
         : [];
 
@@ -298,9 +299,9 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
         title: row.title,
         issuer: row.issuer,
         issueDate: row.issue_date || '',
-        logo: row.logo,
-        image: row.image || undefined,
-        verifyUrl: row.verify_url || '',
+        logo: safeExternalUrl(row.logo) || '',
+        image: safeExternalUrl(row.image),
+        verifyUrl: safeExternalUrl(row.verify_url) || '',
         skills,
         featured: Boolean(row.featured),
         summary: row.summary || ''
@@ -416,7 +417,7 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       title: row.title,
       category: row.category,
       level: typeof row.level === 'number' ? row.level : Number(row.level) || 1,
-      bgImage: row.bg_image || ''
+      bgImage: safeExternalUrl(row.bg_image) || ''
     }));
   }
 
@@ -443,7 +444,7 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
         id: row.id,
         title: row.title,
         description: row.description,
-        image: row.image,
+        image: safeExternalUrl(row.image) || '',
         tags,
         span: row.span || undefined
       };
@@ -495,7 +496,7 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       id: row.id,
       name: row.name,
       storagePath: row.storage_path || undefined,
-      fallbackUrl: row.fallback_url || undefined,
+      fallbackUrl: safeExternalUrl(row.fallback_url),
       altText: row.alt_text,
       sortOrder: row.sort_order,
       active: row.active,
