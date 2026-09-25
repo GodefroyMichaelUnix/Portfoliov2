@@ -4,7 +4,7 @@ type SoundState = { enabled: boolean; available: boolean; toggle: () => void; bo
 const SoundContext = createContext<SoundState>({ enabled: false, available: false, toggle: () => {}, boot: () => {} });
 
 export const SoundProvider = ({ children }: { children: React.ReactNode }) => {
-  const [enabled, setEnabled] = useState(() => localStorage.getItem('portfolio-sound') === 'on');
+  const [enabled, setEnabled] = useState(() => typeof window !== 'undefined' && localStorage.getItem('portfolio-sound') === 'on');
   const available = typeof window.AudioContext !== 'undefined';
   const context = useRef<AudioContext | null>(null);
   const active = useRef(enabled);
