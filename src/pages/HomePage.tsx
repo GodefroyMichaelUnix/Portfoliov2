@@ -23,6 +23,8 @@ import { FAQSection } from '../components/FAQSection';
 import { VideoPresentation } from '../components/VideoPresentation';
 import { Reveal } from '../components/Reveal';
 import { Pill, SectionHead } from '../components/Folio';
+import { ServiceRow, PassionTile, EmptyBlock, cascade } from '../components/ExtraBlocks';
+import { useServices, usePassions } from '../lib/extraContent';
 
 interface HomePageProps {
   profile: ProfileInfo;
@@ -85,6 +87,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   expertiseCards = [],
 }) => {
   const methodology = profile.methodology || [];
+  const services = useServices();
+  const passions = usePassions();
 
   return (
     <PageTransition>
@@ -93,7 +97,6 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         <section className="fb-panel fb-panel-tight" data-testid="home-tools">
           <div className="fb-tools">
-            <p>Les outils que j’utilise au quotidien pour relier vos systèmes.</p>
             <TechMarquee />
           </div>
         </section>
@@ -120,6 +123,19 @@ export const HomePage: React.FC<HomePageProps> = ({
               </Reveal>
             ))}
           </div>
+        </section>
+
+        <section className="fb-panel" data-testid="home-services">
+          <Reveal>
+            <SectionHead label="Mes services" title="Ce que je fais pour votre entreprise" cta={{ to: '/services', label: 'Voir tous les services', testId: 'home-all-services' }} />
+          </Reveal>
+          {services.items.length > 0 ? (
+            <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="fb-services-grid">
+              {services.items.slice(0, 6).map((service, i) => <ServiceRow key={service.id} service={service} index={i} />)}
+            </motion.div>
+          ) : services.loaded && (
+            <EmptyBlock testId="home-services-empty" label="Bientôt" title="Les services arrivent." text="La liste détaillée des services sera publiée ici très prochainement." />
+          )}
         </section>
 
         <section className="fb-panel" data-testid="home-expertise">
@@ -163,6 +179,19 @@ export const HomePage: React.FC<HomePageProps> = ({
               </Reveal>
             )}
           </div>
+        </section>
+
+        <section className="fb-panel" data-testid="home-passions">
+          <Reveal>
+            <SectionHead label="Passions" title="Au-delà du travail" cta={{ to: '/passions', label: 'Voir plus', testId: 'home-all-passions' }} />
+          </Reveal>
+          {passions.items.length > 0 ? (
+            <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="fb-passions-grid">
+              {passions.items.slice(0, 4).map((passion, i) => <PassionTile key={passion.id} passion={passion} index={i} />)}
+            </motion.div>
+          ) : passions.loaded && (
+            <EmptyBlock testId="home-passions-empty" label="Bientôt" title="Les passions arrivent." text="Cette section accueillera bientôt ce qui m’anime au quotidien, en dehors du travail." />
+          )}
         </section>
 
         {workflows.length > 0 && (

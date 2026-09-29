@@ -14,7 +14,9 @@ import {
   Moon,
   BadgeCheck,
   Code2,
-  ArrowUpRight
+  ArrowUpRight,
+  Briefcase,
+  Heart
 } from 'lucide-react';
 import { ExplorerMenu } from './ExplorerMenu';
 import { ProfileInfo } from '../types/portfolio';
@@ -66,10 +68,12 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 
   const navLinks = [
     { label: 'Accueil', path: '/', icon: Home, description: 'Le portfolio en un regard' },
+    { label: 'Services', path: '/services', icon: Briefcase, description: 'Ce que je fais pour votre entreprise' },
     { label: 'Projets', path: '/projets', icon: Layers, description: 'Des idées mises en pratique' },
     { label: 'Compétences', path: '/competences', icon: Wrench, description: 'Outils et savoir-faire' },
     { label: 'Certifications', path: '/certifications', icon: Award, description: 'Apprendre et progresser' },
     { label: 'À propos', path: '/a-propos', icon: User, description: 'L’humain derrière les systèmes' },
+    { label: 'Passions', path: '/passions', icon: Heart, description: 'Ce qui m’anime au quotidien' },
     { label: 'Coulisses', path: '/coulisses', icon: Code2, description: 'Du premier brief au dernier pixel' },
   ];
 
@@ -121,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
 
         <nav id="desktop-nav" aria-label="Navigation principale" className="desktop-reference-nav hidden lg:flex">
           <ExplorerMenu />
-          {navLinks.filter(link => ['/', '/projets', '/coulisses'].includes(link.path)).map(link => (
+          {navLinks.filter(link => ['/', '/services', '/projets', '/coulisses'].includes(link.path)).map(link => (
             <NavLink
               key={link.path}
               to={link.path}

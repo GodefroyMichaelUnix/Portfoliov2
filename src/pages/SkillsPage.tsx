@@ -124,55 +124,22 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ skills }) => {
                   </div>
 
                   <p className="max-w-xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-                    {category.skills.length} compétences présentées comme de petites unités de travail,
-                    avec leur usage concret, leur niveau et leurs outils associés.
+                    {category.skills.length} compétences présentées avec leur usage concret.
                   </p>
                 </div>
 
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3">
                   {category.skills.map((skill, skillIdx) => (
                     <TiltCard
                       key={skill.name}
                       variants={staggerItem}
                       whileHover={{ y: -8 }}
                       data-testid={`skill-${category.id}-${skillIdx}`}
-                      className="group glass-card overflow-hidden p-6"
+                      className="group fb-skill-card"
                     >
-                      <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-orange-100/50 dark:bg-orange-500/5 blur-2xl pointer-events-none" />
-
-                      <div className="relative flex items-start justify-between gap-4">
-                        <SkillVisual skill={skill} />
-                        <span className="px-2.5 py-1.5 rounded-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-mono text-[9px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                          {skill.levelBadge || 'En cours'}
-                        </span>
-                      </div>
-
-                      <div className="relative mt-5">
-                        <h3 className="text-base sm:text-lg font-bold tracking-tight text-zinc-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                          {skill.name}
-                        </h3>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-6 mt-2 min-h-[48px]">
-                          {skill.useCase}
-                        </p>
-                      </div>
-
-                      {skill.tags && skill.tags.length > 0 && (
-                        <div className="relative flex flex-wrap gap-1.5 mt-5">
-                          {skill.tags.map(tag => (
-                            <span
-                              key={tag}
-                              className="px-2.5 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 text-[10px] font-bold"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="relative flex items-center justify-between gap-3 mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                        <span className="chapter-meta">MODULE {String(skillIdx + 1).padStart(2, '0')}</span>
-                        <ArrowUpRight className="skill-card-arrow w-4 h-4 text-zinc-400 group-hover:text-orange-500" />
-                      </div>
+                      <div className="fb-skill-logo"><SkillVisual skill={skill} /></div>
+                      <h3 className="fb-skill-name">{skill.name}</h3>
+                      {skill.useCase && <p className="fb-skill-text">{skill.useCase}</p>}
                     </TiltCard>
                   ))}
                 </div>

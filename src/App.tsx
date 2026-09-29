@@ -38,6 +38,8 @@ const SkillsPage = lazy(() => import('./pages/SkillsPage').then(({ SkillsPage })
 const CertificationsPage = lazy(() => import('./pages/CertificationsPage').then(({ CertificationsPage }) => ({ default: CertificationsPage })));
 const AboutPage = lazy(() => import('./pages/AboutPage').then(({ AboutPage }) => ({ default: AboutPage })));
 const ContactPage = lazy(() => import('./pages/ContactPage').then(({ ContactPage }) => ({ default: ContactPage })));
+const ServicesPage = lazy(() => import('./pages/ServicesPage').then(({ ServicesPage }) => ({ default: ServicesPage })));
+const PassionsPage = lazy(() => import('./pages/PassionsPage').then(({ PassionsPage }) => ({ default: PassionsPage })));
 const MakingOfPage = lazy(() => import('./pages/MakingOfPage').then(({ MakingOfPage }) => ({ default: MakingOfPage })));
 
 const initialProfile: ProfileInfo = {
@@ -96,6 +98,8 @@ const prefetchPages = () => Promise.all([
   import('./pages/AboutPage'),
   import('./pages/ContactPage'),
   import('./pages/MakingOfPage'),
+  import('./pages/ServicesPage'),
+  import('./pages/PassionsPage'),
 ]);
 
 export default function App() {
@@ -223,6 +227,8 @@ export default function App() {
                   />
                 }
               />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/passions" element={<PassionsPage />} />
               {/* Fallback route */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </AnimatedRoutes>

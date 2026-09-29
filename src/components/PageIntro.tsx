@@ -12,6 +12,8 @@ const PAGES: Record<string, { name: string; image: string }> = {
   '04': { name: 'À propos', image: '/art/ref/about.jpg' },
   '05': { name: 'Coulisses', image: '/art/ref/coulisses.jpg' },
   '06': { name: 'Contact', image: '/art/ref/contact.jpg' },
+  '07': { name: 'Mes services', image: '/art/ref/services.jpg' },
+  '08': { name: 'Passions', image: '/art/ref/passions.jpg' },
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -51,7 +53,7 @@ export const PageIntro = ({ number, label, title, accent, description, children 
           <motion.span className="fb-label" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: EASE }}>
             {label}
           </motion.span>
-          <h1 className="page-hero-title" data-testid={`page-title-${number}`}>
+          <h1 className={`page-hero-title ${page.name.length > 9 ? 'is-long' : ''}`} data-testid={`page-title-${number}`}>
             <span className="title-mask">
               <motion.span initial={reduced ? false : { y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.15, ease: EASE }}>{page.name}</motion.span>
             </span>

@@ -34,7 +34,7 @@ export const Hero: React.FC<HeroProps> = ({ profile, skills }) => {
           <motion.span {...rise(0.1)} className="fb-hero-hello">Salut, je suis</motion.span>
           <h1 className="fb-hero-name" data-testid="hero-title">
             <span className="title-mask">
-              <motion.span initial={reduced ? false : { y: '105%' }} animate={{ y: 0 }} transition={{ duration: 1.2, delay: 0.2, ease: EASE }}>
+              <motion.span initial={reduced ? false : { y: '105%' }} animate={{ y: 0 }} transition={{ duration: 1.2, delay: 0.2, ease: EASE }} className="fb-gold">
                 {profile.name}
               </motion.span>
             </span>

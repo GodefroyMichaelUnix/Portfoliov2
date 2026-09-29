@@ -21,10 +21,12 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
         {/* Center links */}
         <div className="flex flex-wrap justify-center items-center gap-6 text-xs font-bold text-zinc-500 dark:text-zinc-400">
           <Link data-testid="footer-home" to="/" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Accueil</Link>
+          <Link data-testid="footer-services" to="/services" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Services</Link>
           <Link data-testid="footer-projects" to="/projets" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Projets</Link>
           <Link data-testid="footer-skills" to="/competences" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Compétences</Link>
           <Link data-testid="footer-certifications" to="/certifications" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Certifications</Link>
           <Link data-testid="footer-about" to="/a-propos" className="hover:text-zinc-900 dark:hover:text-white transition-colors">À propos</Link>
+          <Link data-testid="footer-passions" to="/passions" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Passions</Link>
           <Link data-testid="footer-making-of" to="/coulisses" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Coulisses</Link>
           <Link data-testid="footer-contact" to="/contact" className="hover:text-zinc-900 dark:hover:text-white transition-colors">Contact</Link>
         </div>

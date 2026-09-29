@@ -1,101 +1,96 @@
-# Portfolio refait sur le modèle complet de la référence « Folioblox »
+# Portfolio pleine largeur, pages « Mes services » et « Passions », nom doré animé
 
-Le portfolio de Michaël Godefroy reprend page par page la mise en page, les couleurs, la typographie et les composants de la référence fournie.
-Tout le contenu reste celui de Michaël, tiré de Supabase. Seules des photos d'ambiance générées remplacent provisoirement les photos de la référence.
+Cette évolution garde l'identité Folioblox, mais pose tout le contenu directement sur le fond sombre, sur toute la largeur de l'écran, sans grandes cartes englobantes.
+Elle ajoute deux nouvelles pages alimentées par Supabase, « Mes services » et « Passions », avec chacune un aperçu sur l'accueil, et corrige les points relevés.
 
 ## Pour qui
-- Les visiteurs (clients, recruteurs) : ils découvrent un portfolio sombre, éditorial et haut de gamme, au même niveau que la référence.
-- Michaël : il veut un rendu fidèle à la référence, avec ses propres informations.
+- **Les visiteurs (clients, recruteurs)** : ils voient un site plus ample et plus premium. Ils comprennent immédiatement ce que Michaël peut faire pour leur entreprise et découvrent la personne derrière le travail.
+- **Michaël** : il gère lui-même ses services et ses passions depuis Supabase, sans toucher au code.
 
 ## Fonctionnalités et expérience
 
-### Langage visuel commun (toutes les pages)
-- **Fond** : un noir quasi uni. Le site est une colonne centrée faite de grands panneaux sombres aux coins arrondis, empilés et séparés par de fines marges, comme sur la référence.
-  - Le fond animé actuel (réseau de lignes, halos, grille) est retiré.
-- **En-tête de chaque page** : un grand panneau photo aux coins arrondis.
-  - La photo est plein cadre, en duotone coloré, avec le topbar intégré en haut.
-  - En bas à gauche : un petit libellé coloré et un titre géant blanc et gras (« Projets », « À propos », « Contact »…).
-  - À droite : une phrase forte et un court texte.
-- **Couleurs des panneaux d'en-tête**, comme sur la référence :
-  - Accueil : orange ;
-  - Projets : bleu-vert et orange ;
-  - À propos : violet ;
-  - Contact : bleu-vert et orange ;
-  - pour les pages absentes de la référence : Compétences en rouge-orangé, Certifications en ambre doré, Coulisses en vert-bleu.
-- **Motif de section récurrent** : un petit libellé orange, un grand titre blanc gras à gauche, et à droite une phrase en gras, un petit texte gris et un bouton pill orange.
-- **Boutons** : de petits pills arrondis avec une flèche dans un cercle.
-  - La version principale est orange avec un cercle blanc.
-  - La version du topbar est blanche avec un cercle orange (« Me contacter »).
-- **Typographie** : un sans-serif géométrique gras pour tous les titres (Plus Jakarta Sans, déjà présente sur le site) et la même police pour le texte.
-  - Les italiques Instrument Serif et la police Archivo sont retirés.
-- **Topbar** : il est intégré au panneau d'en-tête, avec le nom de Michaël à gauche, les liens à droite et le pill « Me contacter ».
-  - Au scroll, il devient une barre sombre compacte.
-  - Il conserve Explorer, le son et le bouton clair/sombre, en petites icônes.
-- **Cartes** : elles sont sombres, légèrement plus claires que le fond, avec des coins arrondis.
-  - Les cartes de services ont un fin trait orange en haut.
-  - La carte mise en avant des offres est entièrement orange.
-- **Listes éditoriales** : des lignes séparées par des filets fins, avec une catégorie en orange, le nom en blanc, un court texte gris et l'année à droite (style « Latest Projects » et « Awards »).
-- **Animations** : l'image du panneau d'en-tête zoome très lentement pendant que le titre monte à l'entrée.
-  - Les sections se révèlent en fondu au scroll.
-  - Les images zooment légèrement au survol, et les cartes et boutons se soulèvent.
-  - Les logos défilent, et la galerie en éventail s'ouvre.
-  - Le mouvement reste sobre.
-- **Conservés** : le curseur personnalisé, le défilement Lenis, les sons discrets, l'animation de changement de thème, les transitions entre pages et les textes agrandis et contrastés.
+### 1. Mise en page pleine largeur, sans cartes englobantes
+- Les grands panneaux arrondis qui entourent chaque section sont supprimés. Le contenu est posé directement sur le fond sombre, de gauche à droite de l'écran, avec des marges latérales confortables.
+- Les sections sont séparées par l'espace et par de fins filets, et non plus par des blocs.
+- **En-têtes photo** : ils passent en pleine largeur, bord à bord, sans marges ni coins arrondis. Le topbar est posé dessus, puis devient la barre sombre compacte au scroll.
+- **Contenu intérieur** : les cartes de contenu (offres, services, compétences…) restent, mais s'étalent sur toute la largeur disponible, avec plus de colonnes sur les grands écrans.
+- **Pied de page** : il est posé lui aussi directement sur le fond.
+- En mode clair, la même logique s'applique sur le fond blanc cassé.
 
-### Accueil
-1. **Panneau orange** : « Salut, je suis », le nom en géant, le titre et la proposition de valeur à droite. En bas, une rangée #01, #02, #03 avec les catégories de compétences.
-2. **Bandeau des outils** : une légende et le défilé des logos de la Tech Stack.
-3. **« Derrière les systèmes »** : le titre et le texte de présentation de l'accueil avec le lien vers À propos, puis une rangée de trois images noir et blanc légendées Automatisation, Intelligence artificielle et Développement.
-4. **Galerie en éventail**, centrée : le titre Savoir-faire, son texte et son bouton. Les images des cartes d'expertise en éventail, puis une rangée #01 à #04 avec les étapes de la méthodologie.
-5. **« À propos de moi »** : à gauche, le titre et un extrait de la bio avec le bouton « En savoir plus » ; à droite, le vrai portrait de Michaël, en grand et teinté orange.
-6. **Workflows et vidéo de présentation** : conservés et remis dans le style.
-7. **Offres** : un titre centré et des cartes de prix. La deuxième carte est mise en avant en orange.
-8. **Projets récents** : une liste éditoriale des projets, avec un état vide soigné tant qu'il n'y a aucun projet.
-9. **Certifications** : sur le modèle « Awards », une grande image à gauche et la liste des certifications à droite (organisme, titre, année).
-10. **Coulisses** : un bloc « libellé, titre, texte et bouton » vers la page Coulisses.
-11. **FAQ**, puis un **bloc de contact final**.
+### 2. Accueil
+- **Bandeau des outils** : la phrase « Les outils que j'utilise au quotidien pour relier vos systèmes. » est retirée. Seules les icônes des outils défilent, sur toute la largeur.
+- **Nom animé** : « Michaël Godefroy », en haut, reçoit un effet doré. Un reflet brillant traverse les lettres en boucle, comme sur de l'or poli. Pour les visiteurs qui réduisent les animations, le nom reste doré mais fixe.
+- **Nouvel aperçu « Mes services »** : il est placé juste après « Derrière les systèmes ». Il montre les 6 premiers services et un bouton « Voir tous les services ».
+- **Nouvel aperçu « Passions »** : il est placé juste après « À propos de moi ». Il montre 3 ou 4 passions en images et un bouton « Voir plus ».
 
-### Pages intérieures
-- **Projets** : un panneau d'en-tête, un bloc d'introduction et une grille 2×2 de cartes avec image, nom, texte et pill « Voir ».
-  - La liste éditoriale « Projets récents » suit la grille.
-  - Tant que Supabase ne contient aucun projet, un état vide soigné s'affiche.
-  - Les filtres actuels sont conservés.
-- **À propos** : un panneau violet, puis un bloc « Qui je suis » avec le titre du parcours, la bio et le portrait.
-  - Ensuite, une section services « Ce que je peux faire pour vous » en cartes à trait orange, alimentées par les expertises de la page.
-  - La timeline du parcours, la citation, la méthodologie et le bloc de clôture sont remis dans le style.
-- **Contact** : un panneau d'en-tête, puis à gauche un titre fort avec les moyens de contact, et à droite le formulaire.
-  - Le formulaire a des champs sombres arrondis et un bouton orange pleine largeur.
-  - Son fonctionnement ne change pas.
-- **Compétences** : un panneau d'en-tête, puis chaque catégorie en « libellé et titre », avec ses compétences en cartes à trait orange (logo, niveau, usage, tags).
-- **Certifications** : un panneau d'en-tête, puis une présentation « Awards » avec une image et une liste. La fenêtre de détail d'une certification est conservée.
-- **Coulisses** : un panneau d'en-tête, puis le journal de fabrication en liste éditoriale numérotée. L'architecture, les flux, les rôles des IA et la stack passent en cartes et listes du même style.
+### 3. Nouvelle page « Mes services »
+- Elle a son propre en-tête photo pleine largeur, couleur cuivre et orange.
+- Elle contient une grande liste de services formulés en bénéfices pour l'entreprise, sans parler de stack. Par exemple : « J'automatise la saisie de vos factures », ou « Je connecte votre CRM à vos outils ».
+- Les services sont regroupés par catégorie : Automatisation, IA, Intégrations, Données, Développement sur mesure.
+- **Chaque service** affiche une icône, un titre fort et une phrase qui explique le bénéfice. Au survol, la ligne s'éclaire en orange et l'icône s'anime. Les services apparaissent en cascade au scroll.
+- La page se termine par un appel à l'action vers Contact.
+- **Contenu** : il vient d'une nouvelle table Supabase, `services`. Michaël peut ajouter, modifier, ordonner et masquer ses services.
+
+### 4. Nouvelle page « Passions »
+- Elle a son propre en-tête photo pleine largeur, couleur corail et rose.
+- Elle présente une galerie éditoriale des hobbies, en grandes images qui alternent avec leur titre et un court texte. Les images zooment doucement au survol et se révèlent au scroll.
+- **Contenu** : il vient d'une nouvelle table Supabase, `passions` (titre, texte, image, ordre, visible ou non).
+- **Images** : elles sont hébergées dans un espace de stockage Supabase public, `passion-images`, créé par le script.
+- **État vide** : tant qu'aucune passion n'est saisie, la page et l'aperçu de l'accueil affichent un état vide soigné.
+
+### 5. Page « Compétences »
+- **Titre** : le mot « Compétences » de l'en-tête s'affiche maintenant en entier. Sa taille s'adapte à la largeur de l'écran.
+- **Nouvelles cartes de compétences** (n8n, Python, etc.) :
+  - le logo est mis en valeur, en grand, dans un écrin sombre avec un halo orange qui s'intensifie et une légère animation au survol ;
+  - la carte n'affiche que le nom de la compétence et une courte phrase qui explique son usage ;
+  - le niveau, les tags et la mention « MODULE 01 » sont retirés ;
+  - les cartes sont disposées en grille pleine largeur et apparaissent en cascade.
+
+### 6. Navigation
+- « Services » devient un lien direct du topbar, à côté d'Accueil, Projets et Coulisses.
+- « Passions » rejoint le menu Explorer, avec Compétences, Certifications et À propos.
+- Les deux pages sont aussi ajoutées au menu mobile et au pied de page.
+
+### 7. Script SQL fourni
+- Un script prêt à coller dans l'éditeur SQL de Supabase :
+  - il crée les tables `services` et `passions`, avec une lecture publique sécurisée et aucune écriture publique ;
+  - il crée l'espace de stockage des images de passions.
+- **Services** : le script contient une première liste d'environ 15 services, rédigée à partir du profil de Michaël. Il peut la modifier.
+- **Passions** : le script ne contient aucune passion inventée, seulement un exemple en commentaire. Michaël saisit ses vraies passions.
+- Le script est aussi versionné dans le dossier des migrations Supabase du projet.
 
 ## Parcours utilisateur
-1. Le visiteur arrive sur le grand panneau orange : le nom de Michaël, son titre et ses domaines #01 à #03.
-2. En descendant, il enchaîne les panneaux sombres : les outils, la présentation, le savoir-faire en éventail, le portrait, les offres, les projets, les certifications et la FAQ.
-3. Il ouvre Projets, À propos ou Contact : chaque page s'ouvre sur son propre panneau coloré, avec un titre géant.
-4. Il bascule en mode clair : les panneaux d'en-tête gardent leurs couleurs, et le reste passe en clair.
-5. Il écrit à Michaël via le formulaire de contact, qui fonctionne comme aujourd'hui.
+1. Le visiteur arrive sur l'en-tête pleine largeur. Le nom de Michaël brille comme de l'or, et les icônes des outils défilent juste en dessous.
+2. En descendant, il voit les 6 premiers services, clique sur « Voir tous les services » et découvre la liste complète par catégorie.
+3. De retour sur l'accueil, il découvre les passions de Michaël après la section « À propos de moi », puis clique sur « Voir plus » pour ouvrir la page Passions.
+4. Sur Compétences, il voit le titre en entier et des cartes centrées sur les logos.
+5. Michaël colle le script dans Supabase, ajoute ses passions et leurs photos, et ajuste ses services. Le site se met à jour automatiquement.
 
 ## Ressenti UI/UX
-- Sombre, éditorial, premium et très structuré : de grands titres blancs gras, des petits libellés orange et beaucoup d'espace.
-- La couleur vient des photos des panneaux et de l'orange des boutons, pas d'effets de fond.
-- Des coins très arrondis, des filets fins, des animations calmes et précises.
+- Ample, aéré et premium : le contenu respire sur toute la largeur, sans effet « boîte dans une boîte ».
+- L'identité est conservée : fond sombre, grands titres blancs gras, libellés orange, pills avec flèche, filets fins, mode clair disponible.
+- Le doré du nom est la seule touche précieuse. Il reste élégant et discret dans son mouvement.
+- Le style des services se lit vite : chaque ligne est un bénéfice clair pour l'entreprise.
 
 ## Phases de mise en œuvre
-- **Phase 1 (MVP, réalisée maintenant)** : le langage visuel commun, l'accueil complet, et les pages Projets, À propos et Contact, qui ont un modèle direct dans la référence. Les pages Compétences, Certifications et Coulisses reçoivent le panneau d'en-tête et le style commun. Les photos d'ambiance sont générées. Vérification en sombre, en clair et sur mobile.
-- **Phase 2** : mise en page détaillée de Compétences, Certifications et Coulisses, remplacement des photos générées par tes vraies photos, et réglages après ton retour.
+- **Phase 1 (MVP, réalisée maintenant)** :
+  - mise en page pleine largeur sans panneaux et en-têtes bord à bord, sur toutes les pages ;
+  - nom doré animé et bandeau d'outils sans phrase ;
+  - correction du titre Compétences et nouvelles cartes de compétences ;
+  - pages Services et Passions avec leurs aperçus sur l'accueil et la navigation mise à jour ;
+  - script SQL avec la liste de services de départ ;
+  - vérification en sombre, en clair et sur mobile.
+- **Phase 2** :
+  - mise en page détaillée de Certifications et Coulisses dans ce nouveau style pleine largeur ;
+  - remplacement des photos générées par les vraies photos de Michaël ;
+  - réglages après son retour.
 - **Phase 3** : finitions (performances, accessibilité, réduction des animations), puis envoi sur GitHub via « Save to Github ».
 
 ## Hypothèses
-- **Photos générées** : une dizaine de photos d'ambiance sont créées pour l'instant.
-  - Elles montrent des silhouettes anonymes et des objets, au style cinématographique duotone, sans texte.
-  - Elles servent aux panneaux d'en-tête, aux trois images noir et blanc de l'accueil et à l'image des certifications.
-  - Elles ne sont jamais présentées comme Michaël ni comme ses projets, et restent faciles à remplacer.
-- Le vrai portrait de Michaël est utilisé dans le bloc « À propos de moi » de l'accueil et dans « Qui je suis » de la page À propos.
-- Les images déjà présentes dans Supabase (cartes d'expertise) alimentent la galerie en éventail.
-- **Mode sombre par défaut, mode clair conservé.** En clair, le fond devient blanc cassé, les panneaux sombres deviennent clairs avec du texte foncé, et les panneaux d'en-tête gardent leurs photos colorées.
-- Les sections de la référence sans contenu équivalent chez Michaël (témoignages, articles) ne sont pas ajoutées. Aucune information de la référence n'est reprise : les courts libellés d'interface sont écrits en français pour le site de Michaël.
-- Tout ce qui a été ajouté lors de la direction précédente (fond animé, topbar en verre, cartes 3D, hero précédent) est retiré ou remplacé, sauf les textes agrandis et les transitions entre pages.
-- Le fichier `AGENTS.md` est mis à jour pour décrire cette nouvelle identité, qui remplace l'ancienne.
-- Aucune modification de Supabase, du formulaire de contact ni du chargement des données. Aucune page ou fonctionnalité n'est ajoutée ou supprimée.
+- **En-têtes photo** : « Effectivement » est compris comme une préférence pour des en-têtes pleine largeur bord à bord, sans marges ni coins arrondis.
+- **Placement des services** : la question n'a pas reçu de réponse explicite. Par cohérence avec Passions, les services ont leur propre page et un aperçu de 6 services sur l'accueil.
+- **Tant que le script SQL n'est pas lancé**, les deux nouvelles pages affichent un état vide soigné, sans erreur. Michaël doit lancer le script lui-même dans Supabase, puis y ajouter ses passions et leurs photos.
+- **Liste de services de départ** : elle est rédigée à partir de son profil (automatisation, agents IA, intégrations d'API, pipelines de données, développement). Elle reste modifiable dans Supabase.
+- **Nouvelles photos** : deux photos d'ambiance générées sont ajoutées pour les en-têtes Services et Passions. Elles sont provisoires, comme les autres.
+- **Cartes de compétences** : le niveau et les tags sont masqués à l'affichage. Les données restent dans Supabase et ne sont pas supprimées.
+- **Aucune autre modification** : pas de changement des autres tables Supabase, du formulaire de contact ou du chargement des données existantes.
