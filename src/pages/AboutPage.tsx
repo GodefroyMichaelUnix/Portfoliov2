@@ -1,11 +1,11 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
+import { CheckCircle2 } from 'lucide-react';
 import { PageTransition } from '../components/PageTransition';
+import portraitFallback from '../assets/images/michael_portrait_transparent.png';
 import { ProfileInfo } from '../types/portfolio';
-import { PopoutPortrait } from '../components/PopoutPortrait';
-import { MagneticWrapper } from '../components/MagneticWrapper';
+import { TiltCard } from '../components/TiltCard';
+import { SectionHead, Pill } from '../components/Folio';
 import { PageIntro } from '../components/PageIntro';
 
 interface AboutPageProps {
@@ -17,25 +17,27 @@ const staggerContainer = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.12
     }
   }
 };
 
 const staggerItem = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 50, filter: 'blur(10px)' },
   show: { 
     opacity: 1, 
     y: 0, 
-    transition: {
-      type: "spring",
-      stiffness: 250,
-      damping: 25
-    }
+    filter: 'blur(0px)',
+    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
 export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
+  const reduced = useReducedMotion();
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+  const portraitY = useTransform(scrollY, [0, 900], [0, -70]);
+  const { scrollYProgress: railProgress } = useScroll({ target: timelineRef, offset: ['start 75%', 'end 55%'] });
   const journeyItems = (profile.aboutJourney && profile.aboutJourney.length > 0)
     ? profile.aboutJourney
     : [];
@@ -65,9 +67,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           className="pt-10 flex flex-col lg:flex-row gap-16 lg:gap-24"
         >
           <div className="lg:w-1/2 min-w-0 space-y-10">
-            <h2 className="chapter-meta">
-              01 / {profile.roleSubtitle || profile.title || ''}
-            </h2>
+            <div>
+              <span className="fb-label">Qui je suis</span>
+              <h2 className="fb-title">{profile.roleSubtitle || profile.title || ''}</h2>
+            </div>
             
             {profile.bioSummary && profile.bioSummary.length > 0 && (
               <div className="space-y-6 text-zinc-600 dark:text-zinc-400 text-lg font-light leading-relaxed">
@@ -76,32 +79,45 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
                 ))}
               </div>
             )}
-
-            {profile.aboutExpertise && profile.aboutExpertise.length > 0 && (
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                {profile.aboutExpertise.map((item, idx) => (
-                  <div key={idx} className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-[24px]">
-                    <span className="block text-sm font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest mb-1">{item.label}</span>
-                    <span className="block text-xs font-bold text-zinc-500 dark:text-zinc-400">{item.sub}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
-          <div className="lg:w-1/2 min-w-0 flex flex-col items-center justify-center">
-            <PopoutPortrait 
-              treatment="machine"
-              badgeText="L’HUMAIN / MG"
-              imageSrc={profile.heroPhotoUrl || profile.avatarUrl}
-              name={profile.name}
-            />
-            <div className="mt-4 px-6 py-2.5 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg text-center">
+          <motion.div style={reduced ? {} : { y: portraitY }} className="about-parallax lg:w-1/2 min-w-0 flex flex-col items-center justify-center">
+            {(
+              <div className="fb-portrait w-full max-w-[480px]" data-testid="about-portrait">
+                <img src={profile.heroPhotoUrl || profile.avatarUrl || portraitFallback} alt={profile.name} />
+              </div>
+            )}
+            <div className="mt-4 px-6 py-3 fb-card text-center">
               <span className="block font-black text-2xl tracking-tight text-zinc-900 dark:text-white">{profile.name}</span>
               {profile.location && <span className="block text-xs font-bold uppercase tracking-widest text-orange-500 mt-1">{profile.location}</span>}
             </div>
-          </div>
+          </motion.div>
         </motion.div>
+
+        {profile.aboutExpertise && profile.aboutExpertise.length > 0 && (
+          <section className="pt-24 pb-8" data-testid="about-services">
+            <SectionHead label="Services" title="Ce que je peux faire pour vous" />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {profile.aboutExpertise.map((item, idx) => (
+                <TiltCard
+                  key={idx}
+                  data-testid={`about-expertise-${idx}`}
+                  className="glass-card p-7 min-h-[200px] flex flex-col justify-between"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <span className="fb-label">#{String(idx + 1).padStart(2, '0')}</span>
+                  <div>
+                    <span className="block text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">{item.label}</span>
+                    <span className="block mt-2 text-base text-zinc-500 dark:text-zinc-400">{item.sub}</span>
+                  </div>
+                </TiltCard>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Mon parcours */}
         <motion.div
@@ -115,7 +131,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
           {(profile.aboutJourneyIntroTitle || profile.aboutJourneyIntroText) && (
             <motion.div variants={staggerItem} className="max-w-3xl space-y-6">
               {profile.aboutJourneyIntroTitle && (
-                <h2 className="text-4xl sm:text-5xl font-black text-orange-600 dark:text-orange-500 tracking-tighter leading-[1.1]">
+                <h2 className="fb-title">
                   {profile.aboutJourneyIntroTitle}
                 </h2>
               )}
@@ -129,11 +145,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
 
           {/* 2. Timeline de parcours */}
           {journeyItems.length > 0 && (
-            <motion.div variants={staggerItem} className="journey-timeline">
-              <div className="journey-rail" aria-hidden="true" />
+            <motion.div variants={staggerItem} className="journey-timeline" ref={timelineRef}>
+              <div className="journey-rail" aria-hidden="true">
+                <motion.span className="journey-rail-progress" style={{ scaleY: reduced ? 1 : railProgress }} data-testid="journey-rail-progress" />
+              </div>
               <div className="journey-entries">
                 {journeyItems.map((item, idx) => (
-                  <motion.div key={idx} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="journey-entry" data-testid={`journey-${item.year}`}>
+                  <motion.div key={idx} initial={{ opacity: 0, x: 40, filter: 'blur(8px)' }} whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }} className="journey-entry" data-testid={`journey-${item.year}`}>
                     <span className="journey-point" aria-hidden="true" />
                     
                     <h3 className="text-4xl font-black text-orange-600 dark:text-orange-500 mb-4 tracking-tighter">{item.year}</h3>
@@ -166,9 +184,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
 
           {/* 5. Bloc de clôture mis en avant */}
           {closingText && (
-            <motion.div variants={staggerItem} className="bg-zinc-900 text-white p-10 md:p-14 rounded-[40px] shadow-2xl relative overflow-hidden">
+            <motion.div variants={staggerItem} className="fb-card fb-card-line p-10 md:p-14 relative overflow-hidden">
               <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-orange-500/20 blur-3xl pointer-events-none" />
-              <p className="text-lg md:text-xl font-medium leading-relaxed relative z-10 text-zinc-300">
+              <p className="text-lg md:text-xl font-semibold leading-relaxed relative z-10">
                 {closingText}
               </p>
             </motion.div>
@@ -185,7 +203,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
             className="space-y-12 border-t border-zinc-200 dark:border-zinc-800 pt-20"
           >
             <div className="space-y-4">
-              <motion.h2 variants={staggerItem} className="text-3xl sm:text-4xl font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter">
+              <motion.h2 variants={staggerItem} className="fb-title">
                 Méthodologie
               </motion.h2>
             </div>
@@ -222,23 +240,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile }) => {
         )}
 
         {/* CTA */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center pt-10"
-        >
-          <MagneticWrapper strength={0.4}>
-            <Link
-              data-testid="about-contact-cta"
-              to="/contact"
-              className="px-10 py-5 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white rounded-full text-sm font-bold uppercase tracking-widest transition-transform shadow-xl flex items-center gap-3 cursor-pointer"
-            >
-              <span>Démarrer un échange</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </MagneticWrapper>
-        </motion.div>
+        <div className="flex justify-center pt-16">
+          <Pill to="/contact" testId="about-contact-cta">Démarrer un échange</Pill>
+        </div>
       </div>
     </PageTransition>
   );

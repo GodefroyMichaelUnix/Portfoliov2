@@ -39,7 +39,8 @@ export const ExplorerMenu: React.FC = () => {
   return (
     <div className="explorer-anchor" ref={root} onKeyDown={handleKeyDown} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false); }}>
       <button ref={trigger} type="button" data-testid="explorer-toggle" className={`nav-disclosure ${destinations.some(item => item.path === location.pathname) ? 'is-active' : ''}`} aria-expanded={open} aria-controls="explorer-panel" onClick={() => setOpen(value => !value)} onKeyDown={event => { if (event.key === 'ArrowDown') { event.preventDefault(); setOpen(true); requestAnimationFrame(() => firstLink.current?.focus()); } }}>
-        Explorer <ChevronDown size={13} className={open ? 'is-open' : ''} aria-hidden="true" />
+        {destinations.some(item => item.path === location.pathname) && <motion.span layoutId="nav-active-indicator" className="nav-active-indicator" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+        <span className="nav-label">Explorer <ChevronDown size={13} className={open ? 'is-open' : ''} aria-hidden="true" /></span>
       </button>
       <AnimatePresence>
         {open && <motion.div id="explorer-panel" data-testid="explorer-panel" className="explorer-panel" initial={{ opacity: 0, y: reduced ? 0 : 9 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduced ? 0 : 5 }} transition={{ duration: .2, ease: [.16, 1, .3, 1] }}>

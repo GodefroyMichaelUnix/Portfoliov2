@@ -8,13 +8,10 @@ interface PageTransitionProps {
 export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ 
-        duration: 0.38, 
-        ease: [0.22, 1, 0.36, 1] 
-      }}
+      initial={{ opacity: 0, y: 36, filter: 'blur(12px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none', transform: 'none' } }}
+      exit={{ opacity: 0, y: -24, filter: 'blur(10px)', transition: { duration: 0.35, ease: [0.7, 0, 0.84, 0] } }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className="w-full"
     >
       {children}

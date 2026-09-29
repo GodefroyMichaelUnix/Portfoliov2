@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useReducedMotion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
   ArrowDownRight,
@@ -29,6 +29,8 @@ import { PageTransition } from '../components/PageTransition';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { PageIntro } from '../components/PageIntro';
 import { Artwork } from '../components/Artwork';
+import { TiltCard } from '../components/TiltCard';
+import { Reveal } from '../components/Reveal';
 import { MakingOfStep, MakingOfStackItem } from '../types/portfolio';
 
 const staggerContainer = {
@@ -40,11 +42,12 @@ const staggerContainer = {
 };
 
 const staggerItem = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
+    filter: 'blur(0px)',
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
@@ -141,6 +144,10 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
   steps = [],
   stack = []
 }) => {
+  const reduced = useReducedMotion();
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: stepsProgress } = useScroll({ target: timelineRef, offset: ['start 75%', 'end 60%'] });
+
   return (
     <PageTransition>
       <div className="studio-page making-page">
@@ -154,11 +161,13 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
 
         <section className="grid lg:grid-cols-[0.78fr_1.22fr] gap-10 lg:gap-16 items-start mb-24">
           <aside>
-            <Artwork
-              kind="workflow"
-              index="atelier"
-              label="L’architecture avant le code"
-            />
+            <Reveal variant="mask">
+              <Artwork
+                kind="workflow"
+                index="atelier"
+                label="L’architecture avant le code"
+              />
+            </Reveal>
             <p className="chapter-meta mt-6">DU BRIEF AU SITE EN LIGNE</p>
             <p className="font-serif-accent italic text-3xl mt-5 leading-tight">
               Penser.
@@ -187,7 +196,7 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
               ].map(([value, label]) => (
                 <div
                   key={label}
-                  className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/50 p-5"
+                  className="glass-card p-5"
                 >
                   <div className="font-display text-3xl font-extrabold tracking-tight text-orange-600 dark:text-orange-500">
                     {value}
@@ -222,7 +231,10 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
             </p>
           </motion.div>
 
-          <div className="mt-10 space-y-4">
+          <div ref={timelineRef} className="making-timeline mt-10 space-y-4" data-testid="making-timeline">
+            <div className="making-timeline-rail" aria-hidden="true">
+              <motion.span style={{ scaleY: reduced ? 1 : stepsProgress }} />
+            </div>
             {steps.map((item, i) => {
               const Icon = (item.iconName && ICON_MAP[item.iconName]) || Sparkles;
 
@@ -230,8 +242,10 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
                 <motion.article
                   key={item.step || i}
                   variants={staggerItem}
-                  className="group grid md:grid-cols-[88px_54px_1fr] gap-5 md:gap-7 items-start rounded-3xl border border-zinc-200/90 dark:border-zinc-800/90 bg-white dark:bg-zinc-900/40 p-5 md:p-7 hover:border-orange-300/70 dark:hover:border-orange-700/60 transition-colors"
+                  whileHover={{ x: 6 }}
+                  className="group making-step-card glass-card relative grid md:grid-cols-[88px_54px_1fr] gap-5 md:gap-7 items-start p-5 md:p-7"
                 >
+                  <span className="making-timeline-dot" aria-hidden="true" />
                   <div className="font-mono text-xs font-bold text-orange-600 dark:text-orange-500 pt-1">
                     {item.step}
                   </div>
@@ -270,11 +284,14 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
 
           <div className="grid lg:grid-cols-2 gap-4 mt-8">
             {architecture.map((item) => (
-              <motion.article
+              <TiltCard
                 key={item.number}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-7"
+                max={5}
+                initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
+                whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="glass-card p-7"
               >
                 <div className="flex items-start justify-between gap-5">
                   <div>
@@ -294,7 +311,7 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
                     </span>
                   ))}
                 </div>
-              </motion.article>
+              </TiltCard>
             ))}
           </div>
         </section>
@@ -311,7 +328,7 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
             {productionFlows.map((item) => (
               <div
                 key={item.label}
-                className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-5 md:p-6"
+                className="glass-card p-5 md:p-6"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   <span className="w-24 shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-orange-600 dark:text-orange-500">
@@ -349,16 +366,17 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
 
           <div className="grid lg:grid-cols-3 gap-4 mt-8">
             {aiRoles.map(({ icon: Icon, title, description }) => (
-              <article
+              <TiltCard
                 key={title}
-                className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-7"
+                max={6}
+                className="group glass-card p-7"
               >
-                <div className="w-11 h-11 rounded-2xl bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+                <div className="skill-visual w-11 h-11 rounded-2xl bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
                   <Icon className="w-5 h-5" />
                 </div>
                 <h3 className="text-xl font-bold mt-5 tracking-tight">{title}</h3>
                 <p className="text-sm leading-7 text-zinc-600 dark:text-zinc-400 mt-3">{description}</p>
-              </article>
+              </TiltCard>
             ))}
           </div>
         </section>
@@ -380,7 +398,7 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
             ].map(({ icon: Icon, title, text }) => (
               <article
                 key={title}
-                className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/40 p-6"
+                className="glass-card p-6"
               >
                 <Icon className="w-5 h-5 text-orange-600 dark:text-orange-500" />
                 <h3 className="text-lg font-bold mt-4">{title}</h3>

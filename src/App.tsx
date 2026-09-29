@@ -6,8 +6,8 @@
  */
 
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { MotionConfig } from 'motion/react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { MotionConfig, AnimatePresence } from 'motion/react';
 import { SoundProvider } from './context/SoundContext';
 import { portfolioService } from './services/portfolioService';
 import {
@@ -27,8 +27,7 @@ import { ThemeProvider } from './context/ThemeContext';
 
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { ScrollToTop } from './components/ScrollToTop';
-import { AutomationBackground } from './components/AutomationBackground';
+import { resetScroll } from './components/ScrollToTop';
 
 import { SmoothScroll } from './components/SmoothScroll';
 import { CustomCursor } from './components/CustomCursor';
@@ -78,6 +77,26 @@ const initialProfile: ProfileInfo = {
   homeSavoirFaireDescription: '',
   homeContactDescription: ''
 };
+
+const AnimatedRoutes: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait" onExitComplete={resetScroll}>
+      <React.Fragment key={location.pathname}>
+        <Routes location={location}>{children}</Routes>
+      </React.Fragment>
+    </AnimatePresence>
+  );
+};
+
+const prefetchPages = () => Promise.all([
+  import('./pages/ProjectsPage'),
+  import('./pages/SkillsPage'),
+  import('./pages/CertificationsPage'),
+  import('./pages/AboutPage'),
+  import('./pages/ContactPage'),
+  import('./pages/MakingOfPage'),
+]);
 
 export default function App() {
   const [profile, setProfile] = useState<ProfileInfo>(initialProfile);
@@ -138,6 +157,8 @@ export default function App() {
     }
 
     loadPortfolioData();
+    const prefetch = window.setTimeout(prefetchPages, 2500);
+    return () => window.clearTimeout(prefetch);
   }, []);
 
   return (
@@ -146,11 +167,8 @@ export default function App() {
       <MotionConfig reducedMotion="user">
       <SmoothScroll>
         <BrowserRouter>
-          <ScrollToTop />
           <CustomCursor />
-          <div className="min-h-screen bg-[#fafaf8] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-zinc-900 selection:text-white dark:selection:bg-zinc-100 dark:selection:text-zinc-900 relative flex flex-col justify-between transition-colors duration-300">
-          {/* Engineering & AI Automation Background Motifs */}
-          <AutomationBackground />
+          <div className="min-h-screen bg-[var(--fb-bg)] text-zinc-900 dark:text-zinc-100 selection:bg-zinc-900 selection:text-white dark:selection:bg-zinc-100 dark:selection:text-zinc-900 relative flex flex-col justify-between transition-colors duration-300">
 
           {/* Top Navbar */}
           <a href="#main-content" className="skip-link" data-testid="skip-to-content">Aller au contenu</a>
@@ -159,7 +177,7 @@ export default function App() {
           {/* Main Content Area: Multi-Page Routing */}
           <main id="main-content" className="relative z-10 pt-28 pb-16 flex-1">
             <Suspense fallback={<div className="min-h-[40vh]" aria-busy="true" aria-label="Chargement de la page" />}>
-            <Routes>
+            <AnimatedRoutes>
               <Route
                 path="/"
                 element={
@@ -207,7 +225,7 @@ export default function App() {
               />
               {/* Fallback route */}
               <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            </AnimatedRoutes>
             </Suspense>
           </main>
 

@@ -7,6 +7,7 @@ import { SkillCategory, SkillItem } from '../types/portfolio';
 import { MagneticWrapper } from '../components/MagneticWrapper';
 import { PageIntro } from '../components/PageIntro';
 import { WorkflowDiagram } from '../components/WorkflowDiagram';
+import { TiltCard } from '../components/TiltCard';
 
 interface SkillsPageProps {
   skills: SkillCategory[];
@@ -22,16 +23,17 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 }
+    transition: { staggerChildren: 0.09 }
   }
 };
 
 const staggerItem = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
+    filter: 'blur(0px)',
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
@@ -46,7 +48,7 @@ const SkillVisual: React.FC<{ skill: SkillItem }> = ({ skill }) => {
     .toUpperCase();
 
   return (
-    <div className="relative w-14 h-14 shrink-0 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-center overflow-hidden">
+    <div className="skill-visual relative w-14 h-14 shrink-0 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-center overflow-hidden">
       {skill.imageUrl && !failed ? (
         <img
           src={skill.imageUrl}
@@ -96,7 +98,10 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ skills }) => {
             return (
               <motion.section
                 key={category.id}
-                variants={staggerItem}
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.1 }}
                 className="relative"
                 data-testid={`skill-category-${category.id}`}
               >
@@ -124,15 +129,14 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ skills }) => {
                   </p>
                 </div>
 
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
                   {category.skills.map((skill, skillIdx) => (
-                    <motion.article
+                    <TiltCard
                       key={skill.name}
                       variants={staggerItem}
-                      whileHover={{ y: -6 }}
-                      transition={{ duration: 0.2 }}
+                      whileHover={{ y: -8 }}
                       data-testid={`skill-${category.id}-${skillIdx}`}
-                      className="group relative overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 shadow-[0_10px_35px_-28px_rgba(0,0,0,0.35)] hover:border-orange-300/80 dark:hover:border-orange-700/70 hover:shadow-[0_18px_45px_-28px_rgba(234,88,12,0.28)] transition-all"
+                      className="group glass-card overflow-hidden p-6"
                     >
                       <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-orange-100/50 dark:bg-orange-500/5 blur-2xl pointer-events-none" />
 
@@ -167,9 +171,9 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ skills }) => {
 
                       <div className="relative flex items-center justify-between gap-3 mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                         <span className="chapter-meta">MODULE {String(skillIdx + 1).padStart(2, '0')}</span>
-                        <ArrowUpRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 transition-colors" />
+                        <ArrowUpRight className="skill-card-arrow w-4 h-4 text-zinc-400 group-hover:text-orange-500" />
                       </div>
-                    </motion.article>
+                    </TiltCard>
                   ))}
                 </div>
               </motion.section>

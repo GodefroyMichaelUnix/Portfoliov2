@@ -1,0 +1,117 @@
+/* ==========================================================================
+   PREMIUM LAYER — floating glass topbar, immersive background, readable type
+   ========================================================================== */
+
+:root {
+  --text-xs: 0.875rem;
+  --text-sm: 0.98rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.3125rem;
+  --studio-muted: #46463f;
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  --studio-muted: #cdcdd5;
+  --glass-bg: rgb(24 24 28 / 52%);
+  --glass-bg-strong: rgb(16 16 19 / 78%);
+  --glass-border: rgb(255 255 255 / 9%);
+  --glass-shadow: 0 1px 0 rgb(255 255 255 / 5%) inset, 0 24px 60px -30px rgb(0 0 0 / 70%);
+}
+
+@media (min-width: 1536px) {
+  :root { --text-sm: 1.03rem; --text-base: 1.125rem; --text-lg: 1.25rem; --text-xl: 1.375rem; }
+}
+
+body { font-size: 1.0625rem; line-height: 1.65; }
+body::after { opacity: 0.035; }
+html.dark body::after { opacity: 0.05; }
+
+/* ---------- Readability: global type scale ---------- */
+.text-xs { font-size: var(--text-xs) !important; line-height: 1.5 !important; }
+.text-\[7px\], .text-\[8px\], .text-\[9px\], .text-\[10px\], .text-\[11px\] { font-size: 13px !important; line-height: 1.5 !important; }
+.skills-page .text-\[9px\], .skills-page .text-\[10px\], .skills-page .text-\[11px\], .projects-page .text-\[10px\], .projects-page .text-\[11px\] { font-size: 13px !important; }
+.contact-page .text-\[10px\], .contact-page .text-\[11px\], .contact-page .text-xs { font-size: 14px !important; }
+.workflow-diagram .text-\[9px\] { font-size: 13px !important; }
+
+.chapter-meta { font-size: 13px; letter-spacing: .08em; }
+.chapter-meta-end { font-size: 12px; }
+.intro-aside, .about-page .intro-aside, .certifications-page .intro-aside { font-size: clamp(17px, 1.25vw, 20px); line-height: 1.7; }
+.studio-page p, .studio-page li { line-height: 1.75; }
+.studio-page p:not([class*="text-center"]) { max-width: 72ch; }
+.studio-page .text-center p { margin-inline: auto; }
+.text-link { font-size: 15px; }
+
+.home-about-story h2 { font-size: clamp(30px, 3.4vw, 46px); }
+.home-about-story > p { font-size: clamp(17px, 1.3vw, 19px); max-width: 58ch; }
+.service-index-row h3 { font-size: 19px; }
+.service-index-row p { font-size: 16px; }
+.selected-work-caption > .chapter-meta { font-size: 12px; }
+.selected-work-caption h3 { font-size: 22px; }
+.selected-work-caption > p, .editorial-making-banner p, .home-expertise p, .editorial-price > p, .editorial-price li { font-size: 17px; }
+.editorial-contact-banner p { font-size: 19px; }
+.editorial-making-banner h3 { font-size: clamp(30px, 3.2vw, 44px); }
+.expertise-card h3 { font-size: 18px; }
+.presentation-film h3 { font-size: clamp(28px, 2.6vw, 38px); }
+.making-step p { font-size: 17px; }
+.making-step h3 { font-size: 20px; }
+.dossier-architecture > div { font-size: 16px; }
+.dossier-architecture > .chapter-meta { font-size: 12px; }
+.dossier-result > div { font-size: 16px; }
+.project-details summary { font-size: 14px; }
+.skill-level { font-size: 13px; }
+.workflow-node { font-size: 15px; }
+.workflow-lab-tabs button { font-size: 15px; }
+.credential-card h2 { font-size: 20px; }
+.credential-issuer, .credential-top .chapter-meta { font-size: 13px; }
+.home-credentials .credential-card h2 { font-size: 18px; }
+.home-credentials .credential-top .chapter-meta { font-size: 11px; letter-spacing: .04em; }
+.artwork-top { font-size: 10px; }
+.artwork figcaption { font-size: 12px; }
+.contact-form-card label { font-size: 14px; }
+.demo-note { font-size: 15px; }
+.hero-metrics .font-mono { font-size: 13px; }
+.explorer-eyebrow { font-size: 11px; }
+.explorer-link strong, .mobile-reference-link strong { font-size: 15px; }
+.explorer-link small, .mobile-reference-link small { font-size: 12.5px; }
+.explorer-bottom { font-size: 12px; }
+.explorer-preview-caption { font-size: 13px; }
+.explorer-preview-art > span { font-size: 10px; }
+.mobile-reference-heading { font-size: 11px; }
+
+@media (max-width: 767px) {
+  .chapter-meta { font-size: 12px; letter-spacing: .06em; }
+  .intro-aside { font-size: 16px; }
+  .selected-work-caption > p, .home-about-story > p, .editorial-making-banner p, .editorial-contact-banner p, .home-expertise p { font-size: 16px; }
+  .workflow-node { font-size: 11px; }
+}
+
+/* ---------- Inner pages ---------- */
+.journey-timeline { --rail-progress: 0; }
+.journey-rail-progress { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; margin-left: -.5px; background: linear-gradient(to bottom, #ea580c, #fbbf24); transform-origin: top; box-shadow: 0 0 14px rgb(234 88 12 / 55%); }
+.journey-entry { transition: background-color .4s; border-radius: 0 18px 18px 0; }
+.journey-entry:hover { background: rgb(234 88 12 / 4%); }
+.method-phase { border-radius: 0; transition: background-color .4s, transform .5s var(--ease-premium); }
+.method-phase:hover { background: var(--glass-bg); }
+.about-parallax { will-change: transform; }
+
+.making-timeline { position: relative; padding-left: 34px; }
+.making-timeline-rail { position: absolute; left: 10px; top: 8px; bottom: 8px; width: 1px; background: var(--studio-line); }
+.making-timeline-rail > span { position: absolute; inset: 0; width: 2px; margin-left: -.5px; background: linear-gradient(to bottom, #ea580c, #fbbf24); transform-origin: top; box-shadow: 0 0 14px rgb(234 88 12 / 55%); }
+.making-timeline-dot { position: absolute; left: -30px; top: 34px; width: 11px; height: 11px; border-radius: 50%; background: var(--studio-bg); border: 2px solid #ea580c; box-shadow: 0 0 0 5px var(--studio-bg); transition: background-color .3s, box-shadow .3s; }
+.making-step-card:hover .making-timeline-dot { background: #ea580c; box-shadow: 0 0 0 5px var(--studio-bg), 0 0 16px #ea580c; }
+@media (max-width: 767px) { .making-timeline { padding-left: 24px; } .making-timeline-rail { left: 5px; } .making-timeline-dot { left: -24px; } }
+
+.project-glass { padding: 18px; border-radius: 28px; }
+.project-glass .dossier-visual { border-radius: 18px; }
+.project-dossier:first-child.project-glass { gap: 40px; }
+.projects-empty { position: relative; overflow: hidden; min-height: 460px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; border-radius: 32px; }
+.projects-empty-flow { width: min(420px, 90%); height: 70px; margin-bottom: 34px; color: var(--studio-line); }
+.projects-empty-flow .flow-node { fill: var(--studio-bg); stroke: #ea580c; stroke-width: 1.5; }
+.projects-empty-flow .flow-pulse { fill: #ea580c; filter: drop-shadow(0 0 6px #ea580c); }
+
+/* ---------- Motion safety ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob, .tilt-border, .hero-eyebrow .signal-dot, .editorial-contact-banner::before, .hero-v2-scroll > span:last-child::after { animation: none !important; }
+}

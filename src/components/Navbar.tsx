@@ -13,7 +13,8 @@ import {
   Sun,
   Moon,
   BadgeCheck,
-  Code2
+  Code2,
+  ArrowUpRight
 } from 'lucide-react';
 import { ExplorerMenu } from './ExplorerMenu';
 import { ProfileInfo } from '../types/portfolio';
@@ -28,8 +29,6 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
   const header = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -37,45 +36,14 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
   const sound = useSound();
 
   useEffect(() => {
-    lastScrollY.current = window.scrollY;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 15);
-
-      // Keep navbar visible if mobile menu drawer is open
-      if (mobileMenuOpen) {
-        setIsVisible(true);
-        lastScrollY.current = currentScrollY;
-        return;
-      }
-
-      // Always show at the top of the page
-      if (currentScrollY <= 50) {
-        setIsVisible(true);
-      } else {
-        const delta = currentScrollY - lastScrollY.current;
-        // 8px threshold to prevent minor jitter
-        if (delta > 8) {
-          // Scrolling down: hide towards top
-          setIsVisible(false);
-        } else if (delta < -8) {
-          // Scrolling up: reveal navbar
-          setIsVisible(true);
-        }
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [mobileMenuOpen]);
+  }, []);
 
-  // Close mobile menu on route change and ensure topbar is visible
   useEffect(() => {
     setMobileMenuOpen(false);
-    setIsVisible(true);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -110,10 +78,9 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
     <header 
       ref={header}
       onBlur={event => { if (mobileMenuOpen && !event.currentTarget.contains(event.relatedTarget as Node)) setMobileMenuOpen(false); }}
-      onFocus={() => setIsVisible(true)}
       id="main-navbar"
       data-testid="floating-topbar"
-      className={`topbar-shell topbar-reference ${isScrolled ? 'is-scrolled' : ''} ${!isVisible ? 'is-hidden' : ''}`}
+      className={`topbar-shell topbar-reference ${isScrolled ? 'is-scrolled' : ''}`}
     >
       <div className="flex items-center justify-between gap-3 px-3 sm:px-5 py-3">
         {/* Brand / Logo : Serré à gauche */}
@@ -161,7 +128,12 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
               data-testid={`nav-${link.path.slice(1) || 'home'}`}
               className={({ isActive }) => `nav-plain-link ${isActive ? 'is-active' : ''}`}
             >
-              {link.label}
+              {({ isActive }) => (
+                <>
+                  {isActive && <motion.span layoutId="nav-active-indicator" className="nav-active-indicator" data-testid="nav-active-indicator" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+                  <span className="nav-label">{link.label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -182,8 +154,8 @@ export const Navbar: React.FC<NavbarProps> = ({ profile }) => {
                   data-testid="navbar-contact-cta"
                   className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white rounded-full text-xs font-semibold tracking-wide transition-all shadow-xs whitespace-nowrap"
                 >
-                  <Send className="w-3 h-3" />
                   <span>Me contacter</span>
+                  <span className="fb-pill-dot" aria-hidden="true"><ArrowUpRight size={15} strokeWidth={2.2} /></span>
                 </Link>
               </motion.div>
             </MagneticWrapper>

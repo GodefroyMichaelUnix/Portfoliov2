@@ -51,7 +51,7 @@ export const TechMarquee: React.FC = () => {
           transition={
             reduced
               ? { duration: 0 }
-              : { ease: 'linear', duration: 24, repeat: Infinity }
+              : { ease: 'linear', duration: 34, repeat: Infinity }
           }
         >
           {[...logos, ...logos].map((tech, index) => {
@@ -63,7 +63,7 @@ export const TechMarquee: React.FC = () => {
             return (
               <div
                 key={`${tech.id}-${index}`}
-                className="shrink-0 flex items-center justify-center transition-opacity duration-300 opacity-60 hover:opacity-100 cursor-default"
+                className="shrink-0 flex items-center justify-center transition-[opacity,transform] duration-500 opacity-75 hover:opacity-100 hover:scale-110 cursor-default"
                 title={tech.name}
               >
                 <div className="shrink-0 min-w-8 h-8 md:min-w-10 md:h-10 flex items-center justify-center">

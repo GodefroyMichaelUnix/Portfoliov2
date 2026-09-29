@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'motion/react';
 
 const WORDS = [
   'Automatisation',
@@ -22,6 +22,10 @@ const Separator: React.FC = () => (
 );
 
 export const EditorialMarquee: React.FC = () => {
+  const reduced = useReducedMotion();
+  const { scrollY } = useScroll();
+  const drift = useSpring(useTransform(scrollY, [0, 6000], [0, -600]), { stiffness: 60, damping: 20 });
+
   return (
     <div
       aria-hidden="true"
@@ -31,10 +35,11 @@ export const EditorialMarquee: React.FC = () => {
         WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)',
       }}
     >
+      <motion.div style={reduced ? {} : { x: drift }}>
       <motion.div
         className="flex items-center gap-10 md:gap-16 w-max"
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ ease: 'linear', duration: 48, repeat: Infinity }}
+        animate={reduced ? { x: '0%' } : { x: ['0%', '-50%'] }}
+        transition={reduced ? { duration: 0 } : { ease: 'linear', duration: 56, repeat: Infinity }}
       >
         {[...WORDS, ...WORDS].map((word, index) => (
           <div key={index} className="flex items-center gap-10 md:gap-16 shrink-0">
@@ -55,6 +60,7 @@ export const EditorialMarquee: React.FC = () => {
             <Separator />
           </div>
         ))}
+      </motion.div>
       </motion.div>
     </div>
   );
