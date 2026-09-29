@@ -8,7 +8,8 @@ Préservation stricte du design (typos Archivo/Instrument Serif/Plus Jakarta San
 ## Fait (2026-09-29)
 - Repo présent dans /app, npm install, tsc OK
 - Lanceur local /app/frontend/package.json (exclu via .git/info/exclude) → vite sur port 3000
-## Bloquant
-- .env avec VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY requis pour afficher le contenu
+## Fait (Supabase)
+- /app/.env.local (ignoré par git) : VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY → aperçu connecté, contenu réel affiché
+- Table projects vide côté Supabase → page Projets en état vide (normal)
 ## Backlog
 - Tâches à définir par l'utilisateur
