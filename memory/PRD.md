@@ -10,8 +10,10 @@ Direction « Folioblox » : fond quasi noir, panneaux arrondis empilés, en-têt
 - 2026-09-29 : clone, install, connexion Supabase de l'aperçu
 - 2026-09-29 : refonte premium (glass/fond animé) — REMPLACÉE ensuite
 - 2026-09-29 : refonte Folioblox Phase 1 : styles/folio.css, Folio.tsx (Pill, SectionHead), PageIntro = en-tête photo, Hero orange, HomePage complète (outils, trio N&B, éventail + méthodologie, portrait, workflows, vidéo, tarifs, projets, certifs « Awards », coulisses, FAQ, contact), Projets (intro, grille 2×2, liste, état vide), À propos (Qui je suis, services, timeline), Contact (champs arrondis, bouton orange), topbar intégré/compact, 10 photos générées dans public/art/ref/, fallback portrait local, masquage des logos cassés, correction débordement horizontal
+- 2026-09-30 : pleine largeur (plus de panneaux englobants, en-têtes bord à bord, footer sur le fond), nom doré animé, bandeau outils sans phrase, pages /services et /passions (Supabase `services`, `passions`, bucket `passion-images`) + aperçus accueil, nav (Services topbar, Passions Explorer/mobile/footer), nouvelles cartes compétences (logo + nom + usage), titre Compétences adaptatif, script SQL supabase/migrations/20260930_add_services_passions.sql (15 services de départ)
 ## Notes
+- Le script SQL doit être lancé par Michaël dans Supabase ; en attendant, états vides sur Services/Passions
 - Supabase : 0 projets ; images d'expertise en chemins relatifs rejetés par safeExternalUrl → fallback local dans la galerie ; heroPhotoUrl/avatarUrl vides → portrait local src/assets/images/michael_portrait_transparent.png
 ## Backlog
-- P1 Phase 2 : mise en page détaillée Compétences, Certifications, Coulisses ; remplacer les photos générées par les vraies
+- P1 Phase 2 : mise en page détaillée Certifications, Coulisses (style pleine largeur) ; remplacer les photos générées par les vraies
 - P2 Phase 3 : perfs/accessibilité, puis Save to Github

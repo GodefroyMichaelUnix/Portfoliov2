@@ -81,7 +81,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({ skills }) => {
         <div className="skills-overview mb-16">
           <div className="flex items-center justify-between gap-4 mb-5">
             <span className="chapter-meta">CARTOGRAPHIE / COMPÉTENCES</span>
-            <span className="font-mono text-[10px] text-zinc-400">{skills.reduce((total, category) => total + category.skills.length, 0)} MODULES</span>
+            <span className="font-mono text-[10px] text-zinc-400">{skills.reduce((total, category) => total + category.skills.length, 0)} COMPÉTENCES</span>
           </div>
           <WorkflowDiagram labels={['Code', 'Workflows', 'Intelligence', 'Infrastructure']} />
         </div>

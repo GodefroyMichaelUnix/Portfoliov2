@@ -1,0 +1,28 @@
+{
+  "summary": "Frontend-only re-test of iteration 2 (Folioblox full-width redesign + new /services and /passions pages + Home services/passions previews + updated /competences). Tested at 1920x1080 and 390x844, plus populated state via Playwright route interception of Supabase REST endpoints. All checklist items PASS: (1) NO horizontal overflow on /, /services, /passions, /competences at both viewports (scrollWidth == clientWidth). (2) Home: hero contains .fb-gold (1), home-tools has no text ('' inner text, only logos), section order correct: home-about-preview(y=1272) < home-services(2526) < home-expertise(3378) < home-about-me(4744) < home-passions(6021). home-services-empty and home-passions-empty visible (tables missing). home-all-services -> /services, home-all-passions -> /passions present. (3) Full width: home-hero box {x:0, y:0, w:1920, h:1080}, borderRadius:0px. page-intro-07 box {x:0, y:0, w:1920, h:860}, borderRadius:0px — edge to edge. (4) Topbar floating-topbar transparent initially, gains is-scrolled after scroll. nav-services present on desktop. Explorer panel exposes explore-link-passions. Footer has footer-services and footer-passions. Mobile drawer contains mobile-nav-services and mobile-nav-passions (via mobile-menu-toggle). (5) /services: page-intro-07 with page-title-07='Mes services', services-empty visible in empty mode, services-cta + services-contact-cta -> /contact present. /passions: page-intro-08 with page-title-08='Passions', passions-empty visible. (6) POPULATED STATE via intercept: Home shows exactly 6 service-row-i (capped, we sent 7) and 3 passion-tile-i. /services shows all 5 groups: service-group-Automatisation, IA, Intégrations, Données, Développement sur mesure, total 7 rows. /passions shows passion-0..passion-2 with 3 <img> elements loaded from Unsplash. (7) /competences: page-title-02 text 'Compétences' fully rendered (scrollWidth=clientWidth=1129, right=1224 < viewport 1920, no clipping). 12 skill cards, first card sample text: '01 / Orchestration & APIs / Workflows / 3 compétences présentées avec leur usage concret. / Python (Scripting & Automation) — Scripts... / n8n & Make — Conception de flux. / APIs RESTful — Interconnexion de systèmes.' — no level badge visible, no tags, no 'MODULE' on skill cards. HOWEVER 'MODULE' appears once at page level in a small header meta '9 MODULES' (span.font-mono.text-[10px].text-zinc-400). Spec says skill cards must not contain 'MODULE' — this text is on the page section header not on cards, borderline. (8) Light mode toggle switches html class (removes 'dark'). No horizontal overflow regressions. The iteration-1 TechMarquee overflow bug is FIXED.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "SkillsPage section header", "issue": "Meta line '9 MODULES' still rendered above the skill grid (span.font-mono.text-[10px].text-zinc-400 '9 MODULES'). Spec: remove 'MODULE' text entirely — even though the individual skill cards no longer show it, this page-level counter still uses the word. Consider replacing with '9 catégories' or removing.", "selector": "span.font-mono.text-[10px].text-zinc-400", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_2.json"],
+  "action_items": [
+    "OPTIONAL/LOW: Replace or remove the '9 MODULES' meta counter on /competences (SkillsPage) — spec asked for no 'MODULE' text; card-level is clean but this page label still uses the word."
+  ],
+  "critical_code_review_comments": [
+    "Route interception confirms Supabase REST payloads render correctly with icon_name mapping to Lucide icons and image_path accepting full https URLs — good.",
+    "Home enforces first-6 slice for service-row-* correctly (sent 7, showed 6). Consistent with spec.",
+    "All new page-intro-07 / page-intro-08 wrappers are full-viewport-width with border-radius:0 — matches FULL-WIDTH LAYOUT block requirement."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "~99% (all functional criteria PASS; only cosmetic '9 MODULES' label remains)"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "None (used Playwright route interception to mock Supabase /rest/v1/services and /rest/v1/passions)",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 2 verified end-to-end. Empty-state and populated-state both pass. Supabase tables services/passions still do not exist (real GETs return 404 which is silently handled). One cosmetic residual: '9 MODULES' text on /competences page header. TechMarquee overflow (iter 1) is resolved.",
+  "rca of the issue": "N/A — no blocking bug found."
+}
