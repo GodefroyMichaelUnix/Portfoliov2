@@ -228,3 +228,9 @@ html:not(.dark) #main-navbar.is-scrolled #navbar-contact-cta .fb-pill-dot { back
 .project-details summary.fb-pill { display: inline-flex; justify-content: flex-start; text-transform: none; letter-spacing: -.01em; color: #fff; font-size: 15px; }
 .project-index-bar button[aria-pressed=true] { background: var(--fb-orange) !important; }
 .projects-empty-flow .flow-node { fill: var(--fb-card); }
+.fb-tools > * { min-width: 0; }
+.fb-tools section { overflow: hidden; width: 100%; }
+@media (max-width: 767px) {
+  #main-navbar #navbar-logo > div:last-child { display: block; }
+  #main-navbar #navbar-logo > div:last-child > div:first-child { font-size: 16px !important; }
+}

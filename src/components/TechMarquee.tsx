@@ -14,6 +14,7 @@ function getStorageUrl(path?: string): string | undefined {
 export const TechMarquee: React.FC = () => {
   const [logos, setLogos] = useState<TechStackItem[]>([]);
   const [failedStorage, setFailedStorage] = useState<Record<string, boolean>>({});
+  const [broken, setBroken] = useState<Record<string, boolean>>({});
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export const TechMarquee: React.FC = () => {
   if (logos.length === 0) return null;
 
   return (
-    <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto" aria-label="Technologies utilisées">
+    <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto overflow-hidden" aria-label="Technologies utilisées">
       <div
         className="w-full overflow-hidden py-6 sm:py-8 relative"
         style={{
@@ -54,7 +55,7 @@ export const TechMarquee: React.FC = () => {
               : { ease: 'linear', duration: 34, repeat: Infinity }
           }
         >
-          {[...logos, ...logos].map((tech, index) => {
+          {[...logos, ...logos].filter((tech) => !broken[tech.id]).map((tech, index) => {
             const storageUrl = getStorageUrl(tech.storagePath);
             const src = !failedStorage[tech.id] && storageUrl
               ? storageUrl
@@ -73,6 +74,8 @@ export const TechMarquee: React.FC = () => {
                     onError={() => {
                       if (!failedStorage[tech.id] && storageUrl && tech.fallbackUrl) {
                         setFailedStorage((current) => ({ ...current, [tech.id]: true }));
+                      } else {
+                        setBroken((current) => ({ ...current, [tech.id]: true }));
                       }
                     }}
                     style={{ transform: `scale(${tech.displayScale})` }}

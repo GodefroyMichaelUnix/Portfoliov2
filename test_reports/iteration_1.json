@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only redesign smoke + full UI test. All requested data-testids are present and correct across Home and inner pages. Photo header panels, page-intro-XX, page-title-XX, page-back-XX all resolve with correct titles (Projets, Compétences, Certifications, À propos, Coulisses, Contact). Dark mode is default on fresh visit; theme-toggle switches html.dark. Topbar becomes 'is-scrolled' after scroll > 40px. Explorer / mobile-menu-drawer open. Contact form renders with full-width orange submit (not submitted). Empty state visible on /projets. About portrait & about-contact-cta present. However, a CRITICAL horizontal overflow bug exists on Home (both desktop and mobile) caused by the TechMarquee section, plus two 404 CDN icons in the tools strip.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "TechMarquee (home-tools)", "issue": "Root <section> has no overflow-hidden; inner motion.div has `w-max` (~4480–4980px). Body horizontal scroll on desktop (scrollW 5104 vs 1920) AND on mobile (scrollW 3678 vs 390). This breaks the 'no horizontal overflow' requirement and makes mobile layout scroll sideways.", "selector": "src/components/TechMarquee.tsx line 40 <section class='px-4 ... max-w-[1800px] mx-auto'>", "priority": "CRITICAL"},
+      {"component": "TechMarquee logo images", "issue": "Two broken images (404): https://cdn.jsdelivr.net/npm/@thesvg/icons/icons/vapi.svg and https://cdn.simpleicons.org/openai . Console logs show 404s. Replace with valid CDN URLs (e.g. https://cdn.simpleicons.org/openai/FFFFFF works but bare openai returned 404 here; vapi icon path is wrong).", "selector": "home-tools images", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home desktop + mobile", "issues": ["Horizontal scrollbar visible due to TechMarquee (see above)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add `overflow-hidden` (and probably `w-screen`/`w-full` with proper clipping) to the TechMarquee root <section> in src/components/TechMarquee.tsx so the `w-max` inner track cannot expand the page. Also verify the outer page containers don't allow `min-width: max-content` propagation.",
+    "Replace the 2 broken tech logo URLs (OpenAI + Vapi) in the tools logos list — currently 404 in Network."
+  ],
+  "critical_code_review_comments": [
+    "TechMarquee: parent section lacks overflow clipping while child uses w-max → guaranteed page-level horizontal scroll. Standard marquee pattern needs the OUTER wrapper (not the middle mask div) to clip.",
+    "Explorer panel: on desktop, clicking explorer-toggle did not expose a `data-testid=\"explorer-panel\"` in the DOM query (mobile shows equivalent list inside mobile-menu-drawer). Consider unifying testids so `explorer-panel` is always addressable when open on desktop (may just need the testid attribute added to the popover container).",
+    "Certifications page: no `data-testid` prefix on individual cards was found via `[data-testid^=\"cert-\"]`; if you want deterministic per-item selection, add `data-testid=\"cert-<i>\"` to each certification card (home already uses `home-cert-i`).",
+    "hero-index only exposes categories through a single container testid; per-item testids would be useful but not required by the spec."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "~92% (all testids + routing + theme + forms OK; 1 critical layout bug + 2 broken images)"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Everything on the redesign checklist verified except: (1) TechMarquee causes horizontal overflow on Home desktop (scrollW 5104 / 1920) and mobile (scrollW 3678 / 390) — fix in src/components/TechMarquee.tsx by clipping the outer section. (2) OpenAI + Vapi CDN logo URLs return 404. All page-intro-XX / page-title-XX / page-back-XX ids verified. Contact form is not submitted, per instructions. Dark mode is default when localStorage 'portfolio-theme' is cleared. Topbar gains 'is-scrolled' class after scroll. Skill cards on /competences: 12 present with orange top line.",
+  "rca of the issue": "Horizontal overflow RCA: In /app/src/components/TechMarquee.tsx the root <section class='px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto'> does NOT set overflow-hidden. The inner marquee track uses `className='flex items-center gap-16 md:gap-20 w-max'` which sizes to intrinsic content (~4500–5000px, i.e. the duplicated logo row for the -50% translate animation). Because the closest ancestor with `overflow: hidden` is the middle mask div (which is w-full — but w-full resolves to the section's own now-expanded width, so it inherits the overflow), the whole page ends up wider than the viewport. Fix: add `overflow-hidden w-full` (and optionally `max-w-screen`) to the root <section>, or wrap the motion.div in a strictly viewport-bounded container. Repro: open the site at 390x844 or 1920x1080 and check document.documentElement.scrollWidth vs clientWidth."
+}
