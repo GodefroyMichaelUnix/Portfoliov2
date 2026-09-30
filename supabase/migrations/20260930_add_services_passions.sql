@@ -29,9 +29,13 @@ drop policy if exists "Public can read visible services" on public.services;
 create policy "Public can read visible services" on public.services
   for select to anon, authenticated using (is_visible = true);
 
+grant select on public.services to anon, authenticated;
+
 drop policy if exists "Public can read visible passions" on public.passions;
 create policy "Public can read visible passions" on public.passions
   for select to anon, authenticated using (is_visible = true);
+
+grant select on public.passions to anon, authenticated;
 
 -- Public storage bucket for passion images (image_path = file path inside the bucket, or a full https URL)
 insert into storage.buckets (id, name, public)
