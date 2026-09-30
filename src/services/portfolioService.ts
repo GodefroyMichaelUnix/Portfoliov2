@@ -16,7 +16,8 @@ import {
   MakingOfStackItem,
   TechStackItem,
   ServiceItem,
-  PassionItem
+  PassionItem,
+  SiteMediaItem
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
 import type { Json } from '../lib/database.types';
@@ -60,6 +61,7 @@ export interface PortfolioDatabaseAdapter {
   getTechStack(): Promise<TechStackItem[]>;
   getServices(): Promise<ServiceItem[]>;
   getPassions(): Promise<PassionItem[]>;
+  getSiteMedia(): Promise<SiteMediaItem[]>;
 }
 
 class SupabasePortfolioService implements PortfolioDatabaseAdapter {
@@ -573,6 +575,44 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
     });
   }
 
+  async getSiteMedia(): Promise<SiteMediaItem[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('site_media')
+      .select('*')
+      .eq('is_visible', true)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error('Erreur Supabase (site_media): ' + error.message);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => {
+      const storagePath = row.storage_path || undefined;
+      const storageBucket = row.storage_bucket || 'site-media';
+      const storageUrl = storagePath
+        ? supabase.storage.from(storageBucket).getPublicUrl(storagePath).data.publicUrl
+        : '';
+      const url = storageUrl || row.fallback_path || '';
+
+      return {
+        id: row.id,
+        mediaKey: row.media_key,
+        storageBucket,
+        storagePath,
+        fallbackPath: row.fallback_path || undefined,
+        url,
+        altText: row.alt_text || '',
+        sortOrder: row.sort_order ?? 0,
+        isVisible: Boolean(row.is_visible)
+      };
+    });
+  }
   async getMakingOfStack(): Promise<Array<string | MakingOfStackItem>> {
     if (!supabase) {
       throw new Error('Client Supabase non configuré.');
