@@ -35,7 +35,7 @@ export const Reveal: React.FC<RevealProps> = ({ children, variant = 'up', delay 
     className={className}
     initial={HIDDEN[variant]}
     whileInView={SHOWN[variant]}
-    viewport={{ once: true, amount: 0.15 }}
+    viewport={{ once: false, amount: 0.15 }}
     transition={{ duration: 1.1, delay, ease: [0.16, 1, 0.3, 1] }}
   >
     {children}
