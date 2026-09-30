@@ -1,7 +1,7 @@
 -- ==============================================================================
 -- SCHEMA COMPLET SUPABASE - PORTFOLIO MICHAEL GODEFROY
 -- ==============================================================================
--- Ce script documente les 15 tables actuellement utilisées par le portfolio
+-- Ce script documente les 16 tables actuellement utilisées par le portfolio
 -- et permettant de piloter l'ensemble des données, médias et messages de contact.
 --
 -- Tables incluses :
@@ -20,6 +20,7 @@
 -- 13. public.tech_stack
 -- 14. public.services
 -- 15. public.passions
+-- 16. public.site_media
 --
 -- Instructions :
 -- 1. Allez sur https://supabase.com/dashboard et ouvrez votre projet
