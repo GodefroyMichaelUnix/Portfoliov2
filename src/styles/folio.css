@@ -327,7 +327,7 @@ html:not(.dark) .fb-skill-logo .skill-visual { background: #fff; border-color: v
 /* ---------- Presentation video ---------- */
 .fb-video-panel { border-top: 0; }
 .fb-video .fb-head { margin-bottom: clamp(32px, 4vw, 56px); }
-.fb-video-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 16 / 9; border-radius: 28px; background: #050505; user-select: none; box-shadow: 0 50px 100px -60px rgb(236 83 20 / 55%); }
+.fb-video-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 16 / 9; border-radius: 28px; background: #050505; user-select: none; box-shadow: 0 40px 80px -60px rgb(236 83 20 / 45%); }
 .fb-video-frame.is-clickable { cursor: pointer; }
 .fb-video-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .fb-video-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgb(0 0 0 / 50%), transparent 40%, rgb(0 0 0 / 18%)); }

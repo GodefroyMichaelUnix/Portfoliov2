@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, X, ExternalLink } from 'lucide-react';
 import { Certification } from '../types/portfolio';
-import { cascadeItem } from './ExtraBlocks';
+import { cascadeItem, closeOnBackdrop } from './ExtraBlocks';
 
 const yearOf = (date: string) => (date.match(/\d{4}/) || [date])[0];
 
@@ -20,7 +20,7 @@ export const CertificateCard: React.FC<{ cert: Certification; index: number }> =
         <span className="fb-row-year">{yearOf(cert.issueDate)}</span>
         <ArrowUpRight className="fb-cert-arrow" size={20} aria-label={`Examiner la certification ${index + 1}`} />
       </button>
-      <dialog ref={dialog} data-testid={`credential-dialog-${cert.id}`} className="fb-dialog" aria-labelledby={`credential-title-${cert.id}`} data-lenis-prevent onClick={(e) => { if (e.target === dialog.current) dialog.current.close(); }}>
+      <dialog ref={dialog} data-testid={`credential-dialog-${cert.id}`} className="fb-dialog" aria-labelledby={`credential-title-${cert.id}`} data-lenis-prevent onClick={closeOnBackdrop}>
         <div className="fb-dialog-inner">
           <button type="button" data-testid={`credential-close-${cert.id}`} aria-label="Fermer le détail" className="fb-dialog-close" onClick={() => dialog.current?.close()}><X size={18} /></button>
           <span className="fb-label">Certification</span>

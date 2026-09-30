@@ -1,0 +1,31 @@
+{
+  "summary": "Frontend-only iteration 3 tests for the new home redesign (presentation video + tools band + making-of banner + services modal + passions marquee), Certifications 'Awards' layout, and /coulisses editorial page. 27 checks executed at desktop 1920x1080 and mobile 390x844, with Playwright route interception mocking Supabase /rest/v1/services and /rest/v1/passions (both populated and empty). RESULTS: 26/27 PASS. Video: home-video appears BEFORE home-tools (y=1080 vs 2584), presentation-video autoplays muted (paused=false after 2s), placeholder badge visible, exactly ONE presentation-video on page (old bottom video removed). Tools band: home-tools spans full 1920px width, has 1px top and 1px bottom borders, 19 tech-logo-* rendered and animated. NO horizontal overflow at 1920 or 390 on / or /coulisses. Services (mocked 3 rows): 3 service-row-N rendered; clicking row 0 opens dialog with title/before/after/contact CTA; Escape closes; X (service-dialog-close) closes; row with null before_text/after_text opens WITHOUT service-dialog-example; service-dialog-contact navigates to /contact. Passions (mocked 3 items): home-passions-marquee visible, passion-slide-0 present, track transform changes over 1.2s (marquee actively scrolls), 'Voir plus' → /passions. Making-of: home-making-of-block, home-making-of-logos and home-making-of pill all present. Certifications: certifications-awards + certifications-list + 3 credential-open-* rows, credential-dialog opens and closes via X, certifications-contact-cta present. Coulisses: all 9 sections (making-intro, making-journal, making-timeline, making-architecture, making-flows, making-ai-roles, making-state, making-stack, making-cta) present with making-contact-cta and making-home-cta, no overflow desktop or mobile. Empty states: with mocked [] responses, home-services-empty and home-passions-empty are shown. Theme toggle (#theme-toggle-btn) removes .dark from html and light-mode screenshot renders cleanly. ONE FAILURE: click-outside-to-close on ServiceDialog does not close the dialog (backdrop click has no effect).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ExtraBlocks.tsx ServiceDialog (and CertificateCard.tsx)", "issue": "Click-outside-to-close does not work. The <dialog> element has padding:0 and width:min(700px,...) centered, so clicking the darkened area hits the ::backdrop pseudo-element which is NOT the dialog element — so `e.target === ref.current` is never true and .close() is never called. Escape and X buttons still work. Spec requires backdrop click to close. Fix: attach the close handler to the dialog's onClick using rect bounds (e.g., `if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) close()`) OR wrap inner content in a div with role=document and check target against that inner ref, OR add a global click listener on backdrop.", "selector": "[data-testid=\"service-dialog\"], [data-testid^=\"credential-dialog-\"]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_3.json"],
+  "action_items": [
+    "Fix backdrop-click close for both ServiceDialog and CertificateCard dialogs (use bounding-rect test instead of `e.target === ref.current`).",
+    "OPTIONAL: verify same fix applied to any other <dialog> using the same pattern."
+  ],
+  "critical_code_review_comments": [
+    "VideoPresentation correctly forces muted+autoplay when placeholder=true and provides both webm+mp4 sources (Chromium H.264 fallback covered).",
+    "PassionsMarquee uses useAnimationFrame with hover slowdown (target 0.2) and reduced-motion static path — good.",
+    "Empty-state rendering guarded by `services.loaded && items.length === 0` so no flash of empty block during initial fetch — correct.",
+    "Native <dialog> pattern is used across ServiceDialog & CertificateCard — factor into a shared hook/component and centralize the outside-click fix.",
+    "Home page enforces slice(0,6) for services — matches spec cap."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "~96% (26/27 checks pass)"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "None — Playwright route interception used to mock Supabase REST for /services and /passions (populated + empty scenarios).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 3 verified home redesign, /certifications Awards layout, and /coulisses editorial layout. All layouts pass at 1920 and 390. Only outstanding issue is native <dialog> outside-click close (ServiceDialog + CertificateCard). Supabase tables services/passions still not created in real DB — empty states render correctly. Backdrop-click fix must be tested on BOTH dialogs after main agent fix.",
+  "rca of the issue": "Root cause of the click-outside-close failure: the handler `onClick={(e) => { if (e.target === ref.current) ref.current.close(); }}` relies on the click target being the dialog element itself. Native <dialog> displays a `::backdrop` pseudo-element for the dimmed area behind the modal, and clicks on the backdrop have `e.target` equal to the dialog element ONLY IF the click lands on the dialog element's own box AND outside inner content. Since `.fb-dialog` uses `padding: 0` and `.fb-dialog-inner` fills the dialog with its own padding, there is no dialog-owned area outside the inner card to receive the click. Mitigation: use bounding rect check to detect out-of-bounds clicks, e.g. `const r = ref.current.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) ref.current.close();`"
+}

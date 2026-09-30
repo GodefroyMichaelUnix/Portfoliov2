@@ -1,19 +1,19 @@
 # PRD — Portfolio Michaël Godefroy (Portfoliov2)
-## Problème initial
-Repo public https://github.com/GodefroyMichaelUnix/Portfoliov2 — travailler directement dessus.
-## Stack
-React 19 + TS + Vite + Tailwind v4 + Motion + Lenis ; données Supabase (RLS public) ; contact via Edge Function Supabase + Resend ; Netlify.
-Aperçu : lanceur local /app/frontend/package.json (exclu de git) → vite port 3000 ; clés dans /app/.env.local (ignoré).
-## Identité actuelle (AGENTS.md mis à jour)
-Direction « Folioblox » : fond quasi noir, panneaux arrondis empilés, en-têtes photo duotone par page, Plus Jakarta Sans unique, pills orange avec flèche, listes éditoriales, dark par défaut + clair conservé.
-## Fait
-- 2026-09-29 : clone, install, connexion Supabase de l'aperçu
-- 2026-09-29 : refonte premium (glass/fond animé) — REMPLACÉE ensuite
-- 2026-09-29 : refonte Folioblox Phase 1 : styles/folio.css, Folio.tsx (Pill, SectionHead), PageIntro = en-tête photo, Hero orange, HomePage complète (outils, trio N&B, éventail + méthodologie, portrait, workflows, vidéo, tarifs, projets, certifs « Awards », coulisses, FAQ, contact), Projets (intro, grille 2×2, liste, état vide), À propos (Qui je suis, services, timeline), Contact (champs arrondis, bouton orange), topbar intégré/compact, 10 photos générées dans public/art/ref/, fallback portrait local, masquage des logos cassés, correction débordement horizontal
-- 2026-09-30 : pleine largeur (plus de panneaux englobants, en-têtes bord à bord, footer sur le fond), nom doré animé, bandeau outils sans phrase, pages /services et /passions (Supabase `services`, `passions`, bucket `passion-images`) + aperçus accueil, nav (Services topbar, Passions Explorer/mobile/footer), nouvelles cartes compétences (logo + nom + usage), titre Compétences adaptatif, script SQL supabase/migrations/20260930_add_services_passions.sql (15 services de départ)
-## Notes
-- Le script SQL doit être lancé par Michaël dans Supabase ; en attendant, états vides sur Services/Passions
-- Supabase : 0 projets ; images d'expertise en chemins relatifs rejetés par safeExternalUrl → fallback local dans la galerie ; heroPhotoUrl/avatarUrl vides → portrait local src/assets/images/michael_portrait_transparent.png
+
+## Problème d'origine
+Repo GitHub public https://github.com/GodefroyMichaelUnix/Portfoliov2 — refonte premium du portfolio (React 19 + Vite + TS + Tailwind + Motion, données Supabase). Langue : français.
+
+## Architecture
+- Frontend seul (racine /app, port 3000). Données via @supabase/supabase-js (clé publique dans /app/.env.local).
+- Identité « Folioblox » pleine largeur : fond sombre, Plus Jakarta Sans, libellés orange, pills avec flèche, en-têtes photo. Voir /app/AGENTS.md.
+
+## Réalisé
+- [S1] Connexion Supabase, refonte premium, refonte Folioblox, pleine largeur, nom doré, pages Services & Passions, SQL 20260930_add_services_passions.sql.
+- [S2 — 2026-09-30] Vidéo de présentation sous l'en-tête (vidéo d'ambiance provisoire générée /art/presentation-ambiance.webm/.mp4, badge « Aperçu d’ambiance », remplacée auto par presentation_video_url) ; bandeau logos pleine largeur encadré de filets, logos plus grands avec halo au survol ; bannière « Les coulisses » (fleurs géométriques animées, logos outils, image) ; modale service Avant/Après (Échap, croix, clic extérieur) ; marquee des passions (ralentit au survol, fixe si reduced-motion) ; Certifications en « Awards » + fenêtre de détail ; Coulisses pleine largeur (journal numéroté + rail au scroll, grille architecture, flux, cartes sombres, stack, CTA) ; SQL 20261001_add_services_before_after.sql (colonnes before_text/after_text + 15 exemples). Testé (iteration_3, 26/27 puis correctif clic extérieur vérifié).
+
+## Dépendances utilisateur
+- Exécuter dans Supabase : 20260930_add_services_passions.sql puis 20261001_add_services_before_after.sql. Sans cela, Services/Passions affichent l'état vide.
+
 ## Backlog
-- P1 Phase 2 : mise en page détaillée Certifications, Coulisses (style pleine largeur) ; remplacer les photos générées par les vraies
-- P2 Phase 3 : perfs/accessibilité, puis Save to Github
+- P1 : vraie vidéo de présentation + vraies photos (en-têtes, passions), réglages après retour.
+- P2 : nettoyage AutomationBackground/premium.css, performances, accessibilité, envoi GitHub via « Save to Github ».

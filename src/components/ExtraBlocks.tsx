@@ -12,6 +12,12 @@ const ICONS: Record<string, React.ElementType> = {
   Plug, RefreshCw, ShieldCheck, Sparkles, Workflow, Zap
 };
 
+export const closeOnBackdrop = (e: React.MouseEvent<HTMLDialogElement>) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  const outside = e.detail > 0 && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom);
+  if (outside || e.target === e.currentTarget) e.currentTarget.close();
+};
+
 export const cascade = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07 } }
@@ -48,7 +54,7 @@ export const ServiceDialog: React.FC<{ service: ServiceItem | null; onClose: () 
   const hasExample = !!service && (!!service.before || !!service.after);
 
   return (
-    <dialog ref={ref} className="fb-dialog" data-testid="service-dialog" aria-labelledby="service-dialog-title" data-lenis-prevent onClose={onClose} onClick={(e) => { if (e.target === ref.current) ref.current.close(); }}>
+    <dialog ref={ref} className="fb-dialog" data-testid="service-dialog" aria-labelledby="service-dialog-title" data-lenis-prevent onClose={onClose} onClick={closeOnBackdrop}>
       {service && (
         <div className="fb-dialog-inner">
           <button type="button" className="fb-dialog-close" data-testid="service-dialog-close" aria-label="Fermer le détail" onClick={() => ref.current?.close()}><X size={18} /></button>
