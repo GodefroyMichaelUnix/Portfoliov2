@@ -188,6 +188,7 @@ export interface TechStackItem {
   id: string;
   name: string;
   storagePath?: string;
+  storageUrl?: string;
   fallbackUrl?: string;
   altText: string;
   sortOrder: number;
