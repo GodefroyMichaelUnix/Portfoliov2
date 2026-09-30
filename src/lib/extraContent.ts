@@ -34,5 +34,8 @@ function useRemote<T>(loader: () => Promise<T[]>) {
   return { items, loaded, error };
 }
 
-export const useServices = () => useRemote<ServiceItem>(() => portfolioService.getServices());
-export const usePassions = () => useRemote<PassionItem>(() => portfolioService.getPassions());
+const loadServices = () => portfolioService.getServices();
+const loadPassions = () => portfolioService.getPassions();
+
+export const useServices = () => useRemote<ServiceItem>(loadServices);
+export const usePassions = () => useRemote<PassionItem>(loadPassions);
