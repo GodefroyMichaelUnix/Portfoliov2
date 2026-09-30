@@ -2,15 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { portfolioService } from '../services/portfolioService';
 
-const STORAGE_BUCKET = 'tech-logos';
-
-function getStorageUrl(path?: string): string | undefined {
-  if (!path || !supabase) return undefined;
-  return supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path).data.publicUrl;
-}
-
 export const TechMarquee: React.FC = () => {
-  const [logos, setLogos] = useState<TechStackItem[]>([]);
+  const [logos, setLogos] = useState<import('../types/portfolio').TechStackItem[]>([]);
   const [failedStorage, setFailedStorage] = useState<Record<string, boolean>>({});
   const [broken, setBroken] = useState<Record<string, boolean>>({});
   const reduced = useReducedMotion();
@@ -37,7 +30,7 @@ export const TechMarquee: React.FC = () => {
         transition={reduced ? { duration: 0 } : { ease: 'linear', duration: 40, repeat: Infinity }}
       >
         {[...logos, ...logos].filter((tech) => !broken[tech.id]).map((tech, index) => {
-          const storageUrl = getStorageUrl(tech.storagePath);
+          const storageUrl = tech.storageUrl;
           const src = !failedStorage[tech.id] && storageUrl ? storageUrl : tech.fallbackUrl;
           return (
             <div key={`${tech.id}-${index}`} className="fb-logo" title={tech.name} data-testid={index < logos.length ? `tech-logo-${index}` : undefined}>
