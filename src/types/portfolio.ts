@@ -206,3 +206,21 @@ export interface MakingOfStackItem {
   name: string;
   category?: string;
 }
+
+
+export interface ServiceItem {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  iconName: string;
+  before: string;
+  after: string;
+}
+
+export interface PassionItem {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
