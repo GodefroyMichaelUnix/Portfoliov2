@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { portfolioService } from '../services/portfolioService';
-import { supabase } from '../lib/supabase';
-import type { TechStackItem } from '../types/portfolio';
 
 const STORAGE_BUCKET = 'tech-logos';
 
