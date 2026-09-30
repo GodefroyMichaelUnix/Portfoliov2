@@ -21,12 +21,22 @@ export const CertificationsPage: React.FC<CertificationsPageProps> = ({ certific
         <SectionHead label="Registre" title="Certifications" text={`${String(certifications.length).padStart(2, '0')} certifications obtenues. Cliquez sur une ligne pour voir le détail, les compétences validées et la source officielle.`} />
       </Reveal>
 
-      <section className="fb-awards" data-testid="certifications-awards">
-        <Reveal variant="scale"><div className="fb-awards-img"><img src="/art/ref/certs.jpg" alt="" loading="lazy" /></div></Reveal>
-        <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="fb-list" data-testid="certifications-list">
-          {certifications.map((cert, index) => <CertificateCard key={cert.id} cert={cert} index={index} />)}
-        </motion.div>
-      </section>
+      <div className="credential-register">
+        <span className="chapter-meta">REGISTRE DES CERTIFICATIONS</span>
+        <span className="font-mono text-xs">{String(certifications.length).padStart(2, '0')} DOSSIERS</span>
+      </div>
+
+      <motion.div
+        variants={cascade}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        data-testid="certifications-list"
+      >
+        {certifications.map((cert, index) => (
+          <CertificateCard key={cert.id} cert={cert} index={index} />
+        ))}
+      </motion.div>
 
       <section className="fb-cta-panel fb-inline-cta" data-testid="certifications-cta">
         <span className="fb-label">Veille continue</span>
