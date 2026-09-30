@@ -491,6 +491,45 @@ export type Database = {
         }
         Relationships: []
       }
+      site_media: {
+        Row: {
+          alt_text: string
+          created_at: string
+          fallback_path: string | null
+          id: string
+          is_visible: boolean
+          media_key: string
+          sort_order: number
+          storage_bucket: string
+          storage_path: string | null
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string
+          created_at?: string
+          fallback_path?: string | null
+          id?: string
+          is_visible?: boolean
+          media_key: string
+          sort_order?: number
+          storage_bucket?: string
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string
+          created_at?: string
+          fallback_path?: string | null
+          id?: string
+          is_visible?: boolean
+          media_key?: string
+          sort_order?: number
+          storage_bucket?: string
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       skill_categories: {
         Row: {
           created_at: string
