@@ -225,3 +225,15 @@ export interface PassionItem {
   description: string;
   imageUrl: string;
 }
+
+export interface SiteMediaItem {
+  id: string;
+  mediaKey: string;
+  storageBucket: string;
+  storagePath?: string;
+  fallbackPath?: string;
+  url: string;
+  altText: string;
+  sortOrder: number;
+  isVisible: boolean;
+}
