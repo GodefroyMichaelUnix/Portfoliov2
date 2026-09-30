@@ -19,75 +19,47 @@ export const TechMarquee: React.FC = () => {
 
   useEffect(() => {
     let cancelled = false;
-
     portfolioService
       .getTechStack()
-      .then((data) => {
-        if (!cancelled) setLogos(data);
-      })
+      .then((data) => { if (!cancelled) setLogos(data); })
       .catch((error) => {
         console.error('Impossible de charger le Tech Stack depuis Supabase:', error);
         if (!cancelled) setLogos([]);
       });
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   if (logos.length === 0) return null;
 
   return (
-    <section className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1800px] mx-auto overflow-hidden" aria-label="Technologies utilisées">
-      <div
-        className="w-full overflow-hidden py-6 sm:py-8 relative"
-        style={{
-          maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 3%, rgba(0,0,0,0.7) 8%, black 15%, black 85%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.2) 97%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 3%, rgba(0,0,0,0.7) 8%, black 15%, black 85%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.2) 97%, transparent 100%)',
-        }}
+    <div className="fb-marquee" aria-label="Technologies utilisées" data-testid="tech-marquee">
+      <motion.div
+        className="fb-marquee-track"
+        animate={reduced ? { x: '0%' } : { x: ['0%', '-50%'] }}
+        transition={reduced ? { duration: 0 } : { ease: 'linear', duration: 40, repeat: Infinity }}
       >
-        <motion.div
-          className="flex items-center gap-16 md:gap-20 w-max"
-          animate={reduced ? { x: '0%' } : { x: ['0%', '-50%'] }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { ease: 'linear', duration: 34, repeat: Infinity }
-          }
-        >
-          {[...logos, ...logos].filter((tech) => !broken[tech.id]).map((tech, index) => {
-            const storageUrl = getStorageUrl(tech.storagePath);
-            const src = !failedStorage[tech.id] && storageUrl
-              ? storageUrl
-              : tech.fallbackUrl;
-
-            return (
-              <div
-                key={`${tech.id}-${index}`}
-                className="shrink-0 flex items-center justify-center transition-[opacity,transform] duration-500 opacity-75 hover:opacity-100 hover:scale-110 cursor-default"
-                title={tech.name}
-              >
-                <div className="shrink-0 min-w-8 h-8 md:min-w-10 md:h-10 flex items-center justify-center">
-                  <img
-                    src={src}
-                    alt={tech.altText}
-                    onError={() => {
-                      if (!failedStorage[tech.id] && storageUrl && tech.fallbackUrl) {
-                        setFailedStorage((current) => ({ ...current, [tech.id]: true }));
-                      } else {
-                        setBroken((current) => ({ ...current, [tech.id]: true }));
-                      }
-                    }}
-                    style={{ transform: `scale(${tech.displayScale})` }}
-                    className="max-w-10 max-h-full object-contain select-none pointer-events-none grayscale brightness-0 dark:invert transition-all duration-300"
-                    draggable={false}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </motion.div>
-      </div>
-    </section>
+        {[...logos, ...logos].filter((tech) => !broken[tech.id]).map((tech, index) => {
+          const storageUrl = getStorageUrl(tech.storagePath);
+          const src = !failedStorage[tech.id] && storageUrl ? storageUrl : tech.fallbackUrl;
+          return (
+            <div key={`${tech.id}-${index}`} className="fb-logo" title={tech.name} data-testid={index < logos.length ? `tech-logo-${index}` : undefined}>
+              <img
+                src={src}
+                alt={tech.altText}
+                onError={() => {
+                  if (!failedStorage[tech.id] && storageUrl && tech.fallbackUrl) {
+                    setFailedStorage((current) => ({ ...current, [tech.id]: true }));
+                  } else {
+                    setBroken((current) => ({ ...current, [tech.id]: true }));
+                  }
+                }}
+                style={{ transform: `scale(${tech.displayScale})` }}
+                draggable={false}
+              />
+            </div>
+          );
+        })}
+      </motion.div>
+    </div>
   );
 };

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { PageTransition } from '../components/PageTransition';
 import { PageIntro } from '../components/PageIntro';
 import { Pill } from '../components/Folio';
-import { ServiceRow, EmptyBlock, cascade } from '../components/ExtraBlocks';
+import { ServiceRow, ServiceDialog, EmptyBlock, cascade } from '../components/ExtraBlocks';
 import { useServices, ServiceItem } from '../lib/extraContent';
 
 const ORDER = ['Automatisation', 'IA', 'Intégrations', 'Données', 'Développement sur mesure'];
@@ -16,6 +16,7 @@ const groupServices = (services: ServiceItem[]) => {
 
 export const ServicesPage: React.FC = () => {
   const { items, loaded } = useServices();
+  const [open, setOpen] = useState<ServiceItem | null>(null);
   let index = 0;
 
   return (
@@ -37,10 +38,12 @@ export const ServicesPage: React.FC = () => {
           <section key={category} className="fb-service-group" data-testid={`service-group-${category}`}>
             <span className="fb-label">{category}</span>
             <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="fb-services-grid">
-              {services.map((service) => <ServiceRow key={service.id} service={service} index={index++} />)}
+              {services.map((service) => <ServiceRow key={service.id} service={service} index={index++} onOpen={setOpen} />)}
             </motion.div>
           </section>
         ))}
+
+        <ServiceDialog service={open} onClose={() => setOpen(null)} />
 
         <section className="fb-cta-panel fb-inline-cta" data-testid="services-cta">
           <span className="fb-label">Un besoin précis ?</span>

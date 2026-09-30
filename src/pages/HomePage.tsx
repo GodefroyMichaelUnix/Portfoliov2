@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Check } from 'lucide-react';
@@ -23,8 +23,11 @@ import { FAQSection } from '../components/FAQSection';
 import { VideoPresentation } from '../components/VideoPresentation';
 import { Reveal } from '../components/Reveal';
 import { Pill, SectionHead } from '../components/Folio';
-import { ServiceRow, PassionTile, EmptyBlock, cascade } from '../components/ExtraBlocks';
-import { useServices, usePassions } from '../lib/extraContent';
+import { ServiceRow, ServiceDialog, PassionsMarquee, EmptyBlock, cascade } from '../components/ExtraBlocks';
+import { MakingOfBanner } from '../components/MakingOfBanner';
+import { useServices, usePassions, ServiceItem } from '../lib/extraContent';
+
+const AMBIENT_VIDEO = '/art/presentation-ambiance.mp4';
 
 interface HomePageProps {
   profile: ProfileInfo;
@@ -89,16 +92,24 @@ export const HomePage: React.FC<HomePageProps> = ({
   const methodology = profile.methodology || [];
   const services = useServices();
   const passions = usePassions();
+  const [openService, setOpenService] = useState<ServiceItem | null>(null);
 
   return (
     <PageTransition>
       <div className="fb-home relative z-10">
         <Hero profile={profile} skills={skills} />
 
-        <section className="fb-panel fb-panel-tight" data-testid="home-tools">
-          <div className="fb-tools">
-            <TechMarquee />
-          </div>
+        <section className="fb-panel fb-video-panel" data-testid="home-video">
+          <VideoPresentation
+            videoSrcFr={profile.presentationVideoUrl || AMBIENT_VIDEO}
+            posterUrl={profile.presentationVideoPoster || '/art/presentation-poster.jpg'}
+            placeholder={!profile.presentationVideoUrl}
+            webmSrc={profile.presentationVideoUrl ? undefined : '/art/presentation-ambiance.webm'}
+          />
+        </section>
+
+        <section className="fb-panel fb-panel-tight fb-tools-band" data-testid="home-tools">
+          <TechMarquee />
         </section>
 
         <section className="fb-panel" data-testid="home-about-preview">
@@ -131,11 +142,12 @@ export const HomePage: React.FC<HomePageProps> = ({
           </Reveal>
           {services.items.length > 0 ? (
             <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="fb-services-grid">
-              {services.items.slice(0, 6).map((service, i) => <ServiceRow key={service.id} service={service} index={i} />)}
+              {services.items.slice(0, 6).map((service, i) => <ServiceRow key={service.id} service={service} index={i} onOpen={setOpenService} />)}
             </motion.div>
           ) : services.loaded && (
             <EmptyBlock testId="home-services-empty" label="Bientôt" title="Les services arrivent." text="La liste détaillée des services sera publiée ici très prochainement." />
           )}
+          <ServiceDialog service={openService} onClose={() => setOpenService(null)} />
         </section>
 
         <section className="fb-panel" data-testid="home-expertise">
@@ -186,9 +198,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <SectionHead label="Passions" title="Au-delà du travail" cta={{ to: '/passions', label: 'Voir plus', testId: 'home-all-passions' }} />
           </Reveal>
           {passions.items.length > 0 ? (
-            <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="fb-passions-grid">
-              {passions.items.slice(0, 4).map((passion, i) => <PassionTile key={passion.id} passion={passion} index={i} />)}
-            </motion.div>
+            <PassionsMarquee passions={passions.items} />
           ) : passions.loaded && (
             <EmptyBlock testId="home-passions-empty" label="Bientôt" title="Les passions arrivent." text="Cette section accueillera bientôt ce qui m’anime au quotidien, en dehors du travail." />
           )}
@@ -196,12 +206,6 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {workflows.length > 0 && (
           <section className="fb-panel fb-panel-tight"><WorkflowShowcase workflows={workflows} /></section>
-        )}
-
-        {profile.presentationVideoUrl && (
-          <section className="fb-panel presentation-film">
-            <VideoPresentation videoSrcFr={profile.presentationVideoUrl} posterUrl={profile.presentationVideoPoster || '/art/agent-core.webp'} />
-          </section>
         )}
 
         {pricingPlans.length > 0 && (
@@ -284,17 +288,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </section>
         )}
 
-        <section className="fb-panel" data-testid="home-making-of-block">
-          <Reveal>
-            <SectionHead
-              label="Coulisses"
-              title="De l’idée au système."
-              lead="Apprendre, construire, tester, casser, comprendre et améliorer."
-              text="Je documente le raisonnement derrière mes projets, car la solution n’est qu’une partie du travail. Découvrez comment j’ai conçu cette plateforme."
-              cta={{ to: '/coulisses', label: 'Explorer les coulisses', testId: 'home-making-of' }}
-            />
-          </Reveal>
-        </section>
+        <MakingOfBanner />
 
         {faqs.length > 0 && (
           <section className="fb-panel"><FAQSection faqs={faqs} /></section>

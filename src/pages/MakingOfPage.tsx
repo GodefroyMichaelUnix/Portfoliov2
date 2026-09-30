@@ -1,10 +1,8 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useReducedMotion } from 'motion/react';
-import { Link } from 'react-router-dom';
 import {
   ArrowDownRight,
   ArrowRight,
-  ArrowUpRight,
   Bot,
   Braces,
   CheckCircle2,
@@ -19,18 +17,16 @@ import {
   PenLine,
   RefreshCw,
   Rocket,
-  Send,
   ShieldCheck,
   Sparkles,
   Video,
   Workflow
 } from 'lucide-react';
 import { PageTransition } from '../components/PageTransition';
-import { MagneticWrapper } from '../components/MagneticWrapper';
 import { PageIntro } from '../components/PageIntro';
 import { Artwork } from '../components/Artwork';
-import { TiltCard } from '../components/TiltCard';
 import { Reveal } from '../components/Reveal';
+import { Pill, SectionHead } from '../components/Folio';
 import { MakingOfStep, MakingOfStackItem } from '../types/portfolio';
 
 const staggerContainer = {
@@ -42,14 +38,11 @@ const staggerContainer = {
 };
 
 const staggerItem = {
-  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
-  show: {
-    opacity: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-  }
+  hidden: { opacity: 0, y: 40 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
 };
+
+const inView = { initial: 'hidden', whileInView: 'show', viewport: { once: true, amount: 0.15 } } as const;
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Compass: ArrowDownRight,
@@ -140,10 +133,20 @@ export interface MakingOfPageProps {
   stack?: Array<string | MakingOfStackItem>;
 }
 
-export const MakingOfPage: React.FC<MakingOfPageProps> = ({
-  steps = [],
-  stack = []
-}) => {
+const currentState = [
+  { icon: CheckCircle2, title: 'Production', text: 'mgodefroy.com est servi en HTTPS sur Netlify.' },
+  { icon: Database, title: 'Données', text: 'Le contenu vivant est piloté par Supabase.' },
+  { icon: GitBranch, title: 'Code', text: 'Le dépôt GitHub reste la source de vérité.' },
+  { icon: Workflow, title: 'Évolution', text: 'Le site peut continuer à grandir sans repartir de zéro.' }
+];
+
+const stats = [
+  ['17', 'chapitres documentés'],
+  ['13+', 'tables Supabase'],
+  ['1', 'chaîne de déploiement']
+];
+
+export const MakingOfPage: React.FC<MakingOfPageProps> = ({ steps = [], stack = [] }) => {
   const reduced = useReducedMotion();
   const timelineRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: stepsProgress } = useScroll({ target: timelineRef, offset: ['start 75%', 'end 60%'] });
@@ -159,332 +162,154 @@ export const MakingOfPage: React.FC<MakingOfPageProps> = ({
           description="Le portfolio n’est pas arrivé en un bloc. Il a été généré, découpé, testé, connecté, nettoyé, déployé et redéployé. Voici le journal complet de sa fabrication, de la première idée jusqu’au site en ligne."
         />
 
-        <section className="grid lg:grid-cols-[0.78fr_1.22fr] gap-10 lg:gap-16 items-start mb-24">
-          <aside>
-            <Reveal variant="mask">
-              <Artwork
-                kind="workflow"
-                index="atelier"
-                label="L’architecture avant le code"
-              />
-            </Reveal>
-            <p className="chapter-meta mt-6">DU BRIEF AU SITE EN LIGNE</p>
-            <p className="font-serif-accent italic text-3xl mt-5 leading-tight">
-              Penser.
-              <br />
-              Générer.
-              <br />
-              Relier.
-              <br />
-              Itérer.
+        <section className="fb-split fb-mk-intro" data-testid="making-intro">
+          <Reveal variant="mask">
+            <Artwork kind="workflow" index="atelier" label="L’architecture avant le code" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <span className="fb-label">Du brief au site en ligne</span>
+            <h2 className="fb-title">Penser. Générer. Relier. Itérer.</h2>
+            <p className="fb-text">
+              Ce site est volontairement documenté comme un système, pas seulement comme une vitrine. Chaque couche raconte
+              quelque chose de mon apprentissage : comment une idée devient une interface, comment une interface devient une
+              application, puis comment cette application devient un produit déployable et maintenable.
             </p>
-          </aside>
-
-          <div className="space-y-7">
-            <p className="text-lg md:text-xl leading-relaxed text-zinc-700 dark:text-zinc-300">
-              Ce site est volontairement documenté comme un système, pas seulement comme une vitrine.
-              Chaque couche raconte quelque chose de mon apprentissage : comment une idée devient une
-              interface, comment une interface devient une application, puis comment cette application
-              devient un produit déployable et maintenable.
-            </p>
-
-            <div className="grid sm:grid-cols-3 gap-3">
-              {[
-                ['17', 'chapitres documentés'],
-                ['13+', 'tables Supabase'],
-                ['1', 'chaîne de déploiement']
-              ].map(([value, label]) => (
-                <div
-                  key={label}
-                  className="glass-card p-5"
-                >
-                  <div className="font-display text-3xl font-extrabold tracking-tight text-orange-600 dark:text-orange-500">
-                    {value}
-                  </div>
-                  <div className="text-xs uppercase tracking-[0.16em] font-bold text-zinc-500 dark:text-zinc-400 mt-2">
-                    {label}
-                  </div>
-                </div>
+            <div className="fb-mk-stats">
+              {stats.map(([value, label]) => (
+                <div key={label} className="fb-mk-stat" data-testid={`making-stat-${value}`}><strong>{value}</strong><span>{label}</span></div>
               ))}
             </div>
-          </div>
+          </Reveal>
         </section>
 
-        <motion.section
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          className="mb-28"
-        >
-          <motion.div variants={staggerItem} className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <div>
-              <p className="chapter-meta">01 → 17</p>
-              <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter mt-3">
-                Le journal de fabrication.
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-              Pas seulement les “grandes étapes” : aussi les corrections, les décisions d’architecture,
-              les outils, les migrations, les nettoyages et les détails d’infrastructure qui ont fait
-              passer le projet d’une maquette à un vrai site.
-            </p>
-          </motion.div>
-
-          <div ref={timelineRef} className="making-timeline mt-10 space-y-4" data-testid="making-timeline">
-            <div className="making-timeline-rail" aria-hidden="true">
+        <section className="fb-mk-section" data-testid="making-journal">
+          <Reveal>
+            <SectionHead
+              label="01 → 17"
+              title="Le journal de fabrication."
+              text="Pas seulement les grandes étapes : aussi les corrections, les décisions d’architecture, les outils, les migrations, les nettoyages et les détails d’infrastructure qui ont fait passer le projet d’une maquette à un vrai site."
+            />
+          </Reveal>
+          <div ref={timelineRef} className="fb-journal" data-testid="making-timeline">
+            <div className="fb-journal-rail" aria-hidden="true">
               <motion.span style={{ scaleY: reduced ? 1 : stepsProgress }} />
             </div>
             {steps.map((item, i) => {
               const Icon = (item.iconName && ICON_MAP[item.iconName]) || Sparkles;
-
               return (
-                <motion.article
-                  key={item.step || i}
-                  variants={staggerItem}
-                  whileHover={{ x: 6 }}
-                  className="group making-step-card glass-card relative grid md:grid-cols-[88px_54px_1fr] gap-5 md:gap-7 items-start p-5 md:p-7"
-                >
-                  <span className="making-timeline-dot" aria-hidden="true" />
-                  <div className="font-mono text-xs font-bold text-orange-600 dark:text-orange-500 pt-1">
-                    {item.step}
-                  </div>
-
-                  <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
-                    <Icon className="w-5 h-5" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
-                        {item.title}
-                      </h3>
-                    </div>
-                    <p className="text-sm md:text-[15px] text-zinc-600 dark:text-zinc-400 leading-7 max-w-4xl">
-                      {item.description}
-                    </p>
+                <motion.article key={item.step || i} variants={staggerItem} {...inView} className="fb-journal-row" data-testid={`making-step-${i}`}>
+                  <span className="fb-journal-num">{item.step || String(i + 1).padStart(2, '0')}</span>
+                  <span className="fb-journal-icon"><Icon size={22} strokeWidth={1.8} /></span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
                   </div>
                 </motion.article>
               );
             })}
           </div>
-        </motion.section>
+        </section>
 
-        <section className="mb-28">
-          <div className="border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <p className="chapter-meta">ARCHITECTURE FINALE</p>
-            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter mt-3">
-              Les briques derrière l’écran.
-            </h2>
-            <p className="mt-5 max-w-3xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Le visiteur voit une interface. Derrière, quatre couches travaillent ensemble : la
-              génération et la revue, le frontend, la donnée et l’infrastructure de production.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-4 mt-8">
+        <section className="fb-mk-section" data-testid="making-architecture">
+          <Reveal>
+            <SectionHead
+              label="Architecture finale"
+              title="Les briques derrière l’écran."
+              text="Le visiteur voit une interface. Derrière, quatre couches travaillent ensemble : la génération et la revue, le frontend, la donnée et l’infrastructure de production."
+            />
+          </Reveal>
+          <motion.div variants={staggerContainer} {...inView} className="fb-arch-grid">
             {architecture.map((item) => (
-              <TiltCard
-                key={item.number}
-                max={5}
-                initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
-                whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="glass-card p-7"
-              >
-                <div className="flex items-start justify-between gap-5">
-                  <div>
-                    <span className="font-mono text-xs text-orange-600 dark:text-orange-500">{item.number}</span>
-                    <h3 className="text-2xl font-bold tracking-tight mt-2">{item.title}</h3>
-                  </div>
-                  <ArrowUpRight className="w-5 h-5 text-zinc-300 dark:text-zinc-700" />
+              <motion.article key={item.number} variants={staggerItem} className="fb-card fb-arch-card" data-testid={`making-arch-${item.number}`}>
+                <span className="fb-journal-num">{item.number}</span>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <div className="fb-chips">
+                  {item.items.map((tool) => <span key={tool} className="fb-chip">{tool}</span>)}
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-7 mt-4">{item.description}</p>
-                <div className="flex flex-wrap gap-2 mt-6">
-                  {item.items.map((tool) => (
-                    <span
-                      key={tool}
-                      className="px-3 py-1.5 rounded-full bg-zinc-50 dark:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700"
-                    >
-                      {tool}
-                    </span>
+              </motion.article>
+            ))}
+          </motion.div>
+        </section>
+
+        <section className="fb-mk-section" data-testid="making-flows">
+          <Reveal>
+            <SectionHead label="Les flux réels" title="Comment les morceaux communiquent." />
+          </Reveal>
+          <motion.div variants={staggerContainer} {...inView} className="fb-list">
+            {productionFlows.map((item) => (
+              <motion.div key={item.label} variants={staggerItem} className="fb-flow-row" data-testid={`making-flow-${item.label}`}>
+                <span className="fb-row-cat">{item.label}</span>
+                <div className="fb-flow-steps">
+                  {item.flow.map((node, index) => (
+                    <React.Fragment key={node}>
+                      <span className="fb-chip">{node}</span>
+                      {index < item.flow.length - 1 && <ArrowRight size={18} className="fb-flow-arrow" />}
+                    </React.Fragment>
                   ))}
                 </div>
-              </TiltCard>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
-        <section className="mb-28">
-          <div className="border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <p className="chapter-meta">LES FLUX RÉELS</p>
-            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter mt-3">
-              Comment les morceaux communiquent.
-            </h2>
-          </div>
-
-          <div className="mt-8 space-y-3">
-            {productionFlows.map((item) => (
-              <div
-                key={item.label}
-                className="glass-card p-5 md:p-6"
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                  <span className="w-24 shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-orange-600 dark:text-orange-500">
-                    {item.label}
-                  </span>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {item.flow.map((node, index) => (
-                      <React.Fragment key={node}>
-                        <span className="px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold">
-                          {node}
-                        </span>
-                        {index < item.flow.length - 1 && (
-                          <ArrowRight className="w-4 h-4 text-zinc-300 dark:text-zinc-700 shrink-0" />
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mb-28">
-          <div className="border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <p className="chapter-meta">COLLABORATION IA</p>
-            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter mt-3">
-              Plusieurs IA. Plusieurs rôles.
-            </h2>
-            <p className="mt-5 max-w-3xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              L’IA n’a pas été utilisée comme un bouton “générer un portfolio”. Chaque outil a eu un
-              rôle différent dans le cycle de construction.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-4 mt-8">
+        <section className="fb-mk-section" data-testid="making-ai-roles">
+          <Reveal>
+            <SectionHead
+              label="Collaboration IA"
+              title="Plusieurs IA. Plusieurs rôles."
+              text="L’IA n’a pas été utilisée comme un bouton « générer un portfolio ». Chaque outil a eu un rôle différent dans le cycle de construction."
+            />
+          </Reveal>
+          <motion.div variants={staggerContainer} {...inView} className="fb-dark-grid fb-dark-grid-3">
             {aiRoles.map(({ icon: Icon, title, description }) => (
-              <TiltCard
-                key={title}
-                max={6}
-                className="group glass-card p-7"
-              >
-                <div className="skill-visual w-11 h-11 rounded-2xl bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h3 className="text-xl font-bold mt-5 tracking-tight">{title}</h3>
-                <p className="text-sm leading-7 text-zinc-600 dark:text-zinc-400 mt-3">{description}</p>
-              </TiltCard>
+              <motion.article key={title} variants={staggerItem} className="fb-dark-card">
+                <Icon size={24} strokeWidth={1.8} />
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </section>
 
-        <section className="mb-28">
-          <div className="border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <p className="chapter-meta">ÉTAT ACTUEL</p>
-            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter mt-3">
-              Ce qui tourne aujourd’hui.
-            </h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-            {[
-              { icon: CheckCircle2, title: 'Production', text: 'mgodefroy.com est servi en HTTPS sur Netlify.' },
-              { icon: Database, title: 'Données', text: 'Le contenu vivant est piloté par Supabase.' },
-              { icon: GitBranch, title: 'Code', text: 'Le dépôt GitHub reste la source de vérité.' },
-              { icon: Workflow, title: 'Évolution', text: 'Le site peut continuer à grandir sans repartir de zéro.' }
-            ].map(({ icon: Icon, title, text }) => (
-              <article
-                key={title}
-                className="glass-card p-6"
-              >
-                <Icon className="w-5 h-5 text-orange-600 dark:text-orange-500" />
-                <h3 className="text-lg font-bold mt-4">{title}</h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-6 mt-2">{text}</p>
-              </article>
+        <section className="fb-mk-section" data-testid="making-state">
+          <Reveal>
+            <SectionHead label="État actuel" title="Ce qui tourne aujourd’hui." />
+          </Reveal>
+          <motion.div variants={staggerContainer} {...inView} className="fb-dark-grid fb-dark-grid-4">
+            {currentState.map(({ icon: Icon, title, text }) => (
+              <motion.article key={title} variants={staggerItem} className="fb-dark-card">
+                <Icon size={24} strokeWidth={1.8} />
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </section>
 
-        <motion.section
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          className="mb-20"
-        >
-          <motion.div variants={staggerItem} className="border-b border-zinc-200 dark:border-zinc-800 pb-8">
-            <p className="chapter-meta">OUTILS & INFRASTRUCTURE</p>
-            <h2 className="font-display text-4xl sm:text-5xl font-extrabold tracking-tighter mt-3">
-              La stack utilisée.
-            </h2>
+        <section className="fb-mk-section" data-testid="making-stack">
+          <Reveal>
+            <SectionHead label="Outils & infrastructure" title="La stack utilisée." />
+          </Reveal>
+          <motion.div variants={staggerContainer} {...inView} className="fb-stack">
+            {stack.map((item, i) => (
+              <motion.span key={i} variants={staggerItem} className="fb-chip fb-chip-lg">{typeof item === 'string' ? item : item.name}</motion.span>
+            ))}
           </motion.div>
+        </section>
 
-          <motion.div variants={staggerItem} className="flex flex-wrap gap-2.5 mt-8">
-            {stack.map((item, i) => {
-              const name = typeof item === 'string' ? item : item.name;
-              return (
-                <span
-                  key={i}
-                  className="px-4 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-                >
-                  {name}
-                </span>
-              );
-            })}
-          </motion.div>
-        </motion.section>
-
-        <motion.section
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative overflow-hidden rounded-[36px] bg-zinc-950 text-white p-9 md:p-14"
-        >
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-24 -right-20 w-80 h-80 rounded-full bg-orange-500/20 blur-3xl" />
-            <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-white/5 blur-3xl" />
+        <section className="fb-cta-panel fb-inline-cta" data-testid="making-cta">
+          <span className="fb-label">Et maintenant ?</span>
+          <h2 className="fb-title">Le projet continue.</h2>
+          <p className="fb-text">
+            De nouveaux projets viendront remplacer l’espace « En préparation », les certifications évolueront, la stack
+            s’enrichira et la partie data continuera d’être améliorée. Ce carnet est l’historique vivant d’un système qui apprend avec moi.
+          </p>
+          <div className="fb-cta-actions">
+            <Pill to="/contact" variant="light" testId="making-contact-cta">Discutons de votre projet</Pill>
+            <Pill to="/" variant="ghost" testId="making-home-cta">Retour à l’accueil</Pill>
           </div>
-
-          <div className="relative z-10 max-w-3xl">
-            <p className="chapter-meta text-zinc-400">ET MAINTENANT ?</p>
-            <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tighter mt-3">
-              Le projet continue.
-            </h2>
-            <p className="text-zinc-300 leading-7 mt-5">
-              De nouveaux projets viendront remplacer l’espace “En préparation”, les certifications
-              évolueront, la stack s’enrichira et la partie data continuera d’être améliorée. Ce carnet
-              n’est donc pas une fin de chantier : c’est l’historique vivant d’un système qui apprend avec moi.
-            </p>
-
-            <div className="flex flex-wrap gap-3 mt-8">
-              <MagneticWrapper strength={0.3}>
-                <Link
-                  data-testid="making-contact-cta"
-                  to="/contact"
-                  className="px-7 py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-full text-sm font-bold uppercase tracking-widest transition-colors shadow-xl flex items-center gap-3"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Discutons de votre projet</span>
-                </Link>
-              </MagneticWrapper>
-
-              <MagneticWrapper strength={0.3}>
-                <Link
-                  data-testid="making-home-cta"
-                  to="/"
-                  className="px-7 py-4 bg-white/10 hover:bg-white/15 text-white rounded-full text-sm font-bold uppercase tracking-widest transition-colors flex items-center gap-3"
-                >
-                  <span>Retour à l’accueil</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </MagneticWrapper>
-            </div>
-          </div>
-        </motion.section>
+        </section>
       </div>
     </PageTransition>
   );
