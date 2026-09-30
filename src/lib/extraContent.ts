@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { portfolioService } from '../services/portfolioService';
-import type { ServiceItem, PassionItem } from '../types/portfolio';
+import type { ServiceItem, PassionItem, SiteMediaItem } from '../types/portfolio';
 
-export type { ServiceItem, PassionItem };
+export type { ServiceItem, PassionItem, SiteMediaItem };
 
 function useRemote<T>(loader: () => Promise<T[]>) {
   const [items, setItems] = useState<T[]>([]);
@@ -36,6 +36,8 @@ function useRemote<T>(loader: () => Promise<T[]>) {
 
 const loadServices = () => portfolioService.getServices();
 const loadPassions = () => portfolioService.getPassions();
+const loadSiteMedia = () => portfolioService.getSiteMedia();
 
 export const useServices = () => useRemote<ServiceItem>(loadServices);
 export const usePassions = () => useRemote<PassionItem>(loadPassions);
+export const useSiteMedia = () => useRemote<SiteMediaItem>(loadSiteMedia);
