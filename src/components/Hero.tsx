@@ -6,6 +6,7 @@ import { Pill } from './Folio';
 interface HeroProps {
   profile: ProfileInfo;
   skills: SkillCategory[];
+  backgroundImage?: string;
 }
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -15,13 +16,13 @@ const rise = (delay: number) => ({
   transition: { duration: 1, delay, ease: EASE },
 });
 
-export const Hero: React.FC<HeroProps> = ({ profile, skills }) => {
+export const Hero: React.FC<HeroProps> = ({ profile, skills, backgroundImage }) => {
   const reduced = useReducedMotion();
 
   return (
     <section id="hero" data-testid="home-hero" className="fb-hero">
       <motion.img
-        src="/art/ref/home.jpg"
+        src={backgroundImage || "/art/ref/home.jpg"}
         alt=""
         aria-hidden="true"
         className="page-hero-img"
