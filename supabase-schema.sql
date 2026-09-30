@@ -1,8 +1,8 @@
 -- ==============================================================================
 -- SCHEMA COMPLET SUPABASE - PORTFOLIO MICHAEL GODEFROY
 -- ==============================================================================
--- Ce script documente les 12 tables actuellement utilisées par le portfolio
--- et permettant de piloter l'ensemble des données et de réceptionner les messages de contact.
+-- Ce script documente les 15 tables actuellement utilisées par le portfolio
+-- et permettant de piloter l'ensemble des données, médias et messages de contact.
 --
 -- Tables incluses :
 -- 1. public.profile
@@ -17,6 +17,9 @@
 -- 10. public.home_pillars
 -- 11. public.making_of_steps
 -- 12. public.making_of_stack
+-- 13. public.tech_stack
+-- 14. public.services
+-- 15. public.passions
 --
 -- Instructions :
 -- 1. Allez sur https://supabase.com/dashboard et ouvrez votre projet
@@ -40,6 +43,23 @@ CREATE TABLE IF NOT EXISTS public.profile (
   about_manifesto TEXT,
   about_closing TEXT,
   methodology JSONB DEFAULT '[]'::jsonb,
+  avatar_url TEXT DEFAULT '',
+  hero_photo_url TEXT DEFAULT '',
+  presentation_video_url TEXT DEFAULT '',
+  presentation_video_poster TEXT DEFAULT '',
+  about_page_label TEXT,
+  about_page_title TEXT,
+  about_page_accent TEXT,
+  about_page_description TEXT,
+  about_journey_intro_title TEXT,
+  about_journey_intro_text TEXT,
+  about_transition_text TEXT,
+  about_expertise JSONB,
+  home_about_title TEXT,
+  home_about_accent TEXT,
+  home_about_description TEXT,
+  home_savoir_faire_description TEXT,
+  home_contact_description TEXT,
   updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -126,7 +146,7 @@ CREATE TABLE IF NOT EXISTS public.workflows (
 
 -- 8. MESSAGES DE CONTACT (FORMULAIRE & EDGE FUNCTION)
 CREATE TABLE IF NOT EXISTS public.contact_messages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   project_type TEXT NOT NULL CHECK (project_type IN ('cdi', 'freelance', 'audit', 'autre')),
@@ -174,6 +194,31 @@ CREATE TABLE IF NOT EXISTS public.making_of_stack (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   sort_order INT DEFAULT 0
+);
+
+-- 13. SERVICES PUBLICS
+CREATE TABLE IF NOT EXISTS public.services (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  category TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  icon_name TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  before_text TEXT,
+  after_text TEXT
+);
+
+-- 14. PASSIONS
+CREATE TABLE IF NOT EXISTS public.passions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  image_path TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- ==============================================================================
@@ -243,8 +288,32 @@ CREATE POLICY "Public select making_of_stack"
 -- L'Edge Function utilise la service role key et contourne RLS. Aucun client
 -- public ne doit pouvoir contourner sa validation et sa protection anti-abus.
 DROP POLICY IF EXISTS "Allow insert for contact_messages" ON public.contact_messages;
+DROP POLICY IF EXISTS "Allow public submissions" ON public.contact_messages;
+REVOKE ALL ON public.contact_messages FROM anon, authenticated;
 -- Remarque de sécurité : Aucun droit SELECT public n'est accordé. Seule la clé de service ou
 -- l'administrateur connecté au dashboard Supabase peut consulter les messages reçus.
+
+ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.passions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public can read visible services" ON public.services;
+CREATE POLICY "Public can read visible services"
+  ON public.services FOR SELECT TO anon, authenticated USING (is_visible = TRUE);
+GRANT SELECT ON public.services TO anon, authenticated;
+
+DROP POLICY IF EXISTS "Public can read visible passions" ON public.passions;
+CREATE POLICY "Public can read visible passions"
+  ON public.passions FOR SELECT TO anon, authenticated USING (is_visible = TRUE);
+GRANT SELECT ON public.passions TO anon, authenticated;
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('passion-images', 'passion-images', TRUE)
+ON CONFLICT (id) DO UPDATE SET public = TRUE;
+
+DROP POLICY IF EXISTS "Public can read passion images" ON storage.objects;
+CREATE POLICY "Public can read passion images"
+  ON storage.objects FOR SELECT TO anon, authenticated
+  USING (bucket_id = 'passion-images');
 
 -- ==============================================================================
 -- INDEX DE PERFORMANCE (SORT ORDER)
