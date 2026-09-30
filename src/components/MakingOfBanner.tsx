@@ -35,7 +35,11 @@ const TOOLS = [
   { src: 'https://cdn.simpleicons.org/anthropic/ffffff', name: 'Claude' },
 ];
 
-export const MakingOfBanner: React.FC = () => (
+interface MakingOfBannerProps {
+  previewImage?: string;
+}
+
+export const MakingOfBanner: React.FC<MakingOfBannerProps> = ({ previewImage }) => (
   <section className="fb-mk-banner" data-testid="home-making-of-block">
     <Flowers />
     <span className="fb-mk-glow" aria-hidden="true" />
@@ -50,7 +54,7 @@ export const MakingOfBanner: React.FC = () => (
       <Pill to="/coulisses" testId="home-making-of">Explorer les coulisses</Pill>
     </Reveal>
     <Reveal variant="scale" delay={0.15}>
-      <figure className="fb-mk-visual"><img src="/art/workflow.webp" alt="Aperçu de la fabrication du portfolio" loading="lazy" /></figure>
+      <figure className="fb-mk-visual"><img src={previewImage || "/art/workflow.webp"} alt="Aperçu de la fabrication du portfolio" loading="lazy" /></figure>
     </Reveal>
   </section>
 );
