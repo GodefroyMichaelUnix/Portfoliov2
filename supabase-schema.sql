@@ -290,6 +290,14 @@ CREATE POLICY "Public select making_of_stack"
 DROP POLICY IF EXISTS "Allow insert for contact_messages" ON public.contact_messages;
 DROP POLICY IF EXISTS "Allow public submissions" ON public.contact_messages;
 REVOKE ALL ON public.contact_messages FROM anon, authenticated;
+
+DROP POLICY IF EXISTS "No direct public access to contact messages" ON public.contact_messages;
+CREATE POLICY "No direct public access to contact messages"
+  ON public.contact_messages
+  FOR ALL
+  TO anon, authenticated
+  USING (FALSE)
+  WITH CHECK (FALSE);
 -- Remarque de sécurité : Aucun droit SELECT public n'est accordé. Seule la clé de service ou
 -- l'administrateur connecté au dashboard Supabase peut consulter les messages reçus.
 
@@ -387,7 +395,7 @@ CREATE POLICY "Authenticated users can manage tech stack"
   FOR ALL
   TO authenticated
   USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
-  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  WITH CHECK (((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin');
 
 GRANT INSERT, UPDATE, DELETE ON public.tech_stack TO authenticated;
 
@@ -396,8 +404,8 @@ CREATE POLICY "Authenticated users can manage tech logos"
   ON storage.objects
   FOR ALL
   TO authenticated
-  USING (bucket_id = 'tech-logos' AND (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
-  WITH CHECK (bucket_id = 'tech-logos' AND (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  USING (bucket_id = 'tech-logos' AND ((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK (bucket_id = 'tech-logos' AND ((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin');
 
 
 -- Final RLS cleanup for tech_stack
@@ -408,7 +416,7 @@ CREATE POLICY "Authenticated users can insert tech stack"
   ON public.tech_stack
   FOR INSERT
   TO authenticated
-  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  WITH CHECK (((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin');
 
 DROP POLICY IF EXISTS "Authenticated users can update tech stack" ON public.tech_stack;
 CREATE POLICY "Authenticated users can update tech stack"
@@ -416,7 +424,7 @@ CREATE POLICY "Authenticated users can update tech stack"
   FOR UPDATE
   TO authenticated
   USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
-  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  WITH CHECK (((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin');
 
 DROP POLICY IF EXISTS "Authenticated users can delete tech stack" ON public.tech_stack;
 CREATE POLICY "Authenticated users can delete tech stack"
