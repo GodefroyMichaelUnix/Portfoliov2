@@ -501,3 +501,153 @@ button.fb-service-row:focus-visible, .fb-cert-row:focus-visible { outline: 2px s
 @media (prefers-reduced-motion: reduce) {
   .fb-mk-flowers svg { animation: none; }
 }
+
+
+/* ---------- Certification credential cards (restored) ---------- */
+.credential-register {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.credential-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 390px;
+  padding: 30px 36px;
+  border: 1px solid var(--studio-line);
+  background: var(--fb-card);
+  color: var(--fb-ink);
+  transition: border-color .4s, box-shadow .4s, transform .45s var(--ease-premium);
+}
+
+.credential-card:hover {
+  border-color: var(--fb-orange);
+  box-shadow: 0 20px 40px -35px rgb(234 88 12 / 30%);
+  transform: translateY(-5px);
+}
+
+.credential-barcode {
+  height: 22px;
+  width: 65px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--studio-muted) 0px,
+    var(--studio-muted) 1px,
+    transparent 1px,
+    transparent 4px,
+    var(--studio-muted) 4px,
+    var(--studio-muted) 6px,
+    transparent 6px,
+    transparent 8px
+  );
+  opacity: .4;
+}
+
+.home-credentials .credential-barcode { width: 35px; }
+
+.credential-top {
+  display: flex;
+  justify-content: space-between;
+  color: var(--fb-muted);
+  gap: 14px;
+}
+
+.credential-top .chapter-meta { font-size: 11px; }
+
+.credential-mark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 28px 0;
+  color: var(--fb-orange-text);
+}
+
+.credential-mark img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 50%;
+  padding: 7px;
+}
+
+.credential-issuer {
+  font: 600 12px 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--fb-muted);
+}
+
+.credential-card h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  line-height: 1.18;
+  max-width: 330px;
+  margin-top: 12px;
+  color: var(--fb-ink);
+}
+
+.credential-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  margin-top: auto;
+  gap: 14px;
+}
+
+.credential-card .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding-block: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fb-orange-text);
+  transition: gap .25s, color .2s;
+}
+
+.credential-card .text-link:hover { gap: 19px; }
+
+.credential-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  background: var(--studio-surface);
+  color: var(--studio-ink);
+  border: 1px solid var(--studio-line);
+  padding: 0;
+  max-width: 620px;
+  width: calc(100% - 32px);
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+
+.credential-dialog::backdrop {
+  background: rgb(0 0 0 / 75%);
+  backdrop-filter: blur(12px);
+}
+
+.credential-dialog-inner { padding: 45px; }
+
+.credential-dialog .dialog-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 6px;
+}
+
+@media (max-width: 767px) {
+  .credential-card {
+    min-height: 360px;
+    padding: 26px 24px;
+  }
+
+  .credential-dialog-inner { padding: 32px 24px; }
+}
