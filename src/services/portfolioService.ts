@@ -14,7 +14,9 @@ import {
   HomePillar,
   MakingOfStep,
   MakingOfStackItem,
-  TechStackItem
+  TechStackItem,
+  ServiceItem,
+  PassionItem
 } from '../types/portfolio';
 import { supabase } from '../lib/supabase';
 import type { Json } from '../lib/database.types';
@@ -56,6 +58,8 @@ export interface PortfolioDatabaseAdapter {
   getMakingOfSteps(): Promise<MakingOfStep[]>;
   getMakingOfStack(): Promise<Array<string | MakingOfStackItem>>;
   getTechStack(): Promise<TechStackItem[]>;
+  getServices(): Promise<ServiceItem[]>;
+  getPassions(): Promise<PassionItem[]>;
 }
 
 class SupabasePortfolioService implements PortfolioDatabaseAdapter {
@@ -502,6 +506,68 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       active: row.active,
       displayScale: Number(row.display_scale) || 1
     }));
+  }
+
+  async getServices(): Promise<ServiceItem[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .eq('is_visible', true)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (services): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      category: row.category || '',
+      title: row.title || '',
+      description: row.description || '',
+      iconName: row.icon_name || 'Sparkles',
+      before: row.before_text || '',
+      after: row.after_text || ''
+    }));
+  }
+
+  async getPassions(): Promise<PassionItem[]> {
+    if (!supabase) {
+      throw new Error('Client Supabase non configuré.');
+    }
+
+    const { data, error } = await supabase
+      .from('passions')
+      .select('*')
+      .eq('is_visible', true)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      throw new Error(`Erreur Supabase (passions): ${error.message}`);
+    }
+
+    if (!data) return [];
+
+    return data.map((row) => {
+      const rawPath = row.image_path || '';
+      const imageUrl = rawPath.startsWith('https://')
+        ? safeExternalUrl(rawPath) || ''
+        : rawPath
+          ? supabase.storage.from('passion-images').getPublicUrl(rawPath).data.publicUrl
+          : '';
+
+      return {
+        id: row.id,
+        title: row.title || '',
+        description: row.description || '',
+        imageUrl: safeExternalUrl(imageUrl) || ''
+      };
+    });
   }
 
   async getMakingOfStack(): Promise<Array<string | MakingOfStackItem>> {
