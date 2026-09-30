@@ -1,19 +1,20 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
+import { useSiteMedia } from '../lib/extraContent';
 import { useNavigate } from 'react-router-dom';
 
 interface PageIntroProps { number: string; label: string; title: string; accent: string; description: string; children?: React.ReactNode }
 
-const PAGES: Record<string, { name: string; image: string }> = {
-  '01': { name: 'Projets', image: '/art/ref/projects.jpg' },
-  '02': { name: 'Compétences', image: '/art/ref/skills.jpg' },
-  '03': { name: 'Certifications', image: '/art/ref/certs.jpg' },
-  '04': { name: 'À propos', image: '/art/ref/about.jpg' },
-  '05': { name: 'Coulisses', image: '/art/ref/coulisses.jpg' },
-  '06': { name: 'Contact', image: '/art/ref/contact.jpg' },
-  '07': { name: 'Mes services', image: '/art/ref/services.jpg' },
-  '08': { name: 'Passions', image: '/art/ref/passions.jpg' },
+const PAGES: Record<string, { name: string; mediaKey: string; image: string }> = {
+  '01': { name: 'Projets', mediaKey: 'projects_header', image: '/art/ref/projects.jpg' },
+  '02': { name: 'Compétences', mediaKey: 'skills_header', image: '/art/ref/skills.jpg' },
+  '03': { name: 'Certifications', mediaKey: 'certifications_header', image: '/art/ref/certs.jpg' },
+  '04': { name: 'À propos', mediaKey: 'about_header', image: '/art/ref/about.jpg' },
+  '05': { name: 'Coulisses', mediaKey: 'coulisses_header', image: '/art/ref/coulisses.jpg' },
+  '06': { name: 'Contact', mediaKey: 'contact_header', image: '/art/ref/contact.jpg' },
+  '07': { name: 'Mes services', mediaKey: 'services_header', image: '/art/ref/services.jpg' },
+  '08': { name: 'Passions', mediaKey: 'passions_header', image: '/art/ref/passions.jpg' },
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -21,7 +22,9 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export const PageIntro = ({ number, label, title, accent, description, children }: PageIntroProps) => {
   const reduced = useReducedMotion();
   const navigate = useNavigate();
+  const { items: siteMedia } = useSiteMedia();
   const page = PAGES[number] || PAGES['01'];
+  const pageImage = siteMedia.find((item) => item.mediaKey === page.mediaKey)?.url || page.image;
 
   const handleBack = () => {
     const referrerIsInternal = document.referrer.startsWith(window.location.origin);
@@ -35,7 +38,7 @@ export const PageIntro = ({ number, label, title, accent, description, children 
   return (
     <header className="page-hero" data-testid={`page-intro-${number}`}>
       <motion.img
-        src={page.image}
+        src={pageImage}
         alt=""
         aria-hidden="true"
         className="page-hero-img"
