@@ -66,7 +66,7 @@ const FanGallery: React.FC<{ cards: HomeExpertiseCard[] }> = ({ cards }) => {
             initial={{ rotate: 0, x: '0%', y: 40, opacity: 0 }}
             whileInView={{ rotate: offset * 9, x: `${offset * 64}%`, y: Math.abs(offset) * 22, opacity: 1 }}
             whileHover={{ y: Math.abs(offset) * 22 - 18 }}
-            viewport={{ once: true, amount: 0.4 }}
+            viewport={{ once: false, amount: 0.4 }}
             transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             data-testid={`home-fan-card-${i}`}
           >
@@ -141,7 +141,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <SectionHead label="Mes services" title="Ce que je fais pour votre entreprise" cta={{ to: '/services', label: 'Voir tous les services', testId: 'home-all-services' }} />
           </Reveal>
           {services.items.length > 0 ? (
-            <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="fb-services-grid">
+            <motion.div variants={cascade} initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.1 }} className="fb-services-grid">
               {services.items.slice(0, 6).map((service, i) => <ServiceRow key={service.id} service={service} index={i} onOpen={setOpenService} />)}
             </motion.div>
           ) : services.loaded && (
