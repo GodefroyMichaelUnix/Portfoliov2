@@ -21,7 +21,8 @@ create index if not exists contact_messages_source_hash_created_at_idx
   on public.contact_messages(source_hash, created_at desc);
 
 drop policy if exists "Allow insert for contact_messages" on public.contact_messages;
-revoke insert on public.contact_messages from anon, authenticated;
+drop policy if exists "Allow public submissions" on public.contact_messages;
+revoke all on public.contact_messages from anon, authenticated;
 
 drop policy if exists "Authenticated users can insert tech stack" on public.tech_stack;
 create policy "Authenticated users can insert tech stack"
