@@ -19,7 +19,7 @@ export const CountUpNumber: React.FC<CountUpNumberProps> = ({
 }) => {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const isInView = useInView(ref, { once: false, margin: '-50px' });
   const rawString = String(value).trim();
 
   // Match pattern: optional non-numeric prefix, target number (integer or decimal), optional suffix
