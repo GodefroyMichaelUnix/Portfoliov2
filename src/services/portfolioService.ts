@@ -500,6 +500,9 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
       id: row.id,
       name: row.name,
       storagePath: row.storage_path || undefined,
+      storageUrl: row.storage_path
+        ? safeExternalUrl(supabase.storage.from('tech-logos').getPublicUrl(row.storage_path).data.publicUrl)
+        : undefined,
       fallbackUrl: safeExternalUrl(row.fallback_url),
       altText: row.alt_text,
       sortOrder: row.sort_order,
