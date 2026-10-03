@@ -222,6 +222,48 @@ CREATE TABLE IF NOT EXISTS public.passions (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- 16. MÉDIAS DU SITE (SUPABASE STORAGE UNIQUEMENT)
+-- Le bucket public "site-media" est créé dans le dashboard Supabase Storage.
+-- Aucun fallback local n'est utilisé : chaque média actif doit exister dans Storage.
+
+CREATE TABLE IF NOT EXISTS public.site_media (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  media_key TEXT NOT NULL UNIQUE,
+  storage_bucket TEXT NOT NULL DEFAULT 'site-media',
+  storage_path TEXT NOT NULL,
+  alt_text TEXT NOT NULL DEFAULT '',
+  sort_order INT NOT NULL DEFAULT 0,
+  is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.site_media
+  DROP COLUMN IF EXISTS fallback_path;
+
+ALTER TABLE public.site_media
+  ALTER COLUMN storage_path SET NOT NULL;
+
+ALTER TABLE public.site_media ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public can read visible site media" ON public.site_media;
+CREATE POLICY "Public can read visible site media"
+  ON public.site_media
+  FOR SELECT
+  TO anon, authenticated
+  USING (is_visible = TRUE);
+
+DROP POLICY IF EXISTS "Authenticated admins can manage site media" ON public.site_media;
+CREATE POLICY "Authenticated admins can manage site media"
+  ON public.site_media
+  FOR ALL
+  TO authenticated
+  USING (((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK (((select auth.jwt()) -> 'app_metadata' ->> 'role') = 'admin');
+
+GRANT SELECT ON public.site_media TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.site_media TO authenticated;
+
 -- ==============================================================================
 -- ACTIVATION DE LA SÉCURITÉ ROW LEVEL SECURITY (RLS)
 -- ==============================================================================
