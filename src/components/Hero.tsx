@@ -6,7 +6,7 @@ import { Pill } from './Folio';
 interface HeroProps {
   profile: ProfileInfo;
   skills: SkillCategory[];
-  backgroundImage?: string;
+  backgroundImage: string;
 }
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -21,15 +21,15 @@ export const Hero: React.FC<HeroProps> = ({ profile, skills, backgroundImage }) 
 
   return (
     <section id="hero" data-testid="home-hero" className="fb-hero">
-      <motion.img
-        src={backgroundImage || "/art/ref/home.jpg"}
+      {backgroundImage && <motion.img
+        src={backgroundImage}
         alt=""
         aria-hidden="true"
         className="page-hero-img"
         initial={reduced ? false : { scale: 1.2 }}
         animate={{ scale: 1 }}
         transition={{ duration: 10, ease: 'easeOut' }}
-      />
+      />}
       <div className="fb-hero-main">
         <div>
           <motion.span {...rise(0.1)} className="fb-hero-hello">Salut, je suis</motion.span>
