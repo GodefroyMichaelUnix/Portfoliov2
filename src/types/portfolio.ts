@@ -230,8 +230,7 @@ export interface SiteMediaItem {
   id: string;
   mediaKey: string;
   storageBucket: string;
-  storagePath?: string;
-  fallbackPath?: string;
+  storagePath: string;
   url: string;
   altText: string;
   sortOrder: number;
