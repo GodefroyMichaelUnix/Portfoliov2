@@ -593,19 +593,21 @@ class SupabasePortfolioService implements PortfolioDatabaseAdapter {
     if (!data) return [];
 
     return data.map((row) => {
-      const storagePath = row.storage_path || undefined;
-      const storageBucket = row.storage_bucket || 'site-media';
-      const storageUrl = storagePath
-        ? supabase.storage.from(storageBucket).getPublicUrl(storagePath).data.publicUrl
-        : '';
-      const url = storageUrl || row.fallback_path || '';
+      const storageBucket = row.storage_bucket;
+      const storagePath = row.storage_path;
+      const url = safeExternalUrl(
+        supabase.storage.from(storageBucket).getPublicUrl(storagePath).data.publicUrl
+      );
+
+      if (!url) {
+        throw new Error(`Média Supabase introuvable pour "${row.media_key}" (${storageBucket}/${storagePath}).`);
+      }
 
       return {
         id: row.id,
         mediaKey: row.media_key,
         storageBucket,
         storagePath,
-        fallbackPath: row.fallback_path || undefined,
         url,
         altText: row.alt_text || '',
         sortOrder: row.sort_order ?? 0,
