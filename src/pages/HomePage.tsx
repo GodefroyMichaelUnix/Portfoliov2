@@ -99,14 +99,16 @@ export const HomePage: React.FC<HomePageProps> = ({
       <div className="fb-home relative z-10">
         <Hero profile={profile} skills={skills} backgroundImage={media('home_header')} />
 
-        <section className="fb-panel fb-video-panel" data-testid="home-video">
-          <VideoPresentation
-            videoSrcFr={media('presentation_video_mp4')}
-            posterUrl={media('presentation_poster')}
-            placeholder={false}
-            webmSrc={media('presentation_video_webm')}
-          />
-        </section>
+        {siteMedia.loaded && (
+          <section className="fb-panel fb-video-panel" data-testid="home-video">
+            <VideoPresentation
+              videoSrcFr={media('presentation_video_mp4')}
+              posterUrl={media('presentation_poster')}
+              placeholder={false}
+              webmSrc={media('presentation_video_webm')}
+            />
+          </section>
+        )}
 
         <section className="fb-panel fb-panel-tight fb-tools-band" data-testid="home-tools">
           <TechMarquee />
