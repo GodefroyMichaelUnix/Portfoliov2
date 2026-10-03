@@ -36,7 +36,7 @@ const TOOLS = [
 ];
 
 interface MakingOfBannerProps {
-  previewImage?: string;
+  previewImage: string;
 }
 
 export const MakingOfBanner: React.FC<MakingOfBannerProps> = ({ previewImage }) => (
@@ -53,8 +53,12 @@ export const MakingOfBanner: React.FC<MakingOfBannerProps> = ({ previewImage }) 
       </div>
       <Pill to="/coulisses" testId="home-making-of">Explorer les coulisses</Pill>
     </Reveal>
-    <Reveal variant="scale" delay={0.15}>
-      <figure className="fb-mk-visual"><img src={previewImage || "/art/workflow.webp"} alt="Aperçu de la fabrication du portfolio" loading="lazy" /></figure>
-    </Reveal>
+    {previewImage && (
+      <Reveal variant="scale" delay={0.15}>
+        <figure className="fb-mk-visual">
+          <img src={previewImage} alt="Aperçu de la fabrication du portfolio" loading="lazy" />
+        </figure>
+      </Reveal>
+    )}
   </section>
 );
