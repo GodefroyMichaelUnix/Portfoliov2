@@ -6,15 +6,15 @@ import { useNavigate } from 'react-router-dom';
 
 interface PageIntroProps { number: string; label: string; title: string; accent: string; description: string; children?: React.ReactNode }
 
-const PAGES: Record<string, { name: string; mediaKey: string; image: string }> = {
-  '01': { name: 'Projets', mediaKey: 'projects_header', image: '/art/ref/projects.jpg' },
-  '02': { name: 'Compétences', mediaKey: 'skills_header', image: '/art/ref/skills.jpg' },
-  '03': { name: 'Certifications', mediaKey: 'certifications_header', image: '/art/ref/certs.jpg' },
-  '04': { name: 'À propos', mediaKey: 'about_header', image: '/art/ref/about.jpg' },
-  '05': { name: 'Coulisses', mediaKey: 'coulisses_header', image: '/art/ref/coulisses.jpg' },
-  '06': { name: 'Contact', mediaKey: 'contact_header', image: '/art/ref/contact.jpg' },
-  '07': { name: 'Mes services', mediaKey: 'services_header', image: '/art/ref/services.jpg' },
-  '08': { name: 'Passions', mediaKey: 'passions_header', image: '/art/ref/passions.jpg' },
+const PAGES: Record<string, { name: string; mediaKey: string }> = {
+  '01': { name: 'Projets', mediaKey: 'projects_header' },
+  '02': { name: 'Compétences', mediaKey: 'skills_header' },
+  '03': { name: 'Certifications', mediaKey: 'certifications_header' },
+  '04': { name: 'À propos', mediaKey: 'about_header' },
+  '05': { name: 'Coulisses', mediaKey: 'coulisses_header' },
+  '06': { name: 'Contact', mediaKey: 'contact_header' },
+  '07': { name: 'Mes services', mediaKey: 'services_header' },
+  '08': { name: 'Passions', mediaKey: 'passions_header' },
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -24,7 +24,7 @@ export const PageIntro = ({ number, label, title, accent, description, children 
   const navigate = useNavigate();
   const { items: siteMedia } = useSiteMedia();
   const page = PAGES[number] || PAGES['01'];
-  const pageImage = siteMedia.find((item) => item.mediaKey === page.mediaKey)?.url || page.image;
+    const pageImage = siteMedia.find((item) => item.mediaKey === page.mediaKey)?.url;
 
   const handleBack = () => {
     const referrerIsInternal = document.referrer.startsWith(window.location.origin);
@@ -37,7 +37,7 @@ export const PageIntro = ({ number, label, title, accent, description, children 
 
   return (
     <header className="page-hero" data-testid={`page-intro-${number}`}>
-      <motion.img
+      {pageImage && <motion.img
         src={pageImage}
         alt=""
         aria-hidden="true"
@@ -45,7 +45,7 @@ export const PageIntro = ({ number, label, title, accent, description, children 
         initial={reduced ? false : { scale: 1.18 }}
         animate={{ scale: 1 }}
         transition={{ duration: 9, ease: 'easeOut' }}
-      />
+      />}
       <button type="button" onClick={handleBack} className="page-hero-back" data-testid={`page-back-${number}`}>
         <ArrowLeft className="w-4 h-4" />
         <span>Retour</span>
