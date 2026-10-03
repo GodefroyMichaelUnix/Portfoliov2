@@ -27,8 +27,6 @@ import { ServiceRow, ServiceDialog, PassionsMarquee, EmptyBlock, cascade } from 
 import { MakingOfBanner } from '../components/MakingOfBanner';
 import { useServices, usePassions, useSiteMedia, ServiceItem } from '../lib/extraContent';
 
-const AMBIENT_VIDEO = '/art/presentation-ambiance.mp4';
-
 interface HomePageProps {
   profile: ProfileInfo;
   projects: ProjectItem[];
@@ -42,9 +40,9 @@ interface HomePageProps {
 }
 
 const SHOTS = [
-  { mediaKey: 'home_automation', fallback: '/art/ref/bw-automation.jpg', title: 'Automatisation', text: 'Des outils qui travaillent ensemble.' },
-  { mediaKey: 'home_ai', fallback: '/art/ref/bw-ai.jpg', title: 'Intelligence artificielle', text: 'Du contexte à l’action.' },
-  { mediaKey: 'home_development', fallback: '/art/ref/bw-dev.jpg', title: 'Développement', text: 'La liberté de créer sur mesure.' },
+  { mediaKey: 'home_automation', title: 'Automatisation', text: 'Des outils qui travaillent ensemble.' },
+  { mediaKey: 'home_ai', title: 'Intelligence artificielle', text: 'Du contexte à l’action.' },
+  { mediaKey: 'home_development', title: 'Développement', text: 'La liberté de créer sur mesure.' },
 ];
 
 const FAN_FALLBACK = ['/art/agent-core.webp', '/art/workflow.webp', '/art/data-vault.webp'];
@@ -103,10 +101,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         <section className="fb-panel fb-video-panel" data-testid="home-video">
           <VideoPresentation
-            videoSrcFr={profile.presentationVideoUrl || media('presentation_video_mp4') || AMBIENT_VIDEO}
-            posterUrl={profile.presentationVideoPoster || media('presentation_poster') || '/art/presentation-poster.jpg'}
-            placeholder={!profile.presentationVideoUrl}
-            webmSrc={profile.presentationVideoUrl ? undefined : (media('presentation_video_webm') || '/art/presentation-ambiance.webm')}
+            videoSrcFr={media('presentation_video_mp4')}
+            posterUrl={media('presentation_poster')}
+            placeholder={false}
+            webmSrc={media('presentation_video_webm')}
           />
         </section>
 
@@ -129,7 +127,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Reveal key={shot.title} delay={i * 0.12}>
                 <Link to="/competences" data-testid={`home-service-${i}`}>
                   <figure className="fb-shot">
-                    <img src={media(shot.mediaKey) || shot.fallback} alt="" loading="lazy" />
+                    <img src={media(shot.mediaKey)} alt="" loading="lazy" />
                     <figcaption><strong>{shot.title}</strong><span>{shot.text}</span></figcaption>
                   </figure>
                 </Link>
@@ -276,7 +274,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <SectionHead label="Validation" title="Certifications" cta={{ to: '/certifications', label: 'Tout voir', testId: 'home-all-certifications' }} />
             </Reveal>
             <div className="fb-awards">
-              <Reveal variant="scale"><div className="fb-awards-img"><img src={media("certifications_header") || "/art/ref/certs.jpg"} alt="" loading="lazy" /></div></Reveal>
+              <Reveal variant="scale"><div className="fb-awards-img"><img src={media("certifications_header")} alt="" loading="lazy" /></div></Reveal>
               <div className="fb-list">
                 {certifications.slice(0, 8).map((cert, i) => (
                   <Link key={cert.id} to="/certifications" className="fb-row" data-testid={`home-cert-${i}`}>
