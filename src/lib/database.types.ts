@@ -495,37 +495,34 @@ export type Database = {
         Row: {
           alt_text: string
           created_at: string
-          fallback_path: string | null
           id: string
           is_visible: boolean
           media_key: string
           sort_order: number
           storage_bucket: string
-          storage_path: string | null
+          storage_path: string
           updated_at: string
         }
         Insert: {
           alt_text?: string
           created_at?: string
-          fallback_path?: string | null
           id?: string
           is_visible?: boolean
           media_key: string
           sort_order?: number
           storage_bucket?: string
-          storage_path?: string | null
+          storage_path: string
           updated_at?: string
         }
         Update: {
           alt_text?: string
           created_at?: string
-          fallback_path?: string | null
           id?: string
           is_visible?: boolean
           media_key?: string
           sort_order?: number
           storage_bucket?: string
-          storage_path?: string | null
+          storage_path?: string
           updated_at?: string
         }
         Relationships: []
