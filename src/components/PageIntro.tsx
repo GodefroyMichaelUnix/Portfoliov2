@@ -24,7 +24,7 @@ export const PageIntro = ({ number, label, title, accent, description, children 
   const navigate = useNavigate();
   const { items: siteMedia } = useSiteMedia();
   const page = PAGES[number] || PAGES['01'];
-    const pageImage = siteMedia.find((item) => item.mediaKey === page.mediaKey)?.url;
+  const pageImage = siteMedia.find((item) => item.mediaKey === page.mediaKey)?.url;
 
   const handleBack = () => {
     const referrerIsInternal = document.referrer.startsWith(window.location.origin);
